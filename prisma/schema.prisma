@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  phone     String?  @unique
+  email     String?  @unique
+  role      String   // "CLIENT" | "AGENT" | "ADMIN"
+  createdAt DateTime @default(now())
+
+  clientProfile ClientProfile?
+  workerProfile WorkerProfile?
+}
+
+model ClientProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  name   String?
+}
+
+model WorkerProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  name   String
+  phone  String
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String @unique
+}
+
+model Area {
+  id       String  @id @default(uuid())
+  name     String
+  parentId String?
+  parent   Area?   @relation("AreaHierarchy", fields: [parentId], references: [id])
+  children Area[]  @relation("AreaHierarchy")
+}

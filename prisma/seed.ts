@@ -27,6 +27,26 @@ async function main() {
     skipDuplicates: true,
   });
 
+  // Seed Admin Account
+  await prisma.user.upsert({
+    where: { email: 'admin@kamyaab.pk' },
+    update: {},
+    create: {
+      email: 'admin@kamyaab.pk',
+      role: 'ADMIN',
+    },
+  });
+
+  // Seed Agent Account
+  await prisma.user.upsert({
+    where: { email: 'agent1@kamyaab.pk' },
+    update: {},
+    create: {
+      email: 'agent1@kamyaab.pk',
+      role: 'AGENT',
+    },
+  });
+
   console.log('Seed data created successfully');
 }
 

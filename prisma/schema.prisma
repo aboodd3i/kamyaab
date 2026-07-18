@@ -20,7 +20,8 @@ model User {
   createdAt DateTime @default(now())
 
   clientProfile ClientProfile?
-  workerProfile WorkerProfile?
+  workerProfile WorkerProfile? @relation("UserWorkerProfile")
+  createdWorkers WorkerProfile[] @relation("AgentWorkerProfiles")
 }
 
 model ClientProfile {
@@ -31,11 +32,15 @@ model ClientProfile {
 }
 
 model WorkerProfile {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-  name   String
-  phone  String
+  id        String   @id @default(uuid())
+  userId    String?  @unique
+  user      User?    @relation("UserWorkerProfile", fields: [userId], references: [id])
+  name      String
+  phone     String
+  status    String   @default("PENDING_APPROVAL") // PENDING_APPROVAL, APPROVED, SUSPENDED
+  agentId   String?
+  agent     User?    @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 model Category {

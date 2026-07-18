@@ -841,7 +841,10 @@ export const WorkerProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   name: 'name',
-  phone: 'phone'
+  phone: 'phone',
+  status: 'status',
+  agentId: 'agentId',
+  createdAt: 'createdAt'
 } as const
 
 export type WorkerProfileScalarFieldEnum = (typeof WorkerProfileScalarFieldEnum)[keyof typeof WorkerProfileScalarFieldEnum]

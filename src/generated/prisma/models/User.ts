@@ -184,6 +184,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   workerProfile?: Prisma.XOR<Prisma.WorkerProfileNullableScalarRelationFilter, Prisma.WorkerProfileWhereInput> | null
+  createdWorkers?: Prisma.WorkerProfileListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -194,6 +195,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   clientProfile?: Prisma.ClientProfileOrderByWithRelationInput
   workerProfile?: Prisma.WorkerProfileOrderByWithRelationInput
+  createdWorkers?: Prisma.WorkerProfileOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -207,6 +209,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   workerProfile?: Prisma.XOR<Prisma.WorkerProfileNullableScalarRelationFilter, Prisma.WorkerProfileWhereInput> | null
+  createdWorkers?: Prisma.WorkerProfileListRelationFilter
 }, "id" | "phone" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -239,6 +242,7 @@ export type UserCreateInput = {
   createdAt?: Date | string
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -249,6 +253,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type UserUpdateInput = {
@@ -259,6 +264,7 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -269,6 +275,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -324,6 +331,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -356,12 +368,30 @@ export type UserCreateNestedOneWithoutWorkerProfileInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutWorkerProfileNestedInput = {
+export type UserCreateNestedOneWithoutCreatedWorkersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedWorkersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutWorkerProfileNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutWorkerProfileInput, Prisma.UserUncheckedCreateWithoutWorkerProfileInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutWorkerProfileInput
   upsert?: Prisma.UserUpsertWithoutWorkerProfileInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkerProfileInput, Prisma.UserUpdateWithoutWorkerProfileInput>, Prisma.UserUncheckedUpdateWithoutWorkerProfileInput>
+}
+
+export type UserUpdateOneWithoutCreatedWorkersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedWorkersInput
+  upsert?: Prisma.UserUpsertWithoutCreatedWorkersInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedWorkersInput, Prisma.UserUpdateWithoutCreatedWorkersInput>, Prisma.UserUncheckedUpdateWithoutCreatedWorkersInput>
 }
 
 export type UserCreateWithoutClientProfileInput = {
@@ -371,6 +401,7 @@ export type UserCreateWithoutClientProfileInput = {
   role: string
   createdAt?: Date | string
   workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
 }
 
 export type UserUncheckedCreateWithoutClientProfileInput = {
@@ -380,6 +411,7 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   role: string
   createdAt?: Date | string
   workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type UserCreateOrConnectWithoutClientProfileInput = {
@@ -405,6 +437,7 @@ export type UserUpdateWithoutClientProfileInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientProfileInput = {
@@ -414,6 +447,7 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
 }
 
 export type UserCreateWithoutWorkerProfileInput = {
@@ -423,6 +457,7 @@ export type UserCreateWithoutWorkerProfileInput = {
   role: string
   createdAt?: Date | string
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
 }
 
 export type UserUncheckedCreateWithoutWorkerProfileInput = {
@@ -432,11 +467,37 @@ export type UserUncheckedCreateWithoutWorkerProfileInput = {
   role: string
   createdAt?: Date | string
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
 }
 
 export type UserCreateOrConnectWithoutWorkerProfileInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutWorkerProfileInput, Prisma.UserUncheckedCreateWithoutWorkerProfileInput>
+}
+
+export type UserCreateWithoutCreatedWorkersInput = {
+  id?: string
+  phone?: string | null
+  email?: string | null
+  role: string
+  createdAt?: Date | string
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCreatedWorkersInput = {
+  id?: string
+  phone?: string | null
+  email?: string | null
+  role: string
+  createdAt?: Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCreatedWorkersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkersInput>
 }
 
 export type UserUpsertWithoutWorkerProfileInput = {
@@ -457,6 +518,7 @@ export type UserUpdateWithoutWorkerProfileInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkerProfileInput = {
@@ -466,8 +528,69 @@ export type UserUncheckedUpdateWithoutWorkerProfileInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
 }
 
+export type UserUpsertWithoutCreatedWorkersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedWorkersInput, Prisma.UserUncheckedUpdateWithoutCreatedWorkersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedWorkersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedWorkersInput, Prisma.UserUncheckedUpdateWithoutCreatedWorkersInput>
+}
+
+export type UserUpdateWithoutCreatedWorkersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedWorkersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+}
+
+
+/**
+ * Count Type UserCountOutputType
+ */
+
+export type UserCountOutputType = {
+  createdWorkers: number
+}
+
+export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdWorkers?: boolean | UserCountOutputTypeCountCreatedWorkersArgs
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserCountOutputType
+   */
+  select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedWorkersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkerProfileWhereInput
+}
 
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -478,6 +601,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   workerProfile?: boolean | Prisma.User$workerProfileArgs<ExtArgs>
+  createdWorkers?: boolean | Prisma.User$createdWorkersArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -508,6 +633,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   workerProfile?: boolean | Prisma.User$workerProfileArgs<ExtArgs>
+  createdWorkers?: boolean | Prisma.User$createdWorkersArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -517,6 +644,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     clientProfile: Prisma.$ClientProfilePayload<ExtArgs> | null
     workerProfile: Prisma.$WorkerProfilePayload<ExtArgs> | null
+    createdWorkers: Prisma.$WorkerProfilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -920,6 +1048,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   clientProfile<T extends Prisma.User$clientProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientProfileArgs<ExtArgs>>): Prisma.Prisma__ClientProfileClient<runtime.Types.Result.GetResult<Prisma.$ClientProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   workerProfile<T extends Prisma.User$workerProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workerProfileArgs<ExtArgs>>): Prisma.Prisma__WorkerProfileClient<runtime.Types.Result.GetResult<Prisma.$WorkerProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  createdWorkers<T extends Prisma.User$createdWorkersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdWorkersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1382,6 +1511,30 @@ export type User$workerProfileArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.WorkerProfileInclude<ExtArgs> | null
   where?: Prisma.WorkerProfileWhereInput
+}
+
+/**
+ * User.createdWorkers
+ */
+export type User$createdWorkersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerProfile
+   */
+  select?: Prisma.WorkerProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkerProfile
+   */
+  omit?: Prisma.WorkerProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkerProfileInclude<ExtArgs> | null
+  where?: Prisma.WorkerProfileWhereInput
+  orderBy?: Prisma.WorkerProfileOrderByWithRelationInput | Prisma.WorkerProfileOrderByWithRelationInput[]
+  cursor?: Prisma.WorkerProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkerProfileScalarFieldEnum | Prisma.WorkerProfileScalarFieldEnum[]
 }
 
 /**

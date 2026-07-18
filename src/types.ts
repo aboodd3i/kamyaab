@@ -21,3 +21,28 @@ export interface OtpVerifyResponse {
   token?: string;
   message: string;
 }
+
+// POST /auth/login/staff
+export interface PasswordLoginBody {
+  email: string;
+  password: string;
+}
+
+export interface PasswordLoginResponse {
+  success: boolean;
+  token?: string;
+  role?: string;
+  message: string;
+}
+
+// POST /api/v1/workers
+export interface CreateWorkerBody {
+  name: string;
+  phone: string;
+}
+
+// PATCH /api/v1/workers/:id/verify
+export interface VerifyWorkerBody {
+  status: 'APPROVED' | 'SUSPENDED';
+}
+

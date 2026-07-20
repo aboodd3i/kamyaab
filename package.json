@@ -13,6 +13,7 @@
     "prisma:format": "prisma format",
     "prisma:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
+    "seed:auth": "tsx scripts/seed-auth.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
@@ -28,7 +29,8 @@
     "@supabase/supabase-js": "^2.110.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "pg": "^8.22.0"
+    "pg": "^8.22.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

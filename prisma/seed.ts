@@ -6,21 +6,24 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  // --- Categories (8 confirmed MVP categories) -------------------------------
+  // --- Categories (12 confirmed MVP categories, per architecture doc) --------
   await prisma.category.createMany({
     data: [
       { name: 'Electrician' },
       { name: 'Plumber' },
       { name: 'Carpenter' },
-      { name: 'Gardener' },
       { name: 'Painter' },
+      { name: 'Gardener' },
+      { name: 'AC Technician' },
+      { name: 'Appliance Repair Technician' },
+      { name: 'Mason' },
+      { name: 'Welder' },
+      { name: 'Cleaner' },
       { name: 'Driver' },
-      { name: 'Tailor' },
-      { name: 'Cook' },
+      { name: 'General Handyman' },
     ],
     skipDuplicates: true,
   });
-
   // --- Karachi area hierarchy ------------------------------------------------
   // Structure: Karachi (root) → districts → areas
   // Using slugs as stable unique identifiers for parent-child linking.

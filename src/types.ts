@@ -39,15 +39,43 @@ export interface MeResponseData {
 }
 
 // ---------------------------------------------------------------------------
-// Workers (unchanged — do not modify worker onboarding contracts)
+// Workers
 // ---------------------------------------------------------------------------
 
-export interface CreateWorkerBody {
+/** POST /api/v1/workers — create a worker profile (AGENT only). */
+export const CreateWorkerSchema = z.object({
+  name: z.string().min(1).max(100),
+  phone: z.string().min(1),
+});
+
+export type CreateWorkerBody = z.infer<typeof CreateWorkerSchema>;
+
+/** Safe worker DTO — no internal relation details leaked to clients. */
+export interface WorkerDTO {
+  id: string;
   name: string;
   phone: string;
+  status: 'PENDING_APPROVAL' | 'APPROVED' | 'SUSPENDED';
+  suspensionReason?: string | null;
+  agentId?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface VerifyWorkerBody {
-  status: 'APPROVED' | 'SUSPENDED';
-}
+/** PATCH /api/v1/workers/:id/verify — approve or suspend (ADMIN only). */
+export const VerifyWorkerSchema = z
+  .object({
+    status: z.enum(['APPROVED', 'SUSPENDED']),
+    reason: z.string().max(500).optional(),
+  })
+  .refine(
+    (data) => {
+      // reason is only allowed (and required) when suspending
+      if (data.status === 'SUSPENDED') return true;
+      return data.reason === undefined;
+    },
+    { message: 'Reason is only allowed when status is SUSPENDED' },
+  );
+
+export type VerifyWorkerBody = z.infer<typeof VerifyWorkerSchema>;
 

@@ -20,9 +20,15 @@ export const ErrorCode = {
 
   // Validation
   VALIDATION_ERROR: 'VALIDATION_ERROR',
+  INVALID_PHONE: 'INVALID_PHONE',
 
   // Resources
   RESOURCE_NOT_FOUND: 'RESOURCE_NOT_FOUND',
+
+  // Workers
+  WORKER_NOT_FOUND: 'WORKER_NOT_FOUND',
+  WORKER_DUPLICATE_PHONE: 'WORKER_DUPLICATE_PHONE',
+  WORKER_INVALID_TRANSITION: 'WORKER_INVALID_TRANSITION',
 
   // Internal
   INTERNAL_ERROR: 'INTERNAL_ERROR',
@@ -70,8 +76,12 @@ export const errors = {
     new AppError(401, code, message),
   forbidden: (code: ErrorCode, message: string) =>
     new AppError(403, code, message),
-  notFound: (message: string) =>
-    new AppError(404, ErrorCode.RESOURCE_NOT_FOUND, message),
+  notFound: (code: ErrorCode, message: string) =>
+    new AppError(404, code, message),
+  conflict: (code: ErrorCode, message: string) =>
+    new AppError(409, code, message),
+  unprocessable: (code: ErrorCode, message: string) =>
+    new AppError(422, code, message),
   internal: (message = 'Internal server error') =>
     new AppError(500, ErrorCode.INTERNAL_ERROR, message),
 };

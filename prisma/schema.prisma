@@ -51,16 +51,17 @@ model ClientProfile {
 }
 
 model WorkerProfile {
-  id        String       @id @default(uuid())
-  userId    String?      @unique
-  user      User?        @relation("UserWorkerProfile", fields: [userId], references: [id])
-  name      String
-  phone     String
-  status    WorkerStatus @default(PENDING_APPROVAL)
-  agentId   String?
-  agent     User?        @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  id              String       @id @default(uuid())
+  userId          String?      @unique
+  user            User?        @relation("UserWorkerProfile", fields: [userId], references: [id])
+  name            String
+  phone           String       @unique
+  status          WorkerStatus @default(PENDING_APPROVAL)
+  suspensionReason String?
+  agentId         String?
+  agent           User?        @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }
 
 model Category {

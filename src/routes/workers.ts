@@ -1,70 +1,71 @@
-import { Router, Request, Response } from 'express';
-import prisma from '../lib/prisma';
-import { authenticate } from '../middleware/auth';
-import { CreateWorkerBody, VerifyWorkerBody } from '../types';
+import { Router, Request, Response, NextFunction } from 'express';
+import { authenticate, requireRole } from '../middleware/auth';
+import { errors, ErrorCode, sendSuccess } from '../lib/errors';
+import { CreateWorkerSchema, VerifyWorkerSchema } from '../types';
+import { createWorker, verifyWorker } from '../services/workerService';
 
 const router = Router();
 
-// Ensure all worker routes are authenticated
+// All worker routes require authentication
 router.use(authenticate);
 
-// POST /api/v1/workers - Agent only
-router.post('/', async (req: Request, res: Response) => {
-  if (req.user?.role !== 'AGENT') {
-    return res.status(403).json({ success: false, message: 'Forbidden: Only Agents can create worker profiles' });
-  }
+/**
+ * POST /api/v1/workers
+ *
+ * Create a new worker profile (AGENT only).
+ * The worker starts in PENDING_APPROVAL status.
+ */
+router.post(
+  '/',
+  requireRole('AGENT'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const parsed = CreateWorkerSchema.safeParse(req.body);
+      if (!parsed.success) {
+        throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Invalid request body');
+      }
 
-  const { name, phone } = req.body as CreateWorkerBody;
+      const worker = await createWorker({
+        name: parsed.data.name,
+        phone: parsed.data.phone,
+        agentId: req.user!.userId,
+      });
 
-  if (!name || !phone) {
-    return res.status(400).json({ success: false, message: 'Name and phone are required' });
-  }
-
-  try {
-    const worker = await prisma.workerProfile.create({
-      data: {
-        name,
-        phone,
-        status: 'PENDING_APPROVAL',
-        agentId: req.user.userId,
-      },
-    });
-
-    return res.status(201).json({ success: true, data: worker, message: 'Worker profile created pending approval' });
-  } catch (error: any) {
-    console.error('Error creating worker:', error);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-});
-
-// PATCH /api/v1/workers/:id/verify - Admin only
-router.patch('/:id/verify', async (req: Request, res: Response) => {
-  if (req.user?.role !== 'ADMIN') {
-    return res.status(403).json({ success: false, message: 'Forbidden: Only Admins can verify workers' });
-  }
-
-  const id = String(req.params.id);
-  const { status } = req.body as VerifyWorkerBody;
-
-  if (!status || !['APPROVED', 'SUSPENDED'].includes(status)) {
-    return res.status(400).json({ success: false, message: 'Valid status (APPROVED, SUSPENDED) is required' });
-  }
-
-  try {
-    const worker = await prisma.workerProfile.update({
-      where: { id },
-      data: { status },
-    });
-
-    return res.json({ success: true, data: worker, message: `Worker profile status updated to ${status}` });
-  } catch (error: any) {
-    console.error('Error verifying worker:', error);
-    // Prisma usually throws P2025 if record not found
-    if (error.code === 'P2025') {
-      return res.status(404).json({ success: false, message: 'Worker not found' });
+      return sendSuccess(res, worker, 'Worker profile created pending approval', 201);
+    } catch (err) {
+      next(err);
     }
-    return res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-});
+  },
+);
+
+/**
+ * PATCH /api/v1/workers/:id/verify
+ *
+ * Approve or suspend a worker (ADMIN only).
+ */
+router.patch(
+  '/:id/verify',
+  requireRole('ADMIN'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+
+      const parsed = VerifyWorkerSchema.safeParse(req.body);
+      if (!parsed.success) {
+        throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Invalid request body');
+      }
+
+      const worker = await verifyWorker({
+        workerId: id,
+        status: parsed.data.status,
+        reason: parsed.data.reason,
+      });
+
+      return sendSuccess(res, worker, `Worker status updated to ${parsed.data.status}`);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 export default router;

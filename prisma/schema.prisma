@@ -28,12 +28,13 @@ enum WorkerStatus {
 // --- Models -----------------------------------------------------------------
 
 model User {
-  id        String   @id @default(uuid())
-  phone     String?  @unique
-  email     String?  @unique
-  role      UserRole
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  authUserId String?  @unique /// Immutable Supabase Auth user ID — the stable identity mapping
+  phone      String?  @unique
+  email      String?  @unique
+  role       UserRole
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   clientProfile  ClientProfile?
   workerProfile  WorkerProfile?  @relation("UserWorkerProfile")

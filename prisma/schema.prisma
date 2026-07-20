@@ -1,0 +1,79 @@
+// Kamyaab — Prisma schema
+// Core models for the MVP marketplace: User, ClientProfile, WorkerProfile,
+// Category, Area.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- Enums ------------------------------------------------------------------
+
+enum UserRole {
+  CLIENT
+  AGENT
+  ADMIN
+}
+
+enum WorkerStatus {
+  PENDING_APPROVAL
+  APPROVED
+  SUSPENDED
+}
+
+// --- Models -----------------------------------------------------------------
+
+model User {
+  id         String   @id @default(uuid())
+  authUserId String?  @unique /// Immutable Supabase Auth user ID — the stable identity mapping
+  phone      String?  @unique
+  email      String?  @unique
+  role       UserRole
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  clientProfile  ClientProfile?
+  workerProfile  WorkerProfile?  @relation("UserWorkerProfile")
+  createdWorkers WorkerProfile[] @relation("AgentWorkerProfiles")
+}
+
+model ClientProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WorkerProfile {
+  id               String       @id @default(uuid())
+  userId           String?      @unique
+  user             User?        @relation("UserWorkerProfile", fields: [userId], references: [id])
+  name             String
+  phone            String       @unique
+  status           WorkerStatus @default(PENDING_APPROVAL)
+  suspensionReason String?
+  agentId          String?
+  agent            User?        @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String @unique
+}
+
+model Area {
+  id       String  @id @default(uuid())
+  name     String
+  slug     String  @unique
+  parentId String?
+  parent   Area?   @relation("AreaHierarchy", fields: [parentId], references: [id])
+  children Area[]  @relation("AreaHierarchy")
+}

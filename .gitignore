@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.local
+Doc/
+kamyaab_implementation_plan.md
+
+# Generated Prisma client — produced by `prisma generate`
+src/generated/

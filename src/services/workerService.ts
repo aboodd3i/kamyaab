@@ -8,6 +8,7 @@
 import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { normalizePakistaniPhone } from '../lib/phone';
+import { translateWorkerPhoneConflict } from '../lib/prismaErrors';
 import type { WorkerDTO } from '../types';
 
 // --- DTO mapping ------------------------------------------------------------
@@ -47,14 +48,18 @@ export interface CreateWorkerInput {
  * Create a new worker profile in `PENDING_APPROVAL` status.
  *
  * - Normalizes and validates the phone number (Pakistani format).
- * - Rejects duplicate phone numbers before hitting the DB constraint.
+ * - Pre-checks for duplicate phone to give a fast, clean 409 (UX).
+ * - The DB unique constraint is the final concurrency-safe protection.
+ *   If a concurrent insert wins the race, Prisma throws P2002 which
+ *   we translate into a 409 WORKER_PHONE_ALREADY_EXISTS.
  * - Does not require a `userId` — the worker is not a platform user yet.
  * - Records the onboarding agent.
  */
 export async function createWorker(input: CreateWorkerInput): Promise<WorkerDTO> {
   const phone = normalizePakistaniPhone(input.phone);
 
-  // Check for duplicate phone before create to give a clean 409
+  // Pre-check for duplicate phone — improves UX with a fast 409
+  // but does NOT guarantee correctness under concurrent requests.
   const existing = await prisma.workerProfile.findUnique({
     where: { phone },
     select: { id: true },
@@ -66,16 +71,28 @@ export async function createWorker(input: CreateWorkerInput): Promise<WorkerDTO>
     );
   }
 
-  const worker = await prisma.workerProfile.create({
-    data: {
-      name: input.name,
-      phone,
-      status: 'PENDING_APPROVAL',
-      agentId: input.agentId,
-    },
-  });
+  // The DB unique constraint is the source of truth.
+  // If a concurrent request inserts the same phone between our
+  // findUnique and create, Prisma throws P2002 — translate it.
+  try {
+    const worker = await prisma.workerProfile.create({
+      data: {
+        name: input.name,
+        phone,
+        status: 'PENDING_APPROVAL',
+        agentId: input.agentId,
+      },
+    });
 
-  return toDTO(worker);
+    return toDTO(worker);
+  } catch (err) {
+    const conflict = translateWorkerPhoneConflict(err);
+    if (conflict) {
+      throw conflict;
+    }
+    // Unknown error — let it propagate to the centralized error middleware.
+    throw err;
+  }
 }
 
 // --- Verify / transition ----------------------------------------------------

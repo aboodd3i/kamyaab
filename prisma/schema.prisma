@@ -1,7 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Kamyaab — Prisma schema
+// Core models for the MVP marketplace: User, ClientProfile, WorkerProfile,
+// Category, Area.
 
 generator client {
   provider = "prisma-client"
@@ -12,35 +11,55 @@ datasource db {
   provider = "postgresql"
 }
 
+// --- Enums ------------------------------------------------------------------
+
+enum UserRole {
+  CLIENT
+  AGENT
+  ADMIN
+}
+
+enum WorkerStatus {
+  PENDING_APPROVAL
+  APPROVED
+  SUSPENDED
+}
+
+// --- Models -----------------------------------------------------------------
+
 model User {
   id        String   @id @default(uuid())
   phone     String?  @unique
   email     String?  @unique
-  role      String   // "CLIENT" | "AGENT" | "ADMIN"
+  role      UserRole
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  clientProfile ClientProfile?
-  workerProfile WorkerProfile? @relation("UserWorkerProfile")
+  clientProfile  ClientProfile?
+  workerProfile  WorkerProfile?  @relation("UserWorkerProfile")
   createdWorkers WorkerProfile[] @relation("AgentWorkerProfiles")
 }
 
 model ClientProfile {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-  name   String?
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model WorkerProfile {
-  id        String   @id @default(uuid())
-  userId    String?  @unique
-  user      User?    @relation("UserWorkerProfile", fields: [userId], references: [id])
+  id        String       @id @default(uuid())
+  userId    String?      @unique
+  user      User?        @relation("UserWorkerProfile", fields: [userId], references: [id])
   name      String
   phone     String
-  status    String   @default("PENDING_APPROVAL") // PENDING_APPROVAL, APPROVED, SUSPENDED
+  status    WorkerStatus @default(PENDING_APPROVAL)
   agentId   String?
-  agent     User?    @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
-  createdAt DateTime @default(now())
+  agent     User?        @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }
 
 model Category {
@@ -51,6 +70,7 @@ model Category {
 model Area {
   id       String  @id @default(uuid())
   name     String
+  slug     String  @unique
   parentId String?
   parent   Area?   @relation("AreaHierarchy", fields: [parentId], references: [id])
   children Area[]  @relation("AreaHierarchy")

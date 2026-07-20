@@ -26,7 +26,7 @@ router.post('/', async (req: Request, res: Response) => {
         name,
         phone,
         status: 'PENDING_APPROVAL',
-        agentId: req.user.id,
+        agentId: req.user.userId,
       },
     });
 

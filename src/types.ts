@@ -1,47 +1,52 @@
-// API contract stubs — interfaces only, no implementation yet
+/**
+ * API contracts — Zod schemas and TypeScript types.
+ *
+ * Validation schemas live here and are imported by route handlers.
+ */
 
-// POST /auth/otp/request
-export interface OtpRequestBody {
-  phone: string;
-}
+import { z } from 'zod';
 
-export interface OtpRequestResponse {
-  success: boolean;
+// ---------------------------------------------------------------------------
+// Auth: Staff Login (POST /api/v1/auth/login/staff)
+// ---------------------------------------------------------------------------
+
+export const StaffLoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+export type StaffLoginBody = z.infer<typeof StaffLoginSchema>;
+
+export interface StaffLoginResponse {
+  success: true;
+  data: {
+    token: string;
+    role: 'AGENT' | 'ADMIN';
+  };
   message: string;
 }
 
-// POST /auth/otp/verify
-export interface OtpVerifyBody {
-  phone: string;
-  otp: string;
+// ---------------------------------------------------------------------------
+// Auth: Me (GET /api/v1/me)
+// ---------------------------------------------------------------------------
+
+export interface MeResponseData {
+  userId: string;
+  authUserId: string;
+  role: 'CLIENT' | 'AGENT' | 'ADMIN';
+  phone?: string | null;
+  email?: string | null;
 }
 
-export interface OtpVerifyResponse {
-  success: boolean;
-  token?: string;
-  message: string;
-}
+// ---------------------------------------------------------------------------
+// Workers (unchanged — do not modify worker onboarding contracts)
+// ---------------------------------------------------------------------------
 
-// POST /auth/login/staff
-export interface PasswordLoginBody {
-  email: string;
-  password: string;
-}
-
-export interface PasswordLoginResponse {
-  success: boolean;
-  token?: string;
-  role?: string;
-  message: string;
-}
-
-// POST /api/v1/workers
 export interface CreateWorkerBody {
   name: string;
   phone: string;
 }
 
-// PATCH /api/v1/workers/:id/verify
 export interface VerifyWorkerBody {
   status: 'APPROVED' | 'SUSPENDED';
 }

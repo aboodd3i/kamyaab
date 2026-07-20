@@ -1,127 +1,61 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { supabase } from '../lib/supabase';
 import prisma from '../lib/prisma';
-import { OtpRequestBody, OtpVerifyBody, PasswordLoginBody } from '../types';
+import { StaffLoginSchema } from '../types';
+import { errors, ErrorCode, sendSuccess, AppError } from '../lib/errors';
 
 const router = Router();
 
-// POST /auth/otp/request
-router.post('/otp/request', async (req: Request, res: Response) => {
-  const { phone } = req.body as OtpRequestBody;
-
-  if (!phone) {
-    return res.status(400).json({ success: false, message: 'Phone number is required' });
-  }
-
-  const { error } = await supabase.auth.signInWithOtp({
-    phone,
-  });
-
-  if (error) {
-    return res.status(400).json({ success: false, message: error.message });
-  }
-
-  return res.json({ success: true, message: 'OTP sent successfully' });
-});
-
-// POST /auth/otp/verify
-router.post('/otp/verify', async (req: Request, res: Response) => {
-  const { phone, otp } = req.body as OtpVerifyBody;
-
-  if (!phone || !otp) {
-    return res.status(400).json({ success: false, message: 'Phone and OTP are required' });
-  }
-
-  const { data, error } = await supabase.auth.verifyOtp({
-    phone,
-    token: otp,
-    type: 'sms',
-  });
-
-  if (error || !data.user) {
-    return res.status(400).json({ success: false, message: error?.message || 'Invalid OTP' });
-  }
-
-  const supabaseUserId = data.user.id;
-
-  // Sync with Prisma Database
+/**
+ * POST /login/staff
+ *
+ * Staff (AGENT / ADMIN) email-password login via Supabase Auth.
+ * The frontend calls Supabase directly for OTP; this route is only for
+ * staff who need a server-issued role confirmation.
+ *
+ * The user must already exist in PostgreSQL with the correct role and
+ * an `authUserId` linking them to their Supabase Auth account (see
+ * `scripts/seed-auth.ts`).
+ */
+router.post('/login/staff', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let user = await prisma.user.findUnique({
-      where: { phone },
-      include: { clientProfile: true },
-    });
+    const parsed = StaffLoginSchema.safeParse(req.body);
+    if (!parsed.success) {
+      throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Invalid email or password');
+    }
+    const { email, password } = parsed.data;
 
-    if (!user) {
-      // Auto-create a ClientProfile on first successful login if one doesn't exist
-      user = await prisma.user.create({
-        data: {
-          id: supabaseUserId, // use same ID for easier mapping, or let prisma generate
-          phone,
-          role: 'CLIENT',
-          clientProfile: {
-            create: {} // creates an empty client profile
-          }
-        },
-        include: { clientProfile: true }
-      });
+    // Authenticate against Supabase
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error || !data.user) {
+      throw errors.unauthorized(
+        ErrorCode.AUTH_INVALID_CREDENTIALS,
+        error?.message || 'Invalid credentials',
+      );
     }
 
-    return res.json({
-      success: true,
-      token: data.session?.access_token,
-      message: 'Login successful',
-    });
-  } catch (dbError: any) {
-    console.error('Database error during OTP verify:', dbError);
-    return res.status(500).json({ success: false, message: 'Internal server error during user sync' });
-  }
-});
-
-// POST /auth/login/staff
-router.post('/login/staff', async (req: Request, res: Response) => {
-  const { email, password } = req.body as PasswordLoginBody;
-
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'Email and password are required' });
-  }
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error || !data.user) {
-    return res.status(401).json({ success: false, message: error?.message || 'Invalid credentials' });
-  }
-
-  // Get user role from Prisma DB
-  try {
+    // Resolve internal user by the stable Supabase Auth ID
     const dbUser = await prisma.user.findUnique({
-      where: { email },
+      where: { authUserId: data.user.id },
       select: { id: true, role: true },
     });
 
-    if (!dbUser || (dbUser.role !== 'AGENT' && dbUser.role !== 'ADMIN')) {
-      return res.status(403).json({ success: false, message: 'Access denied: not a staff account' });
+    if (!dbUser) {
+      throw errors.unauthorized(ErrorCode.AUTH_USER_NOT_FOUND, 'Staff account not linked');
     }
 
-    // Sync ID if it differs (first login after seed)
-    if (dbUser.id !== data.user.id) {
-      await prisma.user.update({
-        where: { email },
-        data: { id: data.user.id }
-      });
+    if (dbUser.role !== 'AGENT' && dbUser.role !== 'ADMIN') {
+      throw errors.forbidden(ErrorCode.AUTH_FORBIDDEN, 'Not a staff account');
     }
 
-    return res.json({
-      success: true,
-      token: data.session?.access_token,
-      role: dbUser.role,
-      message: 'Staff login successful',
-    });
-  } catch (dbError: any) {
-    console.error('Database error during staff login:', dbError);
-    return res.status(500).json({ success: false, message: 'Internal server error during authorization' });
+    return sendSuccess(
+      res,
+      { token: data.session!.access_token, role: dbUser.role },
+      'Staff login successful',
+    );
+  } catch (err) {
+    next(err);
   }
 });
 

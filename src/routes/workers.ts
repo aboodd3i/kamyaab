@@ -43,7 +43,7 @@ router.patch('/:id/verify', async (req: Request, res: Response) => {
     return res.status(403).json({ success: false, message: 'Forbidden: Only Admins can verify workers' });
   }
 
-  const { id } = req.params;
+  const id = String(req.params.id);
   const { status } = req.body as VerifyWorkerBody;
 
   if (!status || !['APPROVED', 'SUSPENDED'].includes(status)) {

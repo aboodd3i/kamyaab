@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+# Prevent concurrent runs on the same branch
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint, Type-Check, Test, Build
+    runs-on: ubuntu-latest
+
+    env:
+      # Prisma CLI needs DIRECT_URL for config; use a dummy value for CI
+      # since we only validate/generate, not migrate.
+      DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      SUPABASE_URL: https://dummy.supabase.co
+      SUPABASE_ANON_KEY: dummy-anon-key
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Prisma schema formatting
+        run: npx prisma format --check
+
+      - name: Validate Prisma schema
+        run: npx prisma validate
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: TypeScript type checking
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Check for uncommitted changes
+        run: |
+          if ! git diff --check; then
+            echo "::error::Whitespace or merge-conflict marker issues detected"
+            exit 1
+          fi

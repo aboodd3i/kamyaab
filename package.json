@@ -8,10 +8,12 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "vitest run",
+    "test:watch": "vitest",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:format": "prisma format",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "tsx prisma/seed.ts",
     "db:seed": "tsx prisma/seed.ts",
     "seed:auth": "tsx scripts/seed-auth.ts",
     "typecheck": "tsc --noEmit"

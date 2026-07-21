@@ -6,20 +6,39 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  // --- Categories (8 confirmed MVP categories) -------------------------------
-  await prisma.category.createMany({
-    data: [
-      { name: 'Electrician' },
-      { name: 'Plumber' },
-      { name: 'Carpenter' },
-      { name: 'Gardener' },
-      { name: 'Painter' },
-      { name: 'Driver' },
-      { name: 'Tailor' },
-      { name: 'Cook' },
-    ],
-    skipDuplicates: true,
-  });
+  // --- Categories (12 canonical categories) ---------------------------------
+  const canonicalCategories = [
+    'Electrician',
+    'Plumber',
+    'Carpenter',
+    'Painter',
+    'Gardener',
+    'AC Technician',
+    'Appliance Repair Technician',
+    'Mason',
+    'Welder',
+    'Cleaner',
+    'Driver',
+    'General Handyman',
+  ];
+
+  // Create all canonical categories
+  for (const categoryName of canonicalCategories) {
+    await prisma.category.upsert({
+      where: { name: categoryName },
+      update: {}, // No update needed if exists
+      create: { name: categoryName },
+    });
+  }
+
+  // Remove obsolete categories if they exist (Tailor, Cook)
+  // These are not part of the canonical set
+  const obsoleteCategories = ['Tailor', 'Cook'];
+  for (const obsoleteName of obsoleteCategories) {
+    await prisma.category.deleteMany({
+      where: { name: obsoleteName },
+    });
+  }
 
   // --- Karachi area hierarchy ------------------------------------------------
   // Structure: Karachi (root) → districts → areas

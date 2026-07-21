@@ -79,11 +79,15 @@ describe('Seed data — categories', () => {
     'Electrician',
     'Plumber',
     'Carpenter',
-    'Gardener',
     'Painter',
+    'Gardener',
+    'AC Technician',
+    'Appliance Repair Technician',
+    'Mason',
+    'Welder',
+    'Cleaner',
     'Driver',
-    'Tailor',
-    'Cook',
+    'General Handyman',
   ];
 
   for (const category of requiredCategories) {
@@ -92,8 +96,13 @@ describe('Seed data — categories', () => {
     });
   }
 
-  it('uses skipDuplicates for categories (idempotent)', () => {
-    expect(seedContent).toContain('skipDuplicates: true');
+  it('does not include obsolete categories Tailor and Cook in canonical list', () => {
+    expect(seedContent).not.toContain("{ name: 'Tailor' }");
+    expect(seedContent).not.toContain("{ name: 'Cook' }");
+  });
+
+  it('uses upsert for categories (idempotent)', () => {
+    expect(seedContent).toContain('prisma.category.upsert');
   });
 });
 

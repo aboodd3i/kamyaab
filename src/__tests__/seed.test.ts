@@ -79,11 +79,15 @@ describe('Seed data — categories', () => {
     'Electrician',
     'Plumber',
     'Carpenter',
-    'Gardener',
     'Painter',
+    'Gardener',
+    'AC Technician',
+    'Appliance Repair Technician',
+    'Mason',
+    'Welder',
+    'Cleaner',
     'Driver',
-    'Tailor',
-    'Cook',
+    'General Handyman',
   ];
 
   for (const category of requiredCategories) {

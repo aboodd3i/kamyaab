@@ -43,10 +43,43 @@ export interface MeResponseData {
 // ---------------------------------------------------------------------------
 
 /** POST /api/v1/workers — create a worker profile (AGENT only). */
-export const CreateWorkerSchema = z.object({
-  name: z.string().min(1).max(100),
-  phone: z.string().min(1),
-});
+export const CreateWorkerSchema = z
+  .object({
+    name: z.string().min(1).max(100),
+    phone: z.string().min(1),
+    // Week 3 optional fields — all caller-settable, none server-owned
+    cnicNumber: z.string().nullable().optional(),
+    referenceName: z.string().nullable().optional(),
+    referencePhone: z.string().nullable().optional(),
+    identityChecked: z.boolean().optional(),
+    phoneConfirmed: z.boolean().optional(),
+    backgroundChecked: z.boolean().optional(),
+    skillAssessed: z.boolean().optional(),
+    categoryIds: z.array(z.string().min(1)).optional(),
+    serviceAreaIds: z.array(z.string().min(1)).optional(),
+  })
+  .strict()
+  .refine(
+    (data) => {
+      // Reject server-owned fields that callers must never supply
+      const forbidden = [
+        'rating',
+        'ratingCount',
+        'completedJobsCount',
+        'status',
+        'agentId',
+        'userId',
+        'referenceStatus',
+        'referenceVerifiedById',
+        'referenceVerifiedAt',
+        'cnicFrontPath',
+        'cnicBackPath',
+        'suspensionReason',
+      ];
+      return !forbidden.some((key) => key in data);
+    },
+    { message: 'Server-owned fields cannot be set during creation' },
+  );
 
 export type CreateWorkerBody = z.infer<typeof CreateWorkerSchema>;
 

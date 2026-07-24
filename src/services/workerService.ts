@@ -42,6 +42,16 @@ export interface CreateWorkerInput {
   name: string;
   phone: string;
   agentId: string;
+  // Week 3 optional fields
+  cnicNumber?: string | null;
+  referenceName?: string | null;
+  referencePhone?: string | null;
+  identityChecked?: boolean;
+  phoneConfirmed?: boolean;
+  backgroundChecked?: boolean;
+  skillAssessed?: boolean;
+  categoryIds?: string[];
+  serviceAreaIds?: string[];
 }
 
 /**
@@ -54,6 +64,9 @@ export interface CreateWorkerInput {
  *   we translate into a 409 WORKER_PHONE_ALREADY_EXISTS.
  * - Does not require a `userId` — the worker is not a platform user yet.
  * - Records the onboarding agent.
+ * - Week 3: optionally sets CNIC, reference, verification fields, and
+ *   associates categories/areas atomically in a single transaction.
+ *   Status is always PENDING_APPROVAL — callers cannot set it.
  */
 export async function createWorker(input: CreateWorkerInput): Promise<WorkerDTO> {
   const phone = normalizePakistaniPhone(input.phone);
@@ -71,17 +84,62 @@ export async function createWorker(input: CreateWorkerInput): Promise<WorkerDTO>
     );
   }
 
+  // Verify referenced categories exist (before the transaction)
+  if (input.categoryIds !== undefined && input.categoryIds.length > 0) {
+    const existingCats = await prisma.category.findMany({
+      where: { id: { in: input.categoryIds } },
+      select: { id: true },
+    });
+    if (existingCats.length !== new Set(input.categoryIds).size) {
+      throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'One or more category IDs not found');
+    }
+  }
+
+  // Verify referenced areas exist (before the transaction)
+  if (input.serviceAreaIds !== undefined && input.serviceAreaIds.length > 0) {
+    const existingAreas = await prisma.area.findMany({
+      where: { id: { in: input.serviceAreaIds } },
+      select: { id: true },
+    });
+    if (existingAreas.length !== new Set(input.serviceAreaIds).size) {
+      throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'One or more service-area IDs not found');
+    }
+  }
+
+  // Build the create data — status is always PENDING_APPROVAL
+  const createData: Record<string, unknown> = {
+    name: input.name,
+    phone,
+    status: 'PENDING_APPROVAL',
+    agentId: input.agentId,
+  };
+
+  if (input.cnicNumber !== undefined) createData.cnicNumber = input.cnicNumber;
+  if (input.referenceName !== undefined) createData.referenceName = input.referenceName;
+  if (input.referencePhone !== undefined) createData.referencePhone = input.referencePhone;
+  if (input.identityChecked !== undefined) createData.identityChecked = input.identityChecked;
+  if (input.phoneConfirmed !== undefined) createData.phoneConfirmed = input.phoneConfirmed;
+  if (input.backgroundChecked !== undefined) createData.backgroundChecked = input.backgroundChecked;
+  if (input.skillAssessed !== undefined) createData.skillAssessed = input.skillAssessed;
+
+  // Category/area associations
+  if (input.categoryIds !== undefined && input.categoryIds.length > 0) {
+    createData.categories = {
+      create: [...new Set(input.categoryIds)].map((categoryId) => ({ categoryId })),
+    };
+  }
+  if (input.serviceAreaIds !== undefined && input.serviceAreaIds.length > 0) {
+    createData.serviceAreas = {
+      create: [...new Set(input.serviceAreaIds)].map((areaId) => ({ areaId })),
+    };
+  }
+
   // The DB unique constraint is the source of truth.
   // If a concurrent request inserts the same phone between our
   // findUnique and create, Prisma throws P2002 — translate it.
   try {
     const worker = await prisma.workerProfile.create({
-      data: {
-        name: input.name,
-        phone,
-        status: 'PENDING_APPROVAL',
-        agentId: input.agentId,
-      },
+      data: createData as never,
     });
 
     return toDTO(worker);

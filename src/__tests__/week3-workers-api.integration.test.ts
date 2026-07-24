@@ -34,6 +34,7 @@ import { createApp } from '../app';
 import { PrismaClient } from '../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
+import { findForbiddenKey } from '../lib/publicWorkerDto';
 
 // ─── Setup ─────────────────────────────────────────────────────────────────
 
@@ -174,7 +175,7 @@ describe('Week 3 API Integration — Public Worker Search', () => {
 
   it('4. search returns only APPROVED workers', async () => {
     // Create a pending worker — it should NOT appear
-    await createTempWorker({ status: 'PENDING_APPROVAL' });
+    const pendingId = await createTempWorker({ status: 'PENDING_APPROVAL' });
     // Create an approved worker — it SHOULD appear
     const approvedId = await createTempWorker({ status: 'APPROVED' });
 
@@ -183,18 +184,8 @@ describe('Week 3 API Integration — Public Worker Search', () => {
 
     const ids = res.body.data.data.map((w: { id: string }) => w.id);
     expect(ids).toContain(approvedId);
-    // All returned workers should be approved (we can't check status directly
-    // since it's excluded from the DTO, but we know our pending one isn't here)
-    const pendingWorker = tempWorkerIds.find(
-      (id) =>
-        id !== approvedId &&
-        tempWorkerIds.indexOf(id) === tempWorkerIds.indexOf(id),
-    );
-    // The pending worker we created should not be in results
-    // (we can verify by checking that not all temp workers are returned)
-    expect(res.body.data.data.length).toBeLessThanOrEqual(
-      await prisma.workerProfile.count({ where: { status: 'APPROVED' } }),
-    );
+    // The pending worker must NOT appear in search results
+    expect(ids).not.toContain(pendingId);
   });
 
   it('5. search filters by categoryId', async () => {
@@ -249,18 +240,13 @@ describe('Week 3 API Integration — Public Worker Search', () => {
     expect(res.body.data).toHaveProperty('totalPages');
   });
 
-  it('11. search response excludes forbidden sensitive keys', async () => {
+  it('11. search response excludes forbidden sensitive keys (recursive)', async () => {
     const res = await request(app).get('/api/v1/workers');
     expect(res.status).toBe(200);
+    // Use the recursive scanner — checks all workers, all nested objects
     for (const w of res.body.data.data) {
-      expect(w).not.toHaveProperty('phone');
-      expect(w).not.toHaveProperty('cnicNumber');
-      expect(w).not.toHaveProperty('cnicFrontPath');
-      expect(w).not.toHaveProperty('cnicBackPath');
-      expect(w).not.toHaveProperty('email');
-      expect(w).not.toHaveProperty('address');
-      expect(w).not.toHaveProperty('agentId');
-      expect(w).not.toHaveProperty('referencePhone');
+      const forbidden = findForbiddenKey(w);
+      expect(forbidden).toBeNull();
     }
   });
 
@@ -298,7 +284,7 @@ describe('Week 3 API Integration — Public Worker Detail', () => {
     expect(res.status).toBe(404);
   });
 
-  it('17. detail response excludes forbidden sensitive keys', async () => {
+  it('17. detail response excludes forbidden sensitive keys (recursive)', async () => {
     const id = await createTempWorker({
       status: 'APPROVED',
       cnicNumber: `${PREFIX}-cnic`,
@@ -306,13 +292,9 @@ describe('Week 3 API Integration — Public Worker Detail', () => {
     });
     const res = await request(app).get(`/api/v1/workers/${id}`);
     expect(res.status).toBe(200);
-    expect(res.body.data).not.toHaveProperty('phone');
-    expect(res.body.data).not.toHaveProperty('cnicNumber');
-    expect(res.body.data).not.toHaveProperty('cnicFrontPath');
-    expect(res.body.data).not.toHaveProperty('cnicBackPath');
-    expect(res.body.data).not.toHaveProperty('email');
-    expect(res.body.data).not.toHaveProperty('address');
-    expect(res.body.data).not.toHaveProperty('agentId');
+    // Use the recursive scanner — checks all nested objects
+    const forbidden = findForbiddenKey(res.body.data);
+    expect(forbidden).toBeNull();
   });
 
   it('18. detail includes categories as safe summaries', async () => {
@@ -366,5 +348,108 @@ describe('Week 3 API Integration — Public Worker Detail', () => {
       backgroundChecked: false,
       skillAssessed: false,
     });
+  });
+});
+
+describe('Week 3 API Integration — Search ordering and combined filters', () => {
+  it('21. combined categoryId + areaId filter requires both matches', async () => {
+    const catId = await createTempCategory();
+    const areaId = await createTempArea();
+    const workerId = await createTempWorker({ status: 'APPROVED' });
+    await prisma.workerCategory.create({ data: { workerId, categoryId: catId } });
+    await prisma.workerServiceArea.create({ data: { workerId, areaId } });
+
+    // Worker with only the category (not the area) — should NOT appear
+    const workerCatOnly = await createTempWorker({ status: 'APPROVED' });
+    await prisma.workerCategory.create({ data: { workerId: workerCatOnly, categoryId: catId } });
+
+    const res = await request(app).get(`/api/v1/workers?categoryId=${catId}&areaId=${areaId}`);
+    expect(res.status).toBe(200);
+    const ids = res.body.data.data.map((w: { id: string }) => w.id);
+    expect(ids).toContain(workerId);
+    expect(ids).not.toContain(workerCatOnly);
+  });
+
+  it('22. rating ordering — higher rating appears first', async () => {
+    const lowId = await createTempWorker({ status: 'APPROVED', rating: 2.5 });
+    const highId = await createTempWorker({ status: 'APPROVED', rating: 4.8 });
+
+    const res = await request(app).get('/api/v1/workers?limit=50');
+    expect(res.status).toBe(200);
+    const ids = res.body.data.data.map((w: { id: string }) => w.id);
+    const highIdx = ids.indexOf(highId);
+    const lowIdx = ids.indexOf(lowId);
+    expect(highIdx).toBeGreaterThanOrEqual(0);
+    expect(lowIdx).toBeGreaterThanOrEqual(0);
+    expect(highIdx).toBeLessThan(lowIdx);
+  });
+
+  it('23. completedJobsCount tie-break — higher count ranks first', async () => {
+    // Same rating, different completedJobsCount
+    const lowJobsId = await createTempWorker({
+      status: 'APPROVED',
+      rating: 3.0,
+      completedJobsCount: 2,
+    });
+    const highJobsId = await createTempWorker({
+      status: 'APPROVED',
+      rating: 3.0,
+      completedJobsCount: 10,
+    });
+
+    const res = await request(app).get('/api/v1/workers?limit=50');
+    expect(res.status).toBe(200);
+    const ids = res.body.data.data.map((w: { id: string }) => w.id);
+    const highIdx = ids.indexOf(highJobsId);
+    const lowIdx = ids.indexOf(lowJobsId);
+    expect(highIdx).toBeGreaterThanOrEqual(0);
+    expect(lowIdx).toBeGreaterThanOrEqual(0);
+    expect(highIdx).toBeLessThan(lowIdx);
+  });
+
+  it('24. pagination count and results agree', async () => {
+    const res = await request(app).get('/api/v1/workers?page=1&limit=10');
+    expect(res.status).toBe(200);
+    expect(res.body.data.data.length).toBeLessThanOrEqual(res.body.data.limit);
+    const expectedTotalPages = res.body.data.total > 0
+      ? Math.ceil(res.body.data.total / res.body.data.limit)
+      : 0;
+    expect(res.body.data.totalPages).toBe(expectedTotalPages);
+  });
+
+  it('25. out-of-range page returns empty data array', async () => {
+    const res = await request(app).get('/api/v1/workers?page=99999&limit=10');
+    expect(res.status).toBe(200);
+    expect(res.body.data.data).toEqual([]);
+  });
+
+  it('26. WorkerProfile physical mapping works without P2021', async () => {
+    // Creating and querying a worker exercises the physical table name
+    const id = await createTempWorker({ status: 'APPROVED' });
+    const res = await request(app).get(`/api/v1/workers/${id}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.id).toBe(id);
+  });
+
+  it('27. referenceChecked derives from referenceStatus CONFIRMED', async () => {
+    const confirmedId = await createTempWorker({
+      status: 'APPROVED',
+      referenceStatus: 'CONFIRMED',
+    });
+    const res = await request(app).get(`/api/v1/workers/${confirmedId}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.verification.referenceChecked).toBe(true);
+  });
+
+  it('28. referenceChecked is false for non-CONFIRMED states', async () => {
+    for (const status of ['UNVERIFIED', 'CONTACTED', 'FAILED']) {
+      const id = await createTempWorker({
+        status: 'APPROVED',
+        referenceStatus: status,
+      });
+      const res = await request(app).get(`/api/v1/workers/${id}`);
+      expect(res.status).toBe(200);
+      expect(res.body.data.verification.referenceChecked).toBe(false);
+    }
   });
 });

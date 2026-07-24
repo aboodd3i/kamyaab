@@ -34,6 +34,15 @@ router.post(
         name: parsed.data.name,
         phone: parsed.data.phone,
         agentId: req.user!.userId,
+        cnicNumber: parsed.data.cnicNumber,
+        referenceName: parsed.data.referenceName,
+        referencePhone: parsed.data.referencePhone,
+        identityChecked: parsed.data.identityChecked,
+        phoneConfirmed: parsed.data.phoneConfirmed,
+        backgroundChecked: parsed.data.backgroundChecked,
+        skillAssessed: parsed.data.skillAssessed,
+        categoryIds: parsed.data.categoryIds,
+        serviceAreaIds: parsed.data.serviceAreaIds,
       });
 
       return sendSuccess(res, worker, 'Worker profile created pending approval', 201);

@@ -104,6 +104,25 @@ describe('Seed data — categories', () => {
   it('uses upsert for categories (idempotent)', () => {
     expect(seedContent).toContain('prisma.category.upsert');
   });
+
+  it('checks for worker relationships before deleting obsolete categories', () => {
+    expect(seedContent).toContain('include: { workers: true }');
+    expect(seedContent).toContain('category.workers.length === 0');
+    expect(seedContent).toContain('console.warn');
+  });
+
+  it('does not use deleteMany for category cleanup', () => {
+    expect(seedContent).not.toContain('prisma.category.deleteMany');
+  });
+
+  it('uses delete with where clause for unreferenced categories', () => {
+    expect(seedContent).toContain('prisma.category.delete({');
+    expect(seedContent).toContain('where: { id: category.id }');
+  });
+
+  it('retains referenced obsolete categories', () => {
+    expect(seedContent).toContain('Retaining obsolete category');
+  });
 });
 
 describe('Seed data — areas', () => {

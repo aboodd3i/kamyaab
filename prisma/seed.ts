@@ -31,13 +31,29 @@ async function main() {
     });
   }
 
-  // Remove obsolete categories if they exist (Tailor, Cook)
-  // These are not part of the canonical set
+  // Safely remove obsolete categories only if they have no worker relationships
   const obsoleteCategories = ['Tailor', 'Cook'];
   for (const obsoleteName of obsoleteCategories) {
-    await prisma.category.deleteMany({
+    // Check if category exists
+    const category = await prisma.category.findUnique({
       where: { name: obsoleteName },
+      include: { workers: true }, // Check WorkerCategory relationships
     });
+
+    if (category) {
+      if (category.workers.length === 0) {
+        // Safe to delete - no worker relationships
+        await prisma.category.delete({
+          where: { id: category.id },
+        });
+        console.log(`Deleted unreferenced obsolete category: ${obsoleteName}`);
+      } else {
+        // Category has worker relationships - keep it
+        console.warn(
+          `Retaining obsolete category "${obsoleteName}" because it has ${category.workers.length} worker relationship(s)`
+        );
+      }
+    }
   }
 
   // --- Karachi area hierarchy ------------------------------------------------

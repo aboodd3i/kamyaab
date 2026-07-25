@@ -2,6 +2,9 @@ import express, { Request, Response } from 'express';
 import authRoutes from './routes/auth';
 import meRoutes from './routes/me';
 import workerRoutes from './routes/workers';
+import publicWorkerRoutes from './routes/publicWorkers';
+import categoryRoutes from './routes/categories';
+import areaRoutes from './routes/areas';
 import { errorMiddleware } from './lib/errors';
 
 /**
@@ -24,7 +27,14 @@ export function createApp() {
     res.json({ message: 'pong', status: 'ok' });
   });
 
-  // API routes
+  // Public catalog routes (no auth required)
+  app.use('/api/v1/categories', categoryRoutes);
+  app.use('/api/v1/areas', areaRoutes);
+
+  // Public worker discovery routes (no auth required)
+  app.use('/api/v1/workers', publicWorkerRoutes);
+
+  // API routes (auth required)
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/me', meRoutes);
   app.use('/api/v1/workers', workerRoutes);

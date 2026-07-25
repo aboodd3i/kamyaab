@@ -25,6 +25,13 @@ enum WorkerStatus {
   SUSPENDED
 }
 
+enum ReferenceCheckStatus {
+  UNVERIFIED
+  CONTACTED
+  CONFIRMED
+  FAILED
+}
+
 // --- Models -----------------------------------------------------------------
 
 model User {
@@ -39,6 +46,9 @@ model User {
   clientProfile  ClientProfile?
   workerProfile  WorkerProfile?  @relation("UserWorkerProfile")
   createdWorkers WorkerProfile[] @relation("AgentWorkerProfiles")
+
+  // Week 3: Reference verification relationships
+  verifiedWorkerReferences WorkerProfile[] @relation("ReferenceVerifier")
 }
 
 model ClientProfile {
@@ -51,22 +61,56 @@ model ClientProfile {
 }
 
 model WorkerProfile {
-  id               String       @id @default(uuid())
-  userId           String?      @unique
-  user             User?        @relation("UserWorkerProfile", fields: [userId], references: [id])
-  name             String
-  phone            String       @unique
-  status           WorkerStatus @default(PENDING_APPROVAL)
-  suspensionReason String?
-  agentId          String?
-  agent            User?        @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  id                   String               @id @default(uuid())
+  userId               String?              @unique
+  user                 User?                @relation("UserWorkerProfile", fields: [userId], references: [id])
+  name                 String
+  phone                String               @unique
+  status               WorkerStatus         @default(PENDING_APPROVAL)
+  suspensionReason     String?
+  agentId              String?
+  agent                User?                @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
+
+  // Week 3: CNIC and verification fields
+  cnicNumber           String?              @unique
+  cnicFrontPath        String?
+  cnicBackPath         String?
+
+  // Week 3: Reference check
+  referenceName        String?
+  referencePhone       String?
+  referenceStatus      ReferenceCheckStatus @default(UNVERIFIED)
+  referenceVerifiedById String?
+  referenceVerifiedBy  User?                @relation("ReferenceVerifier", fields: [referenceVerifiedById], references: [id], onDelete: SetNull)
+  referenceVerifiedAt  DateTime?
+
+  // Week 3: Verification flags
+  identityChecked      Boolean              @default(false)
+  phoneConfirmed       Boolean              @default(false)
+  backgroundChecked    Boolean              @default(false)
+  skillAssessed        Boolean              @default(false)
+
+  // Week 3: Rating and performance
+  rating               Decimal               @default(0) @db.Decimal(3, 2)
+  ratingCount          Int                  @default(0)
+  completedJobsCount   Int                  @default(0)
+
+  // Week 3: Search relationships
+  categories           WorkerCategory[]
+  serviceAreas         WorkerServiceArea[]
+
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  @@index([status, rating(desc), completedJobsCount(desc)])
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String @unique
+  id      String           @id @default(uuid())
+  name    String           @unique
+
+  // Week 3: Worker relationships
+  workers WorkerCategory[]
 }
 
 model Area {
@@ -76,4 +120,31 @@ model Area {
   parentId String?
   parent   Area?   @relation("AreaHierarchy", fields: [parentId], references: [id])
   children Area[]  @relation("AreaHierarchy")
+
+  // Week 3: Worker relationships
+  workers  WorkerServiceArea[]
+}
+
+model WorkerCategory {
+  workerId   String
+  categoryId String
+
+  worker   WorkerProfile @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  category Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([workerId, categoryId])
+  @@index([categoryId])
+  @@map("worker_categories")
+}
+
+model WorkerServiceArea {
+  workerId String
+  areaId   String
+
+  worker WorkerProfile @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  area   Area          @relation(fields: [areaId], references: [id], onDelete: Cascade)
+
+  @@id([workerId, areaId])
+  @@index([areaId])
+  @@map("worker_service_areas")
 }

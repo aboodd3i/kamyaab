@@ -19,7 +19,7 @@ The backend uses Express.js with TypeScript, Prisma ORM, PostgreSQL (via Supabas
 
 ---
 
-## Current MVP Scope (Week 1–2)
+## Current Scope (Week 1–3)
 
 | Feature | Status |
 |---|---|
@@ -37,6 +37,13 @@ The backend uses Express.js with TypeScript, Prisma ORM, PostgreSQL (via Supabas
 | Centralized error handling | ✅ Done |
 | Automated tests | ✅ Done |
 | CI pipeline | ✅ Done |
+| Public catalog (categories, areas) | ✅ Week 3 |
+| Public worker search & discovery | ✅ Week 3 |
+| Public worker detail | ✅ Week 3 |
+| Worker profile update (agent/admin) | ✅ Week 3 |
+| CNIC document upload | ✅ Week 3 |
+| Sensitive-data exclusion (public DTO) | ✅ Week 3 |
+| PostgreSQL integration tests | ✅ Week 3 |
 
 ---
 
@@ -183,19 +190,76 @@ npm run test:watch
 npm run typecheck
 ```
 
-Tests use **Vitest** and **Supertest**. Supabase and Prisma calls are mocked — no real database or Supabase project is required for unit tests.
+Tests use **Vitest** and **Supertest**. Unit tests mock Supabase and Prisma — no real database is required.
+
+**Integration tests** require a real PostgreSQL database:
+
+```bash
+# Set the gate variable and run both integration suites
+RUN_DB_INTEGRATION_TESTS=true npm run test:integration
+
+# Or run everything
+RUN_DB_INTEGRATION_TESTS=true npm run test:all
+```
 
 ---
 
 ## Endpoint Summary
 
+### Public (no auth)
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/ping` | Health check |
+| `GET` | `/api/v1/categories` | List all categories (name asc) |
+| `GET` | `/api/v1/areas` | List all areas with hierarchy |
+| `GET` | `/api/v1/workers` | Search approved workers (filters, pagination) |
+| `GET` | `/api/v1/workers/:id` | Worker detail (approved only, 404 otherwise) |
+
+### Authenticated
+
 | Method | Path | Auth | Description |
 |---|---|---|---|
-| `GET` | `/ping` | None | Health check |
 | `POST` | `/api/v1/auth/login/staff` | None | Staff email/password login |
 | `GET` | `/api/v1/me` | Bearer JWT | Get identity, bootstrap client profile |
 | `POST` | `/api/v1/workers` | AGENT | Create a worker profile |
+| `PATCH` | `/api/v1/workers/:id` | AGENT/ADMIN | Update worker profile |
 | `PATCH` | `/api/v1/workers/:id/verify` | ADMIN | Approve or suspend a worker |
+| `POST` | `/api/v1/workers/:id/documents` | AGENT/ADMIN | Upload CNIC documents |
+
+### Public Worker Search Query Parameters
+
+| Param | Type | Default | Constraints |
+|---|---|---|---|
+| `categoryId` | string | — | Optional filter |
+| `areaId` | string | — | Optional filter |
+| `page` | number | 1 | ≥ 1 |
+| `limit` | number | 20 | 1–50 |
+
+Results are ordered by `rating DESC, completedJobsCount DESC, id ASC`.
+
+### Public Worker Response Shape
+
+The public worker DTO uses an explicit allowlist — sensitive fields (phone, CNIC, addresses, agent assignments, reference contact details, audit fields) are never included:
+
+```json
+{
+  "id": "...",
+  "name": "...",
+  "rating": 4.5,
+  "ratingCount": 10,
+  "completedJobsCount": 5,
+  "verification": {
+    "identityChecked": true,
+    "phoneConfirmed": true,
+    "referenceChecked": false,
+    "backgroundChecked": false,
+    "skillAssessed": true
+  },
+  "categories": [{ "id": "...", "name": "..." }],
+  "serviceAreas": [{ "id": "...", "name": "...", "parentId": null }]
+}
+```
 
 ### Error Format
 
@@ -230,16 +294,13 @@ Roles are always read from PostgreSQL — never from JWT claims or request bodie
 - **No rate limiting** — not yet implemented on auth endpoints.
 - **No re-activation** — suspended workers cannot be re-approved in Week 2.
 - **No worker self-registration** — workers must be onboarded by an agent.
-- **No integration tests with real DB** — tests mock Prisma; no end-to-end DB tests yet.
+- **No rate limiting** — not yet implemented on auth endpoints.
 - **Phone race condition** — concurrent duplicate phone creation could hit the DB unique constraint (returns 500 instead of 409).
 
 ---
 
-## Features Deferred to Week 3 / Phase 2
+## Features Deferred to Phase 2
 
-- CNIC (national ID) document uploads
-- Reference checks for workers
-- Public worker search and discovery
 - Ratings and reviews
 - Worker availability/scheduling
 - Service request/booking flow

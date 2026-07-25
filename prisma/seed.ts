@@ -6,24 +6,54 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  // --- Categories (12 confirmed MVP categories, per architecture doc) --------
-  await prisma.category.createMany({
-    data: [
-      { name: 'Electrician' },
-      { name: 'Plumber' },
-      { name: 'Carpenter' },
-      { name: 'Painter' },
-      { name: 'Gardener' },
-      { name: 'AC Technician' },
-      { name: 'Appliance Repair Technician' },
-      { name: 'Mason' },
-      { name: 'Welder' },
-      { name: 'Cleaner' },
-      { name: 'Driver' },
-      { name: 'General Handyman' },
-    ],
-    skipDuplicates: true,
-  });
+  // --- Categories (12 canonical categories) ---------------------------------
+  const canonicalCategories = [
+    'Electrician',
+    'Plumber',
+    'Carpenter',
+    'Painter',
+    'Gardener',
+    'AC Technician',
+    'Appliance Repair Technician',
+    'Mason',
+    'Welder',
+    'Cleaner',
+    'Driver',
+    'General Handyman',
+  ];
+
+  // Create all canonical categories
+  for (const categoryName of canonicalCategories) {
+    await prisma.category.upsert({
+      where: { name: categoryName },
+      update: {}, // No update needed if exists
+      create: { name: categoryName },
+    });
+  }
+
+  // Safely remove obsolete categories only if they have no worker relationships
+  const obsoleteCategories = ['Tailor', 'Cook'];
+  for (const obsoleteName of obsoleteCategories) {
+    const category = await prisma.category.findUnique({
+      where: { name: obsoleteName },
+      include: { workers: true },
+    });
+
+    if (category) {
+      if (category.workers.length === 0) {
+        await prisma.category.delete({
+          where: { id: category.id },
+        });
+        console.log(`Deleted unreferenced obsolete category: ${obsoleteName}`);
+      } else {
+        console.warn(
+          `Retaining obsolete category "${obsoleteName}" because it has ${category.workers.length} worker relationship(s)`
+        );
+      }
+    }
+  }
+
+
   // --- Karachi area hierarchy ------------------------------------------------
   // Structure: Karachi (root) → districts → areas
   // Using slugs as stable unique identifiers for parent-child linking.

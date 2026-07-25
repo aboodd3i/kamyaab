@@ -96,8 +96,32 @@ describe('Seed data — categories', () => {
     });
   }
 
-  it('uses skipDuplicates for categories (idempotent)', () => {
-    expect(seedContent).toContain('skipDuplicates: true');
+  it('does not include obsolete categories Tailor and Cook in canonical list', () => {
+    expect(seedContent).not.toContain("{ name: 'Tailor' }");
+    expect(seedContent).not.toContain("{ name: 'Cook' }");
+  });
+
+  it('uses upsert for categories (idempotent)', () => {
+    expect(seedContent).toContain('prisma.category.upsert');
+  });
+
+  it('checks for worker relationships before deleting obsolete categories', () => {
+    expect(seedContent).toContain('include: { workers: true }');
+    expect(seedContent).toContain('category.workers.length === 0');
+    expect(seedContent).toContain('console.warn');
+  });
+
+  it('does not use deleteMany for category cleanup', () => {
+    expect(seedContent).not.toContain('prisma.category.deleteMany');
+  });
+
+  it('uses delete with where clause for unreferenced categories', () => {
+    expect(seedContent).toContain('prisma.category.delete({');
+    expect(seedContent).toContain('where: { id: category.id }');
+  });
+
+  it('retains referenced obsolete categories', () => {
+    expect(seedContent).toContain('Retaining obsolete category');
   });
 });
 

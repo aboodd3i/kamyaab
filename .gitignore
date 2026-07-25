@@ -7,3 +7,7 @@ kamyaab_implementation_plan.md
 
 # Generated Prisma client — produced by `prisma generate`
 src/generated/
+
+# Project docs to ignore
+"Kamyaab_Backend_Roadmap_Updated (1).pdf"
+*.pdf

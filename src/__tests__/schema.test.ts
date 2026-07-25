@@ -36,12 +36,12 @@ describe('Week 3 Database Schema - Static Validation', () => {
 
   describe('WorkerProfile authoritative reference fields', () => {
     it('should have reference fields on WorkerProfile', () => {
-      expect(schemaContent).toContain('referenceName        String?');
-      expect(schemaContent).toContain('referencePhone       String?');
-      expect(schemaContent).toContain('referenceStatus      ReferenceCheckStatus @default(UNVERIFIED)');
-      expect(schemaContent).toContain('referenceVerifiedById String?');
-      expect(schemaContent).toContain('referenceVerifiedBy  User?');
-      expect(schemaContent).toContain('referenceVerifiedAt  DateTime?');
+      expect(schemaContent).toMatch(/referenceName\s+String\?/);
+      expect(schemaContent).toMatch(/referencePhone\s+String\?/);
+      expect(schemaContent).toMatch(/referenceStatus\s+ReferenceCheckStatus\s+@default\(UNVERIFIED\)/);
+      expect(schemaContent).toMatch(/referenceVerifiedById\s+String\?/);
+      expect(schemaContent).toMatch(/referenceVerifiedBy\s+User\?/);
+      expect(schemaContent).toMatch(/referenceVerifiedAt\s+DateTime\?/);
     });
 
     it('should NOT have WorkerReference model', () => {

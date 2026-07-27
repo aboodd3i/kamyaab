@@ -12,8 +12,10 @@ import type {
 } from '../types';
 
 /** Create a new job request draft. */
-export async function createDraft(clientId: string, input: CreateJobRequestInput) {
-  // Validate category and area exist
+export async function createDraft(userId: string, input: CreateJobRequestInput) {
+  const clientProfile = await prisma.clientProfile.findUnique({ where: { userId } });
+  if (!clientProfile) throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Client profile not found');
+
   const [category, area] = await Promise.all([
     prisma.category.findUnique({ where: { id: input.categoryId } }),
     prisma.area.findUnique({ where: { id: input.areaId } }),
@@ -24,7 +26,7 @@ export async function createDraft(clientId: string, input: CreateJobRequestInput
 
   const draft = await prisma.jobRequest.create({
     data: {
-      clientId,
+      clientId: clientProfile.id,
       categoryId: input.categoryId,
       areaId: input.areaId,
       description: input.description,
@@ -45,15 +47,18 @@ export async function createDraft(clientId: string, input: CreateJobRequestInput
 /** Update an existing draft. */
 export async function updateDraft(
   jobRequestId: string,
-  clientId: string,
+  userId: string,
   input: UpdateJobRequestInput
 ) {
+  const clientProfile = await prisma.clientProfile.findUnique({ where: { userId } });
+  if (!clientProfile) throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Client profile not found');
+
   const job = await prisma.jobRequest.findUnique({ where: { id: jobRequestId } });
 
   if (!job) {
     throw errors.notFound(ErrorCode.RESOURCE_NOT_FOUND, 'Job request not found');
   }
-  if (job.clientId !== clientId) {
+  if (job.clientId !== clientProfile.id) {
     throw errors.forbidden(ErrorCode.AUTH_FORBIDDEN, 'You can only update your own job requests');
   }
   if (job.status !== 'DRAFT') {
@@ -88,9 +93,12 @@ export async function updateDraft(
  */
 export async function submitJobRequest(
   jobRequestId: string,
-  clientId: string,
+  userId: string,
   input: SubmitJobRequestInput
 ) {
+  const clientProfile = await prisma.clientProfile.findUnique({ where: { userId } });
+  if (!clientProfile) throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Client profile not found');
+
   const job = await prisma.jobRequest.findUnique({
     where: { id: jobRequestId },
     include: { client: { include: { user: true } } },
@@ -99,7 +107,7 @@ export async function submitJobRequest(
   if (!job) {
     throw errors.notFound(ErrorCode.RESOURCE_NOT_FOUND, 'Job request not found');
   }
-  if (job.clientId !== clientId) {
+  if (job.clientId !== clientProfile.id) {
     throw errors.forbidden(ErrorCode.AUTH_FORBIDDEN, 'You can only submit your own job requests');
   }
   if (job.status !== 'DRAFT') {
@@ -176,9 +184,12 @@ export async function submitJobRequest(
 }
 
 /** Get all job requests for a client. */
-export async function getMyJobs(clientId: string) {
+export async function getMyJobs(userId: string) {
+  const clientProfile = await prisma.clientProfile.findUnique({ where: { userId } });
+  if (!clientProfile) throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Client profile not found');
+
   return prisma.jobRequest.findMany({
-    where: { clientId },
+    where: { clientId: clientProfile.id },
     include: {
       category: { select: { id: true, name: true } },
       area: { select: { id: true, name: true } },

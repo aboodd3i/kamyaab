@@ -72,11 +72,10 @@ export async function respondToInvitation(
         },
       });
 
-      const newBooking = await tx.booking.create({
+const newBooking = await tx.booking.create({
         data: {
           jobRequestId: jobRequest.id,
           invitationId: invitationId,
-          clientId: jobRequest.clientId,
           workerId: worker.id,
           clientPhone: jobRequest.client.user.phone || '', // Release contact
           workerPhone: worker.phone,           // Release contact

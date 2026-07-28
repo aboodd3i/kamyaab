@@ -258,7 +258,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Worker 
   });
 });
 
-describe('Week 3 API Integration — Public Worker Detail', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Worker Detail', () => {
   it('13. GET /api/v1/workers/:id returns 200 for approved worker', async () => {
     const id = await createTempWorker({ status: 'APPROVED' });
     const res = await request(app).get(`/api/v1/workers/${id}`);
@@ -350,7 +350,7 @@ describe('Week 3 API Integration — Public Worker Detail', () => {
   });
 });
 
-describe('Week 3 API Integration — Search ordering and combined filters', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Search ordering and combined filters', () => {
   it('21. combined categoryId + areaId filter requires both matches', async () => {
     const catId = await createTempCategory();
     const areaId = await createTempArea();

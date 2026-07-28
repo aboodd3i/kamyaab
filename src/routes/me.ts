@@ -27,6 +27,10 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
     const token = authHeader.split(' ')[1];
 
+    if (!supabase) {
+      throw errors.unauthorized(ErrorCode.AUTH_INVALID_TOKEN, 'Auth service not configured');
+    }
+
     // Verify the JWT with Supabase
     const { data: { user: authUser }, error } = await supabase.auth.getUser(token);
 

@@ -20,10 +20,9 @@ const RUN_GATE = process.env.RUN_DB_INTEGRATION_TESTS === 'true';
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 if (!RUN_GATE || IS_PROD) {
-  console.error(
+  console.log(
     'Integration tests skipped: set RUN_DB_INTEGRATION_TESTS=true and ensure NODE_ENV is not production.'
   );
-  process.exit(1);
 }
 
 // ─── Imports (only loaded after gate passes) ───────────────────────────────
@@ -52,62 +51,6 @@ const tempWorkerIds: string[] = [];
 const tempCategoryIds: string[] = [];
 /** Collects IDs of all temporary areas created. */
 const tempAreaIds: string[] = [];
-
-beforeAll(async () => {
-  await rawClient.connect();
-});
-
-afterAll(async () => {
-  // Clean up all temporary records in reverse dependency order.
-  // Use raw SQL to avoid Prisma relation complications during teardown.
-
-  // 1. Delete join-table rows for temp workers
-  if (tempWorkerIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "worker_categories" WHERE "workerId" = ANY($1::text[])`,
-      [tempWorkerIds]
-    );
-    await rawClient.query(
-      `DELETE FROM "worker_service_areas" WHERE "workerId" = ANY($1::text[])`,
-      [tempWorkerIds]
-    );
-  }
-
-  // 2. Delete temp workers
-  if (tempWorkerIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "WorkerProfile" WHERE "id" = ANY($1::text[])`,
-      [tempWorkerIds]
-    );
-  }
-
-  // 3. Delete temp categories
-  if (tempCategoryIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "Category" WHERE "id" = ANY($1::text[])`,
-      [tempCategoryIds]
-    );
-  }
-
-  // 4. Delete temp areas
-  if (tempAreaIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "Area" WHERE "id" = ANY($1::text[])`,
-      [tempAreaIds]
-    );
-  }
-
-  // 5. Delete temp users (workers may have FK references, so delete last)
-  if (tempUserIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "User" WHERE "id" = ANY($1::text[])`,
-      [tempUserIds]
-    );
-  }
-
-  await rawClient.end();
-  await prisma.$disconnect();
-});
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -166,7 +109,63 @@ async function createTempArea(): Promise<string> {
 
 // ─── Tests ─────────────────────────────────────────────────────────────────
 
-describe('Week 3 PostgreSQL Integration — WorkerProfile Schema', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 PostgreSQL Integration — WorkerProfile Schema', () => {
+  beforeAll(async () => {
+    await rawClient.connect();
+  });
+
+  afterAll(async () => {
+    // Clean up all temporary records in reverse dependency order.
+    // Use raw SQL to avoid Prisma relation complications during teardown.
+
+    // 1. Delete join-table rows for temp workers
+    if (tempWorkerIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "worker_categories" WHERE "workerId" = ANY($1::text[])`,
+        [tempWorkerIds]
+      );
+      await rawClient.query(
+        `DELETE FROM "worker_service_areas" WHERE "workerId" = ANY($1::text[])`,
+        [tempWorkerIds]
+      );
+    }
+
+    // 2. Delete temp workers
+    if (tempWorkerIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "WorkerProfile" WHERE "id" = ANY($1::text[])`,
+        [tempWorkerIds]
+      );
+    }
+
+    // 3. Delete temp categories
+    if (tempCategoryIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "Category" WHERE "id" = ANY($1::text[])`,
+        [tempCategoryIds]
+      );
+    }
+
+    // 4. Delete temp areas
+    if (tempAreaIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "Area" WHERE "id" = ANY($1::text[])`,
+        [tempAreaIds]
+      );
+    }
+
+    // 5. Delete temp users (workers may have FK references, so delete last)
+    if (tempUserIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "User" WHERE "id" = ANY($1::text[])`,
+        [tempUserIds]
+      );
+    }
+
+    await rawClient.end();
+    await prisma.$disconnect();
+  });
+
   describe('Basic CRUD and table mapping', () => {
     it('1. should create a WorkerProfile using Week 1–2 required fields', async () => {
       const id = await createTempWorker();

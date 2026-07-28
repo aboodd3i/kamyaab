@@ -21,10 +21,9 @@ const RUN_GATE = process.env.RUN_DB_INTEGRATION_TESTS === 'true';
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 if (!RUN_GATE || IS_PROD) {
-  console.error(
+  console.log(
     'Integration tests skipped: set RUN_DB_INTEGRATION_TESTS=true and ensure NODE_ENV is not production.'
   );
-  process.exit(1);
 }
 
 // ─── Imports (only loaded after gate passes) ───────────────────────────────
@@ -51,51 +50,6 @@ const tempUserIds: string[] = [];
 const tempWorkerIds: string[] = [];
 const tempCategoryIds: string[] = [];
 const tempAreaIds: string[] = [];
-
-beforeAll(async () => {
-  await rawClient.connect();
-});
-
-afterAll(async () => {
-  // Clean up all temporary records in reverse dependency order.
-  if (tempWorkerIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "worker_categories" WHERE "workerId" = ANY($1::text[])`,
-      [tempWorkerIds],
-    );
-    await rawClient.query(
-      `DELETE FROM "worker_service_areas" WHERE "workerId" = ANY($1::text[])`,
-      [tempWorkerIds],
-    );
-  }
-  if (tempWorkerIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "WorkerProfile" WHERE "id" = ANY($1::text[])`,
-      [tempWorkerIds],
-    );
-  }
-  if (tempCategoryIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "Category" WHERE "id" = ANY($1::text[])`,
-      [tempCategoryIds],
-    );
-  }
-  if (tempAreaIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "Area" WHERE "id" = ANY($1::text[])`,
-      [tempAreaIds],
-    );
-  }
-  if (tempUserIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "User" WHERE "id" = ANY($1::text[])`,
-      [tempUserIds],
-    );
-  }
-
-  await rawClient.end();
-  await prisma.$disconnect();
-});
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -137,7 +91,52 @@ async function createTempWorker(overrides: Record<string, unknown> = {}): Promis
 
 // ─── Tests ─────────────────────────────────────────────────────────────────
 
-describe('Week 3 API Integration — Public Catalog', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Catalog and Worker Search', () => {
+  beforeAll(async () => {
+    await rawClient.connect();
+  });
+
+  afterAll(async () => {
+    // Clean up all temporary records in reverse dependency order.
+    if (tempWorkerIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "worker_categories" WHERE "workerId" = ANY($1::text[])`,
+        [tempWorkerIds],
+      );
+      await rawClient.query(
+        `DELETE FROM "worker_service_areas" WHERE "workerId" = ANY($1::text[])`,
+        [tempWorkerIds],
+      );
+    }
+    if (tempWorkerIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "WorkerProfile" WHERE "id" = ANY($1::text[])`,
+        [tempWorkerIds],
+      );
+    }
+    if (tempCategoryIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "Category" WHERE "id" = ANY($1::text[])`,
+        [tempCategoryIds],
+      );
+    }
+    if (tempAreaIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "Area" WHERE "id" = ANY($1::text[])`,
+        [tempAreaIds],
+      );
+    }
+    if (tempUserIds.length > 0) {
+      await rawClient.query(
+        `DELETE FROM "User" WHERE "id" = ANY($1::text[])`,
+        [tempUserIds],
+      );
+    }
+
+    await rawClient.end();
+    await prisma.$disconnect();
+  });
+
   it('1. GET /api/v1/categories returns 200 with safe fields', async () => {
     const res = await request(app).get('/api/v1/categories');
     expect(res.status).toBe(200);

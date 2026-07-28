@@ -137,6 +137,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Catalog
     await prisma.$disconnect();
   });
 
+  describe('Week 3 API Integration — Public Catalog', () => {
   it('1. GET /api/v1/categories returns 200 with safe fields', async () => {
     const res = await request(app).get('/api/v1/categories');
     expect(res.status).toBe(200);
@@ -451,4 +452,5 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Search orderin
       expect(res.body.data.verification.referenceChecked).toBe(false);
     }
   });
+});
 });

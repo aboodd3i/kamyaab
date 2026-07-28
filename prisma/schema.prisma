@@ -155,7 +155,6 @@ model WorkerProfile {
   targetedJobRequests JobRequest[]    @relation("TargetWorker")
   invitations         JobInvitation[]
   bookings            Booking[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -183,7 +182,6 @@ model Area {
 
   // Week 3: Worker relationships
   workers WorkerServiceArea[]
-
   // Week 4: Job requests in this area
   jobRequests JobRequest[]
 }

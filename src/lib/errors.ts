@@ -33,6 +33,9 @@ export const ErrorCode = {
 
   // Internal
   INTERNAL_ERROR: 'INTERNAL_ERROR',
+  
+  // Job / Generic State
+  INVALID_STATE_TRANSITION: 'INVALID_STATE_TRANSITION',
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

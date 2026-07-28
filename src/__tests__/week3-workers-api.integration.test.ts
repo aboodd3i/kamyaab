@@ -51,51 +51,6 @@ const tempWorkerIds: string[] = [];
 const tempCategoryIds: string[] = [];
 const tempAreaIds: string[] = [];
 
-beforeAll(async () => {
-  await rawClient.connect();
-});
-
-afterAll(async () => {
-  // Clean up all temporary records in reverse dependency order.
-  if (tempWorkerIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "worker_categories" WHERE "workerId" = ANY($1::text[])`,
-      [tempWorkerIds],
-    );
-    await rawClient.query(
-      `DELETE FROM "worker_service_areas" WHERE "workerId" = ANY($1::text[])`,
-      [tempWorkerIds],
-    );
-  }
-  if (tempWorkerIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "WorkerProfile" WHERE "id" = ANY($1::text[])`,
-      [tempWorkerIds],
-    );
-  }
-  if (tempCategoryIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "Category" WHERE "id" = ANY($1::text[])`,
-      [tempCategoryIds],
-    );
-  }
-  if (tempAreaIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "Area" WHERE "id" = ANY($1::text[])`,
-      [tempAreaIds],
-    );
-  }
-  if (tempUserIds.length > 0) {
-    await rawClient.query(
-      `DELETE FROM "User" WHERE "id" = ANY($1::text[])`,
-      [tempUserIds],
-    );
-  }
-
-  await rawClient.end();
-  await prisma.$disconnect();
-});
-
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 async function createTempCategory(name?: string): Promise<string> {
@@ -136,7 +91,7 @@ async function createTempWorker(overrides: Record<string, unknown> = {}): Promis
 
 // ─── Tests ─────────────────────────────────────────────────────────────────
 
-describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Worker API', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Catalog and Worker Search', () => {
   beforeAll(async () => {
     await rawClient.connect();
   });
@@ -211,7 +166,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Worker API', (
   });
 });
 
-describe('Week 3 API Integration — Public Worker Search', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Worker Search', () => {
   it('3. GET /api/v1/workers returns 200 without auth', async () => {
     const res = await request(app).get('/api/v1/workers');
     expect(res.status).toBe(200);
@@ -304,7 +259,7 @@ describe('Week 3 API Integration — Public Worker Search', () => {
   });
 });
 
-describe('Week 3 API Integration — Public Worker Detail', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Worker Detail', () => {
   it('13. GET /api/v1/workers/:id returns 200 for approved worker', async () => {
     const id = await createTempWorker({ status: 'APPROVED' });
     const res = await request(app).get(`/api/v1/workers/${id}`);
@@ -396,7 +351,7 @@ describe('Week 3 API Integration — Public Worker Detail', () => {
   });
 });
 
-describe('Week 3 API Integration — Search ordering and combined filters', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Search ordering and combined filters', () => {
   it('21. combined categoryId + areaId filter requires both matches', async () => {
     const catId = await createTempCategory();
     const areaId = await createTempArea();

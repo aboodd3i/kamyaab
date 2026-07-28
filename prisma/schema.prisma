@@ -1,6 +1,6 @@
 // Kamyaab — Prisma schema
 // Core models for the MVP marketplace: User, ClientProfile, WorkerProfile,
-// Category, Area.
+// Category, Area, and Week 4: JobRequest, JobInvitation, Booking.
 
 generator client {
   provider = "prisma-client"
@@ -32,6 +32,55 @@ enum ReferenceCheckStatus {
   FAILED
 }
 
+// Week 4: Job request type — specific worker (Flow A) or open job (Flow B, Week 5)
+enum JobRequestType {
+  SPECIFIC_WORKER
+  OPEN
+}
+
+// Week 4: Job request lifecycle
+// DRAFT            — saved but not yet submitted
+// WORKER_CONTACTED — submitted; invitation sent to target worker
+// ACCEPTED         — worker accepted; booking created
+// EXPIRED          — 24-hour window elapsed with no response
+// CANCELLED        — client cancelled before acceptance
+enum JobRequestStatus {
+  DRAFT
+  WORKER_CONTACTED
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
+// Week 4: How urgently the client needs the work done
+enum UrgencyLevel {
+  FLEXIBLE // No strict deadline
+  THIS_WEEK // Within the next 7 days
+  URGENT // Within 24 hours
+}
+
+// Week 4: Invitation lifecycle
+// PENDING  — sent to worker, awaiting response
+// ACCEPTED — worker accepted (triggers Booking creation)
+// REJECTED — worker declined
+// EXPIRED  — 24-hour window elapsed without response
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+// Week 4: Booking lifecycle
+// CONFIRMED — contact released to both parties
+// COMPLETED — job marked done (enables reviews in Week 6)
+// CANCELLED — cancelled after booking but before completion
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
 // --- Models -----------------------------------------------------------------
 
 model User {
@@ -58,6 +107,9 @@ model ClientProfile {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Week 4: Jobs posted by this client
+  jobRequests JobRequest[]
 }
 
 model WorkerProfile {
@@ -99,6 +151,10 @@ model WorkerProfile {
   categories   WorkerCategory[]
   serviceAreas WorkerServiceArea[]
 
+  // Week 4: Jobs targeting this worker and bookings
+  targetedJobRequests JobRequest[]    @relation("TargetWorker")
+  invitations         JobInvitation[]
+  bookings            Booking[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -111,6 +167,9 @@ model Category {
 
   // Week 3: Worker relationships
   workers WorkerCategory[]
+
+  // Week 4: Job requests in this category
+  jobRequests JobRequest[]
 }
 
 model Area {
@@ -123,6 +182,8 @@ model Area {
 
   // Week 3: Worker relationships
   workers WorkerServiceArea[]
+  // Week 4: Job requests in this area
+  jobRequests JobRequest[]
 }
 
 model WorkerCategory {
@@ -147,4 +208,109 @@ model WorkerServiceArea {
   @@id([workerId, areaId])
   @@index([areaId])
   @@map("worker_service_areas")
+}
+
+// --- Week 4 Models ----------------------------------------------------------
+
+/// A job request created by a client.
+/// Flow A (SPECIFIC_WORKER): targets one worker → one invitation → booking.
+/// Flow B (OPEN, Week 5): matched to multiple workers via deterministic ranking.
+model JobRequest {
+  id String @id @default(uuid())
+
+  // Who posted the job
+  clientId String
+  client   ClientProfile @relation(fields: [clientId], references: [id])
+
+  // What kind of work
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  // Where the work is needed
+  areaId String
+  area   Area   @relation(fields: [areaId], references: [id])
+
+  // Job details
+  description String /// Free-text description of the work needed
+  urgency     UrgencyLevel @default(FLEXIBLE)
+  budget      Decimal?     @db.Decimal(10, 2) /// Optional indicative budget in PKR
+
+  // Request type and lifecycle
+  type   JobRequestType   @default(SPECIFIC_WORKER)
+  status JobRequestStatus @default(DRAFT)
+
+  // Flow A: the specific worker the client chose (null for OPEN jobs)
+  targetWorkerId String?
+  targetWorker   WorkerProfile? @relation("TargetWorker", fields: [targetWorkerId], references: [id])
+
+  // Timestamps
+  submittedAt DateTime? /// Set when status moves from DRAFT → WORKER_CONTACTED
+  expiresAt   DateTime? /// Deadline for worker response; used by expiry background job
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  invitations JobInvitation[]
+  booking     Booking?
+
+  @@index([clientId, status]) /// Client's "My Jobs" list query
+  @@index([status, expiresAt]) /// Expiry background job query
+}
+
+/// One invitation sent to a worker for a specific JobRequest.
+/// Flow A: always exactly one invitation per SPECIFIC_WORKER request.
+/// Flow B (Week 5): one per matched worker (batch-created).
+model JobInvitation {
+  id String @id @default(uuid())
+
+  jobRequestId String
+  jobRequest   JobRequest @relation(fields: [jobRequestId], references: [id])
+
+  workerId String
+  worker   WorkerProfile @relation(fields: [workerId], references: [id])
+
+  status InvitationStatus @default(PENDING)
+
+  // SMS tracking — mocked in MVP
+  smsSentAt   DateTime? /// When the mock SMS was dispatched to the worker
+  respondedAt DateTime? /// When the worker accepted or rejected
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking? /// Created when this invitation is accepted
+
+  @@unique([jobRequestId, workerId]) /// One invitation per worker per job
+  @@index([workerId, status]) /// Worker's pending-invitations inbox
+  @@index([status, createdAt]) /// Expiry job: find stale PENDING invitations
+}
+
+/// A confirmed booking created when a worker accepts a JobInvitation.
+/// Contact details (phone numbers) are released to both parties on creation.
+model Booking {
+  id String @id @default(uuid())
+
+  jobRequestId String     @unique /// One booking per job request
+  jobRequest   JobRequest @relation(fields: [jobRequestId], references: [id])
+
+  invitationId String        @unique /// The accepted invitation that created this booking
+  invitation   JobInvitation @relation(fields: [invitationId], references: [id])
+
+  workerId String
+  worker   WorkerProfile @relation(fields: [workerId], references: [id])
+
+  status BookingStatus @default(CONFIRMED)
+
+  // Contact release — stored so both parties retain a reference
+  clientPhone String? /// Client phone released to worker on booking confirmation
+  workerPhone String? /// Worker phone released to client on booking confirmation
+
+  confirmedAt DateTime  @default(now()) /// When the booking was created / contact released
+  completedAt DateTime? /// Set when status moves to COMPLETED
+  cancelledAt DateTime? /// Set when status moves to CANCELLED
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workerId, status])
 }

@@ -112,3 +112,35 @@ export const VerifyWorkerSchema = z
 
 export type VerifyWorkerBody = z.infer<typeof VerifyWorkerSchema>;
 
+// ---------------------------------------------------------------------------
+// Job Requests & Bookings (Week 4)
+// ---------------------------------------------------------------------------
+
+export const CreateJobRequestSchema = z.object({
+  categoryId: z.string().uuid(),
+  areaId: z.string().uuid(),
+  description: z.string().min(10, 'Description must be at least 10 characters').max(2000),
+  urgency: z.enum(['FLEXIBLE', 'THIS_WEEK', 'URGENT']).optional().default('FLEXIBLE'),
+  budget: z.coerce.number().positive('Budget must be positive').optional(),
+  type: z.enum(['SPECIFIC_WORKER', 'OPEN']).optional().default('SPECIFIC_WORKER'),
+});
+export type CreateJobRequestInput = z.infer<typeof CreateJobRequestSchema>;
+
+export const UpdateJobRequestSchema = z.object({
+  categoryId: z.string().uuid().optional(),
+  areaId: z.string().uuid().optional(),
+  description: z.string().min(10).max(2000).optional(),
+  urgency: z.enum(['FLEXIBLE', 'THIS_WEEK', 'URGENT']).optional(),
+  budget: z.coerce.number().positive().optional().nullable(),
+});
+export type UpdateJobRequestInput = z.infer<typeof UpdateJobRequestSchema>;
+
+export const SubmitJobRequestSchema = z.object({
+  targetWorkerId: z.string().uuid('Target worker is required for specific worker job requests'),
+});
+export type SubmitJobRequestInput = z.infer<typeof SubmitJobRequestSchema>;
+
+export const InvitationResponseSchema = z.object({
+  status: z.enum(['ACCEPTED', 'REJECTED']),
+});
+export type InvitationResponseInput = z.infer<typeof InvitationResponseSchema>;

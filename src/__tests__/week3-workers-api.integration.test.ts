@@ -165,7 +165,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Catalog
   });
 });
 
-describe('Week 3 API Integration — Public Worker Search', () => {
+describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Worker Search', () => {
   it('3. GET /api/v1/workers returns 200 without auth', async () => {
     const res = await request(app).get('/api/v1/workers');
     expect(res.status).toBe(200);

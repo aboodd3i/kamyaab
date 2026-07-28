@@ -61,53 +61,53 @@ model ClientProfile {
 }
 
 model WorkerProfile {
-  id                   String               @id @default(uuid())
-  userId               String?              @unique
-  user                 User?                @relation("UserWorkerProfile", fields: [userId], references: [id])
-  name                 String
-  phone                String               @unique
-  status               WorkerStatus         @default(PENDING_APPROVAL)
-  suspensionReason     String?
-  agentId              String?
-  agent                User?                @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
+  id               String       @id @default(uuid())
+  userId           String?      @unique
+  user             User?        @relation("UserWorkerProfile", fields: [userId], references: [id])
+  name             String
+  phone            String       @unique
+  status           WorkerStatus @default(PENDING_APPROVAL)
+  suspensionReason String?
+  agentId          String?
+  agent            User?        @relation("AgentWorkerProfiles", fields: [agentId], references: [id])
 
   // Week 3: CNIC and verification fields
-  cnicNumber           String?              @unique
-  cnicFrontPath        String?
-  cnicBackPath         String?
+  cnicNumber    String? @unique
+  cnicFrontPath String?
+  cnicBackPath  String?
 
   // Week 3: Reference check
-  referenceName        String?
-  referencePhone       String?
-  referenceStatus      ReferenceCheckStatus @default(UNVERIFIED)
+  referenceName         String?
+  referencePhone        String?
+  referenceStatus       ReferenceCheckStatus @default(UNVERIFIED)
   referenceVerifiedById String?
-  referenceVerifiedBy  User?                @relation("ReferenceVerifier", fields: [referenceVerifiedById], references: [id], onDelete: SetNull)
-  referenceVerifiedAt  DateTime?
+  referenceVerifiedBy   User?                @relation("ReferenceVerifier", fields: [referenceVerifiedById], references: [id], onDelete: SetNull)
+  referenceVerifiedAt   DateTime?
 
   // Week 3: Verification flags
-  identityChecked      Boolean              @default(false)
-  phoneConfirmed       Boolean              @default(false)
-  backgroundChecked    Boolean              @default(false)
-  skillAssessed        Boolean              @default(false)
+  identityChecked   Boolean @default(false)
+  phoneConfirmed    Boolean @default(false)
+  backgroundChecked Boolean @default(false)
+  skillAssessed     Boolean @default(false)
 
   // Week 3: Rating and performance
-  rating               Decimal               @default(0) @db.Decimal(3, 2)
-  ratingCount          Int                  @default(0)
-  completedJobsCount   Int                  @default(0)
+  rating             Decimal @default(0) @db.Decimal(3, 2)
+  ratingCount        Int     @default(0)
+  completedJobsCount Int     @default(0)
 
   // Week 3: Search relationships
-  categories           WorkerCategory[]
-  serviceAreas         WorkerServiceArea[]
+  categories   WorkerCategory[]
+  serviceAreas WorkerServiceArea[]
 
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status, rating(desc), completedJobsCount(desc)])
 }
 
 model Category {
-  id      String           @id @default(uuid())
-  name    String           @unique
+  id   String @id @default(uuid())
+  name String @unique
 
   // Week 3: Worker relationships
   workers WorkerCategory[]
@@ -122,7 +122,7 @@ model Area {
   children Area[]  @relation("AreaHierarchy")
 
   // Week 3: Worker relationships
-  workers  WorkerServiceArea[]
+  workers WorkerServiceArea[]
 }
 
 model WorkerCategory {

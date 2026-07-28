@@ -34,6 +34,10 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     const token = authHeader.split(' ')[1];
 
+    if (!supabase) {
+      throw errors.unauthorized(ErrorCode.AUTH_INVALID_TOKEN, 'Auth service not configured');
+    }
+
     // Verify token with Supabase
     const { data: { user: authUser }, error } = await supabase.auth.getUser(token);
 

@@ -25,6 +25,10 @@ router.post('/login/staff', async (req: Request, res: Response, next: NextFuncti
     }
     const { email, password } = parsed.data;
 
+    if (!supabase) {
+      throw errors.unauthorized(ErrorCode.AUTH_INVALID_CREDENTIALS, 'Auth service not configured');
+    }
+
     // Authenticate against Supabase
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 

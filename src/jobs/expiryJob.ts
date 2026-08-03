@@ -1,63 +1,24 @@
 /**
  * Background job to expire job requests and invitations that have not been responded to.
+ *
+ * The core expiry logic lives in src/services/expiryService.ts so it can be
+ * tested independently without starting the cron scheduler.  This module
+ * only wires up the cron schedule and delegates to that function.
  */
 
 import cron from 'node-cron';
-import prisma from '../lib/prisma';
-import { sendMockSms } from '../services/mockSmsService';
+import { expireStaleInvitations } from '../services/expiryService';
 
 export function startExpiryJob() {
   // Run every hour
   cron.schedule('0 * * * *', async () => {
     console.log('[Job] Running expiry check...');
     try {
-      const now = new Date();
-
-      // Find all job requests that are WORKER_CONTACTED and expired
-      const expiredRequests = await prisma.jobRequest.findMany({
-        where: {
-          status: 'WORKER_CONTACTED',
-          expiresAt: { lt: now },
-        },
-        include: {
-          client: { include: { user: true } },
-          targetWorker: true,
-          invitations: {
-            where: { status: 'PENDING' },
-          },
-        },
-      });
-
-      if (expiredRequests.length === 0) {
-        return;
-      }
-
-      console.log(`[Job] Found ${expiredRequests.length} expired job requests.`);
-
-      for (const req of expiredRequests) {
-        await prisma.$transaction(async (tx) => {
-          // Mark job request as EXPIRED
-          await tx.jobRequest.update({
-            where: { id: req.id },
-            data: { status: 'EXPIRED' },
-          });
-
-          // Mark pending invitations as EXPIRED
-          for (const inv of req.invitations) {
-            await tx.jobInvitation.update({
-              where: { id: inv.id },
-              data: { status: 'EXPIRED' },
-            });
-          }
-        });
-
-        // Notify client
-        if (req.client.user.phone) {
-          await sendMockSms(
-            req.client.user.phone,
-            `Kamyaab: Your job request for ${req.targetWorker?.name || 'the worker'} has expired without a response. You can create a new request and invite someone else.`
-          );
-        }
+      const result = await expireStaleInvitations();
+      if (result.expiredRequests > 0) {
+        console.log(
+          `[Job] Expired ${result.expiredRequests} job requests and ${result.expiredInvitations} invitations.`
+        );
       }
     } catch (err) {
       console.error('[Job] Error running expiry check:', err);

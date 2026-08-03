@@ -34,6 +34,23 @@ export async function respondToInvitation(
   if (invitation.workerId !== workerId) {
     throw errors.forbidden(ErrorCode.AUTH_FORBIDDEN, 'You can only respond to your own invitations');
   }
+
+  // ── Idempotent acceptance ─────────────────────────────────────────────
+  // If the invitation is already ACCEPTED and the caller is the owning
+  // worker requesting ACCEPTED again, return the existing booking without
+  // any side effects.  This makes repeated acceptance safe and idempotent.
+  if (invitation.status === 'ACCEPTED' && input.status === 'ACCEPTED') {
+    const existingBooking = await prisma.booking.findUnique({
+      where: { invitationId },
+      select: { id: true, status: true, confirmedAt: true },
+    });
+    if (existingBooking) {
+      return toAcceptedInvitationDto(existingBooking);
+    }
+    // Fallback: invitation is ACCEPTED but booking is missing (should not
+    // happen in normal operation).  Fall through to the error below.
+  }
+
   if (invitation.status !== 'PENDING') {
     throw errors.badRequest(
       ErrorCode.INVALID_STATE_TRANSITION,

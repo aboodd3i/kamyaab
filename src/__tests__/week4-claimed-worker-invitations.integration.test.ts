@@ -516,9 +516,9 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
       expect(res.body.success).toBe(false);
     });
 
-    // ─── Test 8: Cannot accept an already-accepted invitation ──────────
+    // ─── Test 8: Idempotent acceptance — re-accepting returns the existing booking ──
 
-    it('8. cannot accept an invitation that is already ACCEPTED', async () => {
+    it('8. re-accepting an already ACCEPTED invitation returns HTTP 200 with the same booking (idempotent)', async () => {
       const workerUserId = await createTempUser('WORKER');
       const clientUserId = await createTempUser('CLIENT');
       const clientId = await createTempClientProfile(clientUserId);
@@ -534,13 +534,30 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
         respondedAt: new Date(),
       });
 
+      // Create the booking that corresponds to the accepted invitation
+      const booking = await prisma.booking.create({
+        data: {
+          jobRequestId: jobId,
+          workerId,
+          invitationId,
+          status: 'CONFIRMED',
+          confirmedAt: new Date(),
+        },
+      });
+      tempBookingIds.push(booking.id);
+
       const app = createAppWithUser(workerUserId, 'WORKER');
       const res = await request(app)
         .post(`/api/v1/invitations/${invitationId}/respond`)
         .send({ status: 'ACCEPTED' });
 
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
+      // Idempotent: HTTP 200, same booking returned
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.status).toBe('ACCEPTED');
+      expect(res.body.data.booking).toBeDefined();
+      expect(res.body.data.booking.id).toBe(booking.id);
+      expect(res.body.data.booking.status).toBe('CONFIRMED');
     });
 
     // ─── Test 9: Cannot reject an already-accepted invitation ──────────

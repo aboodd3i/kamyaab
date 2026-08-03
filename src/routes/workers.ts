@@ -5,6 +5,7 @@ import { CreateWorkerSchema, VerifyWorkerSchema } from '../types';
 import { createWorker, verifyWorker } from '../services/workerService';
 import { updateWorker, uploadCnicDocuments, MAX_CNIC_FILE_SIZE, ACCEPTED_MIME_TYPES } from '../services/workerServiceWeek3';
 import { claimWorkerProfile } from '../services/workerClaimService';
+import { createClaimRateLimiter } from '../middleware/claimRateLimiter';
 import { createSupabaseStorageAdapter } from '../services/supabaseStorageAdapter';
 import multer from 'multer';
 import { z } from 'zod';
@@ -68,6 +69,7 @@ const ClaimSchema = z.object({
 
 router.post(
   '/claim',
+  createClaimRateLimiter(),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parsed = ClaimSchema.safeParse(req.body);

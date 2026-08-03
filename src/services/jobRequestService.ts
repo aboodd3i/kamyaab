@@ -115,6 +115,14 @@ export async function submitJobRequest(
     throw errors.badRequest(ErrorCode.INVALID_STATE_TRANSITION, 'Only draft job requests can be submitted');
   }
 
+  // Week 4 only supports SPECIFIC_WORKER flow. OPEN requests are Week 5.
+  if (job.type !== 'SPECIFIC_WORKER') {
+    throw errors.badRequest(
+      ErrorCode.INVALID_STATE_TRANSITION,
+      'Only SPECIFIC_WORKER requests can be submitted in the current flow',
+    );
+  }
+
   // Validate target worker
   const worker = await prisma.workerProfile.findUnique({
     where: { id: input.targetWorkerId },

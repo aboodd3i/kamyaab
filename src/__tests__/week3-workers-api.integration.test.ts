@@ -174,12 +174,22 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 3 API Integration — Public Worker 
   });
 
   it('4. search returns only APPROVED workers', async () => {
+    // Isolate this test using a unique area so that only the workers
+    // created here are returned, regardless of how many approved workers
+    // exist in the shared integration database.
+    const areaId = await createTempArea();
+
     // Create a pending worker — it should NOT appear
     const pendingId = await createTempWorker({ status: 'PENDING_APPROVAL' });
     // Create an approved worker — it SHOULD appear
     const approvedId = await createTempWorker({ status: 'APPROVED' });
 
-    const res = await request(app).get('/api/v1/workers');
+    // Link both workers to the unique test area
+    await prisma.workerServiceArea.create({ data: { workerId: pendingId, areaId } });
+    await prisma.workerServiceArea.create({ data: { workerId: approvedId, areaId } });
+
+    // Query filtered by the unique area — only our two workers match
+    const res = await request(app).get(`/api/v1/workers?areaId=${areaId}`);
     expect(res.status).toBe(200);
 
     const ids = res.body.data.data.map((w: { id: string }) => w.id);

@@ -3,14 +3,17 @@
  */
 
 import prisma from '../lib/prisma';
-import { errors, ErrorCode } from '../lib/errors';
+import { errors, ErrorCode, AppError } from '../lib/errors';
 import { sendMockSms } from './mockSmsService';
+import { toPendingInvitationDto, toAcceptedInvitationDto } from '../lib/invitationDto';
 import type { InvitationResponseInput } from '../types';
 
 /**
  * Worker responds to an invitation.
  * If ACCEPTED: Creates a Booking and releases contact info.
  * If REJECTED: Sends the JobRequest back to DRAFT state so client can invite someone else.
+ *
+ * Returns a safe DTO — never a raw Prisma object.
  */
 export async function respondToInvitation(
   invitationId: string,
@@ -56,45 +59,65 @@ export async function respondToInvitation(
 
   if (input.status === 'ACCEPTED') {
     // Transaction: Accept Invitation -> Update JobRequest -> Create Booking
-    const booking = await prisma.$transaction(async (tx) => {
-      await tx.jobInvitation.update({
-        where: { id: invitationId },
-        data: {
-          status: 'ACCEPTED',
-          respondedAt: new Date(),
-        },
+    // If a concurrent accept already created a booking (P2002 on jobRequestId
+    // or invitationId unique constraints), we treat it as idempotent and
+    // return the existing booking.
+    try {
+      const booking = await prisma.$transaction(async (tx) => {
+        await tx.jobInvitation.update({
+          where: { id: invitationId },
+          data: {
+            status: 'ACCEPTED',
+            respondedAt: new Date(),
+          },
+        });
+
+        await tx.jobRequest.update({
+          where: { id: jobRequest.id },
+          data: {
+            status: 'ACCEPTED',
+          },
+        });
+
+        const newBooking = await tx.booking.create({
+          data: {
+            jobRequestId: jobRequest.id,
+            invitationId: invitationId,
+            workerId: worker.id,
+            clientPhone: jobRequest.client.user.phone || '', // Release contact
+            workerPhone: worker.phone,           // Release contact
+            status: 'CONFIRMED',
+          },
+        });
+
+        return newBooking;
       });
 
-      await tx.jobRequest.update({
-        where: { id: jobRequest.id },
-        data: {
-          status: 'ACCEPTED',
-        },
-      });
+      // Notify client via Mock SMS
+      if (jobRequest.client.user.phone) {
+        await sendMockSms(
+          jobRequest.client.user.phone,
+          `Kamyaab: Great news! ${worker.name} has accepted your ${jobRequest.category.name} job request. You can now view their contact number in your bookings.`
+        );
+      }
 
-const newBooking = await tx.booking.create({
-        data: {
-          jobRequestId: jobRequest.id,
-          invitationId: invitationId,
-          workerId: worker.id,
-          clientPhone: jobRequest.client.user.phone || '', // Release contact
-          workerPhone: worker.phone,           // Release contact
-          status: 'CONFIRMED',
-        },
-      });
+      return toAcceptedInvitationDto(booking);
+    } catch (err) {
+      // P2002 — unique constraint violation on Booking.jobRequestId or Booking.invitationId.
+      // A concurrent acceptance already created the booking. Treat as idempotent:
+      // fetch the existing booking and return it as a successful acceptance.
+      if (err instanceof Error && 'code' in err && (err as { code: string }).code === 'P2002') {
+        const existingBooking = await prisma.booking.findUnique({
+          where: { invitationId },
+          select: { id: true, status: true, confirmedAt: true },
+        });
 
-      return newBooking;
-    });
-
-    // Notify client via Mock SMS
-    if (jobRequest.client.user.phone) {
-      await sendMockSms(
-        jobRequest.client.user.phone,
-        `Kamyaab: Great news! ${worker.name} has accepted your ${jobRequest.category.name} job request. You can now view their contact number in your bookings.`
-      );
+        if (existingBooking) {
+          return toAcceptedInvitationDto(existingBooking);
+        }
+      }
+      throw err;
     }
-
-    return { booking, status: 'ACCEPTED' };
   } else {
     // REJECTED
     // Transaction: Reject Invitation -> Revert JobRequest to DRAFT
@@ -126,27 +149,38 @@ const newBooking = await tx.booking.create({
       );
     }
 
-    return { status: 'REJECTED' };
+    return { status: 'REJECTED' as const };
   }
 }
 
-/** Get pending invitations for a worker. */
+/** Get pending invitations for a worker. Returns safe DTOs. */
 export async function getPendingInvitations(workerId: string) {
-  return prisma.jobInvitation.findMany({
+  const invitations = await prisma.jobInvitation.findMany({
     where: {
       workerId,
       status: 'PENDING',
       jobRequest: { status: 'WORKER_CONTACTED' },
     },
-    include: {
+    select: {
+      id: true,
+      status: true,
+      createdAt: true,
       jobRequest: {
-        include: {
-          client: { select: { id: true, name: true } }, // Do NOT include phone here, only release upon booking
+        select: {
+          id: true,
+          status: true,
+          type: true,
+          description: true,
+          urgency: true,
+          budget: true,
           category: { select: { id: true, name: true } },
           area: { select: { id: true, name: true } },
+          client: { select: { id: true, name: true } }, // Do NOT include phone here
         },
       },
     },
     orderBy: { createdAt: 'desc' },
   });
+
+  return invitations.map(toPendingInvitationDto);
 }

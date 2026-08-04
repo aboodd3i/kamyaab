@@ -98,8 +98,8 @@ enum AvailabilityUpdateSource {
 }
 
 model WorkerAvailability {
-  id       String @id @default(uuid())
-  workerId String @unique
+  id       String        @id @default(uuid())
+  workerId String        @unique
   worker   WorkerProfile @relation(fields: [workerId], references: [id])
 
   status       AvailabilityStatus       @default(UNKNOWN)
@@ -183,12 +183,12 @@ model WorkerProfile {
   serviceAreas WorkerServiceArea[]
 
   // Week 4: Jobs targeting this worker and bookings
-  targetedJobRequests JobRequest[]          @relation("TargetWorker")
+  targetedJobRequests JobRequest[]        @relation("TargetWorker")
   invitations         JobInvitation[]
   bookings            Booking[]
   availability        WorkerAvailability?
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 
   @@index([status, rating(desc), completedJobsCount(desc)])
 }
@@ -213,7 +213,7 @@ model Area {
   children Area[]  @relation("AreaHierarchy")
 
   // Week 3: Worker relationships
-  workers WorkerServiceArea[]
+  workers     WorkerServiceArea[]
   // Week 4: Job requests in this area
   jobRequests JobRequest[]
 }

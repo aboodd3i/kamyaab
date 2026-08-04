@@ -11,7 +11,6 @@
  *     optimistic concurrency protection.
  */
 
-import { UserRole } from '../generated/prisma';
 import prisma from '../lib/prisma';
 import { errors, ErrorCode, AppError } from '../lib/errors';
 import { normalizePakistaniPhone } from '../lib/phone';
@@ -202,7 +201,7 @@ export async function claimWorkerProfile(
 
       await tx.user.update({
         where: { id: userId },
-        data: { role: UserRole.WORKER },
+        data: { role: 'WORKER' },
       });
 
       return updatedWorker;

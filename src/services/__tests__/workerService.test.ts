@@ -31,6 +31,7 @@ vi.mock('../../config/env', () => ({
 const { mockPrismaObj } = vi.hoisted(() => ({
   mockPrismaObj: {
     workerProfile: {
+      findFirst: vi.fn(),
       findUnique: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
@@ -81,7 +82,7 @@ beforeEach(() => {
 describe('createWorker — duplicate phone pre-check', () => {
   it('returns 409 WORKER_DUPLICATE_PHONE when phone exists before insert', async () => {
     // findUnique returns an existing record
-    mockPrismaObj.workerProfile.findUnique.mockResolvedValue({ id: 'existing-worker' });
+    mockPrismaObj.workerProfile.findFirst.mockResolvedValue({ id: 'existing-worker' });
 
     await expect(
       createWorker({ name: 'Worker', phone: '+923001234567', agentId: 'agent-1' }),
@@ -98,7 +99,7 @@ describe('createWorker — duplicate phone pre-check', () => {
 describe('createWorker — P2002 race condition', () => {
   it('returns 409 WORKER_PHONE_ALREADY_EXISTS when P2002 targets phone', async () => {
     // Pre-check passes (no existing record)
-    mockPrismaObj.workerProfile.findUnique.mockResolvedValue(null);
+    mockPrismaObj.workerProfile.findFirst.mockResolvedValue(null);
     // But create throws P2002 (concurrent insert won the race)
     mockPrismaObj.workerProfile.create.mockRejectedValue(prismaP2002(['phone']));
 
@@ -112,7 +113,7 @@ describe('createWorker — P2002 race condition', () => {
   });
 
   it('does not expose Prisma internals in the error', async () => {
-    mockPrismaObj.workerProfile.findUnique.mockResolvedValue(null);
+    mockPrismaObj.workerProfile.findFirst.mockResolvedValue(null);
     mockPrismaObj.workerProfile.create.mockRejectedValue(prismaP2002(['phone']));
 
     try {
@@ -132,7 +133,7 @@ describe('createWorker — P2002 race condition', () => {
   });
 
   it('does not treat P2002 on a different field as a phone conflict', async () => {
-    mockPrismaObj.workerProfile.findUnique.mockResolvedValue(null);
+    mockPrismaObj.workerProfile.findFirst.mockResolvedValue(null);
     // P2002 targeting userId, not phone
     mockPrismaObj.workerProfile.create.mockRejectedValue(prismaP2002(['userId']));
 
@@ -148,7 +149,7 @@ describe('createWorker — P2002 race condition', () => {
   });
 
   it('lets non-P2002 database errors propagate to the generic error path', async () => {
-    mockPrismaObj.workerProfile.findUnique.mockResolvedValue(null);
+    mockPrismaObj.workerProfile.findFirst.mockResolvedValue(null);
     mockPrismaObj.workerProfile.create.mockRejectedValue(prismaP2003());
 
     try {
@@ -162,7 +163,7 @@ describe('createWorker — P2002 race condition', () => {
   });
 
   it('lets generic (non-Prisma) errors propagate', async () => {
-    mockPrismaObj.workerProfile.findUnique.mockResolvedValue(null);
+    mockPrismaObj.workerProfile.findFirst.mockResolvedValue(null);
     const genericError = new Error('Connection refused');
     mockPrismaObj.workerProfile.create.mockRejectedValue(genericError);
 
@@ -174,7 +175,7 @@ describe('createWorker — P2002 race condition', () => {
 
 describe('createWorker — successful creation', () => {
   it('creates a worker and returns a safe DTO', async () => {
-    mockPrismaObj.workerProfile.findUnique.mockResolvedValue(null);
+    mockPrismaObj.workerProfile.findFirst.mockResolvedValue(null);
     mockPrismaObj.workerProfile.create.mockResolvedValue(mockCreatedWorker);
 
     const result = await createWorker({

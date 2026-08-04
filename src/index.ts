@@ -1,11 +1,15 @@
 import express, { Request, Response } from 'express';
+import authRoutes from './routes/auth';
+import workerRoutes from './routes/workers';
 
-const app = express();
+/**
+ * Legacy entry point — delegates to createApp() from src/app.ts.
+ * Prefer importing `createApp` directly in new code and tests.
+ */
+import { createApp } from './app';
+
+const app = createApp();
 const PORT = 3000;
-
-app.get('/ping', (_req: Request, res: Response) => {
-  res.json({ message: 'pong', status: 'ok' });
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

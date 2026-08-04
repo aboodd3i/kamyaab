@@ -4,8 +4,9 @@ import { errors, ErrorCode, sendSuccess } from '../lib/errors';
 import { CreateWorkerSchema, VerifyWorkerSchema } from '../types';
 import { createWorker, verifyWorker } from '../services/workerService';
 import { updateWorker, uploadCnicDocuments, MAX_CNIC_FILE_SIZE, ACCEPTED_MIME_TYPES } from '../services/workerServiceWeek3';
-import { claimWorkerProfile } from '../services/workerClaimService';
-import { createClaimRateLimiter } from '../middleware/claimRateLimiter';
+// Disabled for Week 5 PR: worker claim flow is intentionally off.
+// import { claimWorkerProfile } from '../services/workerClaimService';
+// import { createClaimRateLimiter } from '../middleware/claimRateLimiter';
 import { createSupabaseStorageAdapter } from '../services/supabaseStorageAdapter';
 import multer from 'multer';
 import { z } from 'zod';
@@ -57,37 +58,33 @@ router.post(
 /**
  * POST /api/v1/workers/claim
  *
- * Claim an agent-created worker profile by matching the authenticated
- * user's trusted phone number and a CNIC last-4 second factor.
- *
- * Authentication is mandatory. The phone number is taken from the
- * authenticated user's server-side record, never from the request body.
+ * Disabled for Week 5 PR. The worker claim feature is intentionally off.
  */
-const ClaimSchema = z.object({
-  cnicLast4: z.string().length(4).regex(/^\d{4}$/),
-});
-
-router.post(
-  '/claim',
-  createClaimRateLimiter(),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const parsed = ClaimSchema.safeParse(req.body);
-      if (!parsed.success) {
-        throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Invalid request body');
-      }
-
-      const result = await claimWorkerProfile({
-        userId: req.user!.userId,
-        cnicLast4: parsed.data.cnicLast4,
-      });
-
-      return sendSuccess(res, result, 'Worker profile claimed successfully');
-    } catch (err) {
-      next(err);
-    }
-  },
-);
+// const ClaimSchema = z.object({
+//   cnicLast4: z.string().length(4).regex(/^\d{4}$/),
+// });
+//
+// router.post(
+//   '/claim',
+//   createClaimRateLimiter(),
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const parsed = ClaimSchema.safeParse(req.body);
+//       if (!parsed.success) {
+//         throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Invalid request body');
+//       }
+//
+//       const result = await claimWorkerProfile({
+//         userId: req.user!.userId,
+//         cnicLast4: parsed.data.cnicLast4,
+//       });
+//
+//       return sendSuccess(res, result, 'Worker profile claimed successfully');
+//     } catch (err) {
+//       next(err);
+//     }
+//   },
+// );
 
 /**
  * PATCH /api/v1/workers/:id/verify

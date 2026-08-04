@@ -82,6 +82,12 @@ enum BookingStatus {
   CANCELLED
 }
 
+// Week 6: Review direction — who is reviewing whom
+enum ReviewDirection {
+  CLIENT_TO_WORKER
+  WORKER_TO_CLIENT
+}
+
 // --- Models -----------------------------------------------------------------
 
 model User {
@@ -99,6 +105,10 @@ model User {
 
   // Week 3: Reference verification relationships
   verifiedWorkerReferences WorkerProfile[] @relation("ReferenceVerifier")
+
+  // Week 6: Reviews authored by and targeting this user
+  reviewsGiven    Review[] @relation("ReviewReviewer")
+  reviewsReceived Review[] @relation("ReviewReviewee")
 }
 
 model ClientProfile {
@@ -313,5 +323,34 @@ model Booking {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Week 6: Reviews for this booking (max one per direction)
+  reviews Review[]
+
   @@index([workerId, status])
+}
+
+/// Week 6: A review left by one party on a completed booking.
+/// Exactly one CLIENT_TO_WORKER and one WORKER_TO_CLIENT review per booking.
+model Review {
+  id String @id @default(uuid())
+
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  reviewerUserId String
+  reviewer       User   @relation("ReviewReviewer", fields: [reviewerUserId], references: [id])
+
+  revieweeUserId String
+  reviewee       User   @relation("ReviewReviewee", fields: [revieweeUserId], references: [id])
+
+  direction ReviewDirection
+  rating    Int /// 1–5 star rating
+  comment   String? /// Optional free-text comment (max 1000 chars)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookingId, direction]) /// One review per direction per booking
+  @@index([reviewerUserId])
+  @@index([revieweeUserId])
 }

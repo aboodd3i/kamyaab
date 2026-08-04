@@ -17,6 +17,7 @@ enum UserRole {
   CLIENT
   AGENT
   ADMIN
+  WORKER
 }
 
 enum WorkerStatus {

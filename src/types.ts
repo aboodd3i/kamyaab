@@ -33,7 +33,7 @@ export interface StaffLoginResponse {
 export interface MeResponseData {
   userId: string;
   authUserId: string;
-  role: 'CLIENT' | 'AGENT' | 'ADMIN';
+  role: 'CLIENT' | 'AGENT' | 'ADMIN' | 'WORKER';
   phone?: string | null;
   email?: string | null;
 }

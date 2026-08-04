@@ -5,6 +5,7 @@
 import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { sendMockSms } from './mockSmsService';
+import { toMyJobItem } from '../lib/myJobsDto';
 import type {
   CreateJobRequestInput,
   UpdateJobRequestInput,
@@ -114,6 +115,14 @@ export async function submitJobRequest(
     throw errors.badRequest(ErrorCode.INVALID_STATE_TRANSITION, 'Only draft job requests can be submitted');
   }
 
+  // Week 4 only supports SPECIFIC_WORKER flow. OPEN requests are Week 5.
+  if (job.type !== 'SPECIFIC_WORKER') {
+    throw errors.badRequest(
+      ErrorCode.INVALID_STATE_TRANSITION,
+      'Only SPECIFIC_WORKER requests can be submitted in the current flow',
+    );
+  }
+
   // Validate target worker
   const worker = await prisma.workerProfile.findUnique({
     where: { id: input.targetWorkerId },
@@ -183,19 +192,41 @@ export async function submitJobRequest(
   return submittedJob;
 }
 
-/** Get all job requests for a client. */
+/** Get all job requests for a client, with contact-release gating. */
 export async function getMyJobs(userId: string) {
   const clientProfile = await prisma.clientProfile.findUnique({ where: { userId } });
   if (!clientProfile) throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Client profile not found');
 
-  return prisma.jobRequest.findMany({
+  // Safe select — never includes worker phone, CNIC, addresses, reference
+  // contact, or storage paths. The only contact field (booking.workerPhone)
+  // is server-controlled and set on invitation acceptance.
+  const jobs = await prisma.jobRequest.findMany({
     where: { clientId: clientProfile.id },
-    include: {
+    select: {
+      id: true,
+      status: true,
+      type: true,
+      description: true,
+      urgency: true,
+      budget: true,
+      createdAt: true,
+      updatedAt: true,
       category: { select: { id: true, name: true } },
       area: { select: { id: true, name: true } },
-      targetWorker: { select: { id: true, name: true, phone: true } }, // Will only include phone if booked, but we can filter it out in routes if needed. Let's not expose phone in list if not booked.
-      booking: true, // Include booking to check status
+      targetWorker: { select: { id: true, name: true } },
+      booking: {
+        select: {
+          id: true,
+          status: true,
+          confirmedAt: true,
+          workerPhone: true, // Released contact — only exists after acceptance
+        },
+      },
     },
     orderBy: { updatedAt: 'desc' },
   });
+
+  // Map through the DTO to enforce the contact-release rule and
+  // ensure no raw Prisma object with sensitive fields is returned.
+  return jobs.map(toMyJobItem);
 }

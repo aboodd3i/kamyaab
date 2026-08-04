@@ -8,5 +8,5 @@
 export interface AuthPrincipal {
   userId: string;
   authUserId: string;
-  role: 'CLIENT' | 'AGENT' | 'ADMIN';
+  role: 'CLIENT' | 'AGENT' | 'ADMIN' | 'WORKER';
 }

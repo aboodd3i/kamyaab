@@ -17,7 +17,6 @@ enum UserRole {
   CLIENT
   AGENT
   ADMIN
-  WORKER
 }
 
 enum WorkerStatus {
@@ -48,6 +47,7 @@ enum JobRequestType {
 enum JobRequestStatus {
   DRAFT
   WORKER_CONTACTED
+  MATCHING
   ACCEPTED
   EXPIRED
   CANCELLED
@@ -80,6 +80,35 @@ enum BookingStatus {
   CONFIRMED
   COMPLETED
   CANCELLED
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  BUSY
+  UNAVAILABLE
+  UNKNOWN
+}
+
+enum AvailabilityUpdateSource {
+  WORKER_PORTAL
+  SMS
+  AGENT
+  ADMIN
+  AUTO_EXPIRY
+}
+
+model WorkerAvailability {
+  id       String        @id @default(uuid())
+  workerId String        @unique
+  worker   WorkerProfile @relation(fields: [workerId], references: [id])
+
+  status       AvailabilityStatus       @default(UNKNOWN)
+  updateSource AvailabilityUpdateSource @default(AUTO_EXPIRY)
+  busyUntil    DateTime?
+  expiresAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // --- Models -----------------------------------------------------------------
@@ -147,17 +176,19 @@ model WorkerProfile {
   rating             Decimal @default(0) @db.Decimal(3, 2)
   ratingCount        Int     @default(0)
   completedJobsCount Int     @default(0)
+  isPriorityListed   Boolean @default(false)
 
   // Week 3: Search relationships
   categories   WorkerCategory[]
   serviceAreas WorkerServiceArea[]
 
   // Week 4: Jobs targeting this worker and bookings
-  targetedJobRequests JobRequest[]    @relation("TargetWorker")
+  targetedJobRequests JobRequest[]        @relation("TargetWorker")
   invitations         JobInvitation[]
   bookings            Booking[]
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  availability        WorkerAvailability?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 
   @@index([status, rating(desc), completedJobsCount(desc)])
 }

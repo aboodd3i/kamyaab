@@ -7,6 +7,7 @@ import categoryRoutes from './routes/categories';
 import areaRoutes from './routes/areas';
 import jobRequestRoutes from './routes/jobRequests';
 import invitationRoutes from './routes/invitations';
+import bookingRoutes from './routes/bookings';
 import { errorMiddleware } from './lib/errors';
 
 /**
@@ -42,6 +43,7 @@ export function createApp() {
   app.use('/api/v1/workers', workerRoutes);
   app.use('/api/v1/job-requests', jobRequestRoutes);
   app.use('/api/v1/invitations', invitationRoutes);
+  app.use('/api/v1/bookings', bookingRoutes);
 
   // Centralized error handler — must be registered last
   app.use(errorMiddleware);

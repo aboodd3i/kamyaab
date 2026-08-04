@@ -41,6 +41,10 @@ export const ErrorCode = {
   
   // Job / Generic State
   INVALID_STATE_TRANSITION: 'INVALID_STATE_TRANSITION',
+
+  // Bookings
+  BOOKING_NOT_FOUND: 'BOOKING_NOT_FOUND',
+  BOOKING_INVALID_STATE: 'BOOKING_INVALID_STATE',
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

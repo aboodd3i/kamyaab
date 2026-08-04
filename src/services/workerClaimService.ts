@@ -201,7 +201,7 @@ export async function claimWorkerProfile(
 
       await tx.user.update({
         where: { id: userId },
-        data: { role: 'WORKER' },
+        data: { role: { set: 'WORKER' } },
       });
 
       return updatedWorker;

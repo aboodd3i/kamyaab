@@ -29,8 +29,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more WorkerAvailabilities
+ * const workerAvailabilities = await prisma.workerAvailability.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -39,6 +39,11 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model WorkerAvailability
+ * 
+ */
+export type WorkerAvailability = Prisma.WorkerAvailabilityModel
 /**
  * Model User
  * 
@@ -64,3 +69,33 @@ export type Category = Prisma.CategoryModel
  * 
  */
 export type Area = Prisma.AreaModel
+/**
+ * Model WorkerCategory
+ * 
+ */
+export type WorkerCategory = Prisma.WorkerCategoryModel
+/**
+ * Model WorkerServiceArea
+ * 
+ */
+export type WorkerServiceArea = Prisma.WorkerServiceAreaModel
+/**
+ * Model JobRequest
+ * A job request created by a client.
+ * Flow A (SPECIFIC_WORKER): targets one worker → one invitation → booking.
+ * Flow B (OPEN, Week 5): matched to multiple workers via deterministic ranking.
+ */
+export type JobRequest = Prisma.JobRequestModel
+/**
+ * Model JobInvitation
+ * One invitation sent to a worker for a specific JobRequest.
+ * Flow A: always exactly one invitation per SPECIFIC_WORKER request.
+ * Flow B (Week 5): one per matched worker (batch-created).
+ */
+export type JobInvitation = Prisma.JobInvitationModel
+/**
+ * Model Booking
+ * A confirmed booking created when a worker accepts a JobInvitation.
+ * Contact details (phone numbers) are released to both parties on creation.
+ */
+export type Booking = Prisma.BookingModel

@@ -51,11 +51,17 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  WorkerAvailability: 'WorkerAvailability',
   User: 'User',
   ClientProfile: 'ClientProfile',
   WorkerProfile: 'WorkerProfile',
   Category: 'Category',
-  Area: 'Area'
+  Area: 'Area',
+  WorkerCategory: 'WorkerCategory',
+  WorkerServiceArea: 'WorkerServiceArea',
+  JobRequest: 'JobRequest',
+  JobInvitation: 'JobInvitation',
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,12 +80,28 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const WorkerAvailabilityScalarFieldEnum = {
+  id: 'id',
+  workerId: 'workerId',
+  status: 'status',
+  updateSource: 'updateSource',
+  busyUntil: 'busyUntil',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerAvailabilityScalarFieldEnum = (typeof WorkerAvailabilityScalarFieldEnum)[keyof typeof WorkerAvailabilityScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
+  authUserId: 'authUserId',
   phone: 'phone',
   email: 'email',
   role: 'role',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -88,7 +110,9 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const ClientProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  name: 'name'
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ClientProfileScalarFieldEnum = (typeof ClientProfileScalarFieldEnum)[keyof typeof ClientProfileScalarFieldEnum]
@@ -98,7 +122,28 @@ export const WorkerProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   name: 'name',
-  phone: 'phone'
+  phone: 'phone',
+  status: 'status',
+  suspensionReason: 'suspensionReason',
+  agentId: 'agentId',
+  cnicNumber: 'cnicNumber',
+  cnicFrontPath: 'cnicFrontPath',
+  cnicBackPath: 'cnicBackPath',
+  referenceName: 'referenceName',
+  referencePhone: 'referencePhone',
+  referenceStatus: 'referenceStatus',
+  referenceVerifiedById: 'referenceVerifiedById',
+  referenceVerifiedAt: 'referenceVerifiedAt',
+  identityChecked: 'identityChecked',
+  phoneConfirmed: 'phoneConfirmed',
+  backgroundChecked: 'backgroundChecked',
+  skillAssessed: 'skillAssessed',
+  rating: 'rating',
+  ratingCount: 'ratingCount',
+  completedJobsCount: 'completedJobsCount',
+  isPriorityListed: 'isPriorityListed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type WorkerProfileScalarFieldEnum = (typeof WorkerProfileScalarFieldEnum)[keyof typeof WorkerProfileScalarFieldEnum]
@@ -115,10 +160,79 @@ export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typ
 export const AreaScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   parentId: 'parentId'
 } as const
 
 export type AreaScalarFieldEnum = (typeof AreaScalarFieldEnum)[keyof typeof AreaScalarFieldEnum]
+
+
+export const WorkerCategoryScalarFieldEnum = {
+  workerId: 'workerId',
+  categoryId: 'categoryId'
+} as const
+
+export type WorkerCategoryScalarFieldEnum = (typeof WorkerCategoryScalarFieldEnum)[keyof typeof WorkerCategoryScalarFieldEnum]
+
+
+export const WorkerServiceAreaScalarFieldEnum = {
+  workerId: 'workerId',
+  areaId: 'areaId'
+} as const
+
+export type WorkerServiceAreaScalarFieldEnum = (typeof WorkerServiceAreaScalarFieldEnum)[keyof typeof WorkerServiceAreaScalarFieldEnum]
+
+
+export const JobRequestScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  categoryId: 'categoryId',
+  areaId: 'areaId',
+  description: 'description',
+  urgency: 'urgency',
+  budget: 'budget',
+  type: 'type',
+  status: 'status',
+  targetWorkerId: 'targetWorkerId',
+  submittedAt: 'submittedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobRequestScalarFieldEnum = (typeof JobRequestScalarFieldEnum)[keyof typeof JobRequestScalarFieldEnum]
+
+
+export const JobInvitationScalarFieldEnum = {
+  id: 'id',
+  jobRequestId: 'jobRequestId',
+  workerId: 'workerId',
+  status: 'status',
+  smsSentAt: 'smsSentAt',
+  respondedAt: 'respondedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobInvitationScalarFieldEnum = (typeof JobInvitationScalarFieldEnum)[keyof typeof JobInvitationScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  jobRequestId: 'jobRequestId',
+  invitationId: 'invitationId',
+  workerId: 'workerId',
+  status: 'status',
+  clientPhone: 'clientPhone',
+  workerPhone: 'workerPhone',
+  confirmedAt: 'confirmedAt',
+  completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
 
 
 export const SortOrder = {

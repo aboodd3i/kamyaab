@@ -27,18 +27,21 @@ export type AggregateArea = {
 export type AreaMinAggregateOutputType = {
   id: string | null
   name: string | null
+  slug: string | null
   parentId: string | null
 }
 
 export type AreaMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  slug: string | null
   parentId: string | null
 }
 
 export type AreaCountAggregateOutputType = {
   id: number
   name: number
+  slug: number
   parentId: number
   _all: number
 }
@@ -47,18 +50,21 @@ export type AreaCountAggregateOutputType = {
 export type AreaMinAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
   parentId?: true
 }
 
 export type AreaMaxAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
   parentId?: true
 }
 
 export type AreaCountAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
   parentId?: true
   _all?: true
 }
@@ -138,6 +144,7 @@ export type AreaGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type AreaGroupByOutputType = {
   id: string
   name: string
+  slug: string
   parentId: string | null
   _count: AreaCountAggregateOutputType | null
   _min: AreaMinAggregateOutputType | null
@@ -165,21 +172,28 @@ export type AreaWhereInput = {
   NOT?: Prisma.AreaWhereInput | Prisma.AreaWhereInput[]
   id?: Prisma.StringFilter<"Area"> | string
   name?: Prisma.StringFilter<"Area"> | string
+  slug?: Prisma.StringFilter<"Area"> | string
   parentId?: Prisma.StringNullableFilter<"Area"> | string | null
   parent?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
   children?: Prisma.AreaListRelationFilter
+  workers?: Prisma.WorkerServiceAreaListRelationFilter
+  jobRequests?: Prisma.JobRequestListRelationFilter
 }
 
 export type AreaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   parent?: Prisma.AreaOrderByWithRelationInput
   children?: Prisma.AreaOrderByRelationAggregateInput
+  workers?: Prisma.WorkerServiceAreaOrderByRelationAggregateInput
+  jobRequests?: Prisma.JobRequestOrderByRelationAggregateInput
 }
 
 export type AreaWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.AreaWhereInput | Prisma.AreaWhereInput[]
   OR?: Prisma.AreaWhereInput[]
   NOT?: Prisma.AreaWhereInput | Prisma.AreaWhereInput[]
@@ -187,11 +201,14 @@ export type AreaWhereUniqueInput = Prisma.AtLeast<{
   parentId?: Prisma.StringNullableFilter<"Area"> | string | null
   parent?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
   children?: Prisma.AreaListRelationFilter
-}, "id">
+  workers?: Prisma.WorkerServiceAreaListRelationFilter
+  jobRequests?: Prisma.JobRequestListRelationFilter
+}, "id" | "slug">
 
 export type AreaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AreaCountOrderByAggregateInput
   _max?: Prisma.AreaMaxOrderByAggregateInput
@@ -204,51 +221,67 @@ export type AreaScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AreaScalarWhereWithAggregatesInput | Prisma.AreaScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Area"> | string
   name?: Prisma.StringWithAggregatesFilter<"Area"> | string
+  slug?: Prisma.StringWithAggregatesFilter<"Area"> | string
   parentId?: Prisma.StringNullableWithAggregatesFilter<"Area"> | string | null
 }
 
 export type AreaCreateInput = {
   id?: string
   name: string
+  slug: string
   parent?: Prisma.AreaCreateNestedOneWithoutChildrenInput
   children?: Prisma.AreaCreateNestedManyWithoutParentInput
+  workers?: Prisma.WorkerServiceAreaCreateNestedManyWithoutAreaInput
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateInput = {
   id?: string
   name: string
+  slug: string
   parentId?: string | null
   children?: Prisma.AreaUncheckedCreateNestedManyWithoutParentInput
+  workers?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutAreaInput
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   parent?: Prisma.AreaUpdateOneWithoutChildrenNestedInput
   children?: Prisma.AreaUpdateManyWithoutParentNestedInput
+  workers?: Prisma.WorkerServiceAreaUpdateManyWithoutAreaNestedInput
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   children?: Prisma.AreaUncheckedUpdateManyWithoutParentNestedInput
+  workers?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutAreaNestedInput
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateManyInput = {
   id?: string
   name: string
+  slug: string
   parentId?: string | null
 }
 
 export type AreaUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AreaUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -270,19 +303,27 @@ export type AreaOrderByRelationAggregateInput = {
 export type AreaCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
 }
 
 export type AreaMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
 }
 
 export type AreaMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
+}
+
+export type AreaScalarRelationFilter = {
+  is?: Prisma.AreaWhereInput
+  isNot?: Prisma.AreaWhereInput
 }
 
 export type AreaCreateNestedOneWithoutChildrenInput = {
@@ -343,16 +384,50 @@ export type AreaUncheckedUpdateManyWithoutParentNestedInput = {
   deleteMany?: Prisma.AreaScalarWhereInput | Prisma.AreaScalarWhereInput[]
 }
 
+export type AreaCreateNestedOneWithoutWorkersInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutWorkersInput, Prisma.AreaUncheckedCreateWithoutWorkersInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutWorkersInput
+  connect?: Prisma.AreaWhereUniqueInput
+}
+
+export type AreaUpdateOneRequiredWithoutWorkersNestedInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutWorkersInput, Prisma.AreaUncheckedCreateWithoutWorkersInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutWorkersInput
+  upsert?: Prisma.AreaUpsertWithoutWorkersInput
+  connect?: Prisma.AreaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AreaUpdateToOneWithWhereWithoutWorkersInput, Prisma.AreaUpdateWithoutWorkersInput>, Prisma.AreaUncheckedUpdateWithoutWorkersInput>
+}
+
+export type AreaCreateNestedOneWithoutJobRequestsInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutJobRequestsInput, Prisma.AreaUncheckedCreateWithoutJobRequestsInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutJobRequestsInput
+  connect?: Prisma.AreaWhereUniqueInput
+}
+
+export type AreaUpdateOneRequiredWithoutJobRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutJobRequestsInput, Prisma.AreaUncheckedCreateWithoutJobRequestsInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutJobRequestsInput
+  upsert?: Prisma.AreaUpsertWithoutJobRequestsInput
+  connect?: Prisma.AreaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AreaUpdateToOneWithWhereWithoutJobRequestsInput, Prisma.AreaUpdateWithoutJobRequestsInput>, Prisma.AreaUncheckedUpdateWithoutJobRequestsInput>
+}
+
 export type AreaCreateWithoutChildrenInput = {
   id?: string
   name: string
+  slug: string
   parent?: Prisma.AreaCreateNestedOneWithoutChildrenInput
+  workers?: Prisma.WorkerServiceAreaCreateNestedManyWithoutAreaInput
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutChildrenInput = {
   id?: string
   name: string
+  slug: string
   parentId?: string | null
+  workers?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutAreaInput
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutChildrenInput = {
@@ -363,13 +438,19 @@ export type AreaCreateOrConnectWithoutChildrenInput = {
 export type AreaCreateWithoutParentInput = {
   id?: string
   name: string
+  slug: string
   children?: Prisma.AreaCreateNestedManyWithoutParentInput
+  workers?: Prisma.WorkerServiceAreaCreateNestedManyWithoutAreaInput
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutParentInput = {
   id?: string
   name: string
+  slug: string
   children?: Prisma.AreaUncheckedCreateNestedManyWithoutParentInput
+  workers?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutAreaInput
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutParentInput = {
@@ -396,13 +477,19 @@ export type AreaUpdateToOneWithWhereWithoutChildrenInput = {
 export type AreaUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   parent?: Prisma.AreaUpdateOneWithoutChildrenNestedInput
+  workers?: Prisma.WorkerServiceAreaUpdateManyWithoutAreaNestedInput
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workers?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutAreaNestedInput
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUpsertWithWhereUniqueWithoutParentInput = {
@@ -427,29 +514,142 @@ export type AreaScalarWhereInput = {
   NOT?: Prisma.AreaScalarWhereInput | Prisma.AreaScalarWhereInput[]
   id?: Prisma.StringFilter<"Area"> | string
   name?: Prisma.StringFilter<"Area"> | string
+  slug?: Prisma.StringFilter<"Area"> | string
   parentId?: Prisma.StringNullableFilter<"Area"> | string | null
+}
+
+export type AreaCreateWithoutWorkersInput = {
+  id?: string
+  name: string
+  slug: string
+  parent?: Prisma.AreaCreateNestedOneWithoutChildrenInput
+  children?: Prisma.AreaCreateNestedManyWithoutParentInput
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutAreaInput
+}
+
+export type AreaUncheckedCreateWithoutWorkersInput = {
+  id?: string
+  name: string
+  slug: string
+  parentId?: string | null
+  children?: Prisma.AreaUncheckedCreateNestedManyWithoutParentInput
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutAreaInput
+}
+
+export type AreaCreateOrConnectWithoutWorkersInput = {
+  where: Prisma.AreaWhereUniqueInput
+  create: Prisma.XOR<Prisma.AreaCreateWithoutWorkersInput, Prisma.AreaUncheckedCreateWithoutWorkersInput>
+}
+
+export type AreaUpsertWithoutWorkersInput = {
+  update: Prisma.XOR<Prisma.AreaUpdateWithoutWorkersInput, Prisma.AreaUncheckedUpdateWithoutWorkersInput>
+  create: Prisma.XOR<Prisma.AreaCreateWithoutWorkersInput, Prisma.AreaUncheckedCreateWithoutWorkersInput>
+  where?: Prisma.AreaWhereInput
+}
+
+export type AreaUpdateToOneWithWhereWithoutWorkersInput = {
+  where?: Prisma.AreaWhereInput
+  data: Prisma.XOR<Prisma.AreaUpdateWithoutWorkersInput, Prisma.AreaUncheckedUpdateWithoutWorkersInput>
+}
+
+export type AreaUpdateWithoutWorkersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  parent?: Prisma.AreaUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.AreaUpdateManyWithoutParentNestedInput
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutAreaNestedInput
+}
+
+export type AreaUncheckedUpdateWithoutWorkersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  children?: Prisma.AreaUncheckedUpdateManyWithoutParentNestedInput
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutAreaNestedInput
+}
+
+export type AreaCreateWithoutJobRequestsInput = {
+  id?: string
+  name: string
+  slug: string
+  parent?: Prisma.AreaCreateNestedOneWithoutChildrenInput
+  children?: Prisma.AreaCreateNestedManyWithoutParentInput
+  workers?: Prisma.WorkerServiceAreaCreateNestedManyWithoutAreaInput
+}
+
+export type AreaUncheckedCreateWithoutJobRequestsInput = {
+  id?: string
+  name: string
+  slug: string
+  parentId?: string | null
+  children?: Prisma.AreaUncheckedCreateNestedManyWithoutParentInput
+  workers?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutAreaInput
+}
+
+export type AreaCreateOrConnectWithoutJobRequestsInput = {
+  where: Prisma.AreaWhereUniqueInput
+  create: Prisma.XOR<Prisma.AreaCreateWithoutJobRequestsInput, Prisma.AreaUncheckedCreateWithoutJobRequestsInput>
+}
+
+export type AreaUpsertWithoutJobRequestsInput = {
+  update: Prisma.XOR<Prisma.AreaUpdateWithoutJobRequestsInput, Prisma.AreaUncheckedUpdateWithoutJobRequestsInput>
+  create: Prisma.XOR<Prisma.AreaCreateWithoutJobRequestsInput, Prisma.AreaUncheckedCreateWithoutJobRequestsInput>
+  where?: Prisma.AreaWhereInput
+}
+
+export type AreaUpdateToOneWithWhereWithoutJobRequestsInput = {
+  where?: Prisma.AreaWhereInput
+  data: Prisma.XOR<Prisma.AreaUpdateWithoutJobRequestsInput, Prisma.AreaUncheckedUpdateWithoutJobRequestsInput>
+}
+
+export type AreaUpdateWithoutJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  parent?: Prisma.AreaUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.AreaUpdateManyWithoutParentNestedInput
+  workers?: Prisma.WorkerServiceAreaUpdateManyWithoutAreaNestedInput
+}
+
+export type AreaUncheckedUpdateWithoutJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  children?: Prisma.AreaUncheckedUpdateManyWithoutParentNestedInput
+  workers?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateManyParentInput = {
   id?: string
   name: string
+  slug: string
 }
 
 export type AreaUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   children?: Prisma.AreaUpdateManyWithoutParentNestedInput
+  workers?: Prisma.WorkerServiceAreaUpdateManyWithoutAreaNestedInput
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   children?: Prisma.AreaUncheckedUpdateManyWithoutParentNestedInput
+  workers?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutAreaNestedInput
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateManyWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -459,10 +659,14 @@ export type AreaUncheckedUpdateManyWithoutParentInput = {
 
 export type AreaCountOutputType = {
   children: number
+  workers: number
+  jobRequests: number
 }
 
 export type AreaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   children?: boolean | AreaCountOutputTypeCountChildrenArgs
+  workers?: boolean | AreaCountOutputTypeCountWorkersArgs
+  jobRequests?: boolean | AreaCountOutputTypeCountJobRequestsArgs
 }
 
 /**
@@ -482,19 +686,37 @@ export type AreaCountOutputTypeCountChildrenArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.AreaWhereInput
 }
 
+/**
+ * AreaCountOutputType without action
+ */
+export type AreaCountOutputTypeCountWorkersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkerServiceAreaWhereInput
+}
+
+/**
+ * AreaCountOutputType without action
+ */
+export type AreaCountOutputTypeCountJobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobRequestWhereInput
+}
+
 
 export type AreaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
   parentId?: boolean
   parent?: boolean | Prisma.Area$parentArgs<ExtArgs>
   children?: boolean | Prisma.Area$childrenArgs<ExtArgs>
+  workers?: boolean | Prisma.Area$workersArgs<ExtArgs>
+  jobRequests?: boolean | Prisma.Area$jobRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.AreaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["area"]>
 
 export type AreaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
   parentId?: boolean
   parent?: boolean | Prisma.Area$parentArgs<ExtArgs>
 }, ExtArgs["result"]["area"]>
@@ -502,6 +724,7 @@ export type AreaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type AreaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
   parentId?: boolean
   parent?: boolean | Prisma.Area$parentArgs<ExtArgs>
 }, ExtArgs["result"]["area"]>
@@ -509,13 +732,16 @@ export type AreaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type AreaSelectScalar = {
   id?: boolean
   name?: boolean
+  slug?: boolean
   parentId?: boolean
 }
 
-export type AreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "parentId", ExtArgs["result"]["area"]>
+export type AreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "parentId", ExtArgs["result"]["area"]>
 export type AreaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Area$parentArgs<ExtArgs>
   children?: boolean | Prisma.Area$childrenArgs<ExtArgs>
+  workers?: boolean | Prisma.Area$workersArgs<ExtArgs>
+  jobRequests?: boolean | Prisma.Area$jobRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.AreaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AreaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -530,10 +756,13 @@ export type $AreaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     parent: Prisma.$AreaPayload<ExtArgs> | null
     children: Prisma.$AreaPayload<ExtArgs>[]
+    workers: Prisma.$WorkerServiceAreaPayload<ExtArgs>[]
+    jobRequests: Prisma.$JobRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    slug: string
     parentId: string | null
   }, ExtArgs["result"]["area"]>
   composites: {}
@@ -931,6 +1160,8 @@ export interface Prisma__AreaClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   parent<T extends Prisma.Area$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$parentArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   children<T extends Prisma.Area$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workers<T extends Prisma.Area$workersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$workersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerServiceAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  jobRequests<T extends Prisma.Area$jobRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$jobRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -962,6 +1193,7 @@ export interface Prisma__AreaClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface AreaFieldRefs {
   readonly id: Prisma.FieldRef<"Area", 'String'>
   readonly name: Prisma.FieldRef<"Area", 'String'>
+  readonly slug: Prisma.FieldRef<"Area", 'String'>
   readonly parentId: Prisma.FieldRef<"Area", 'String'>
 }
     
@@ -1404,6 +1636,54 @@ export type Area$childrenArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.AreaScalarFieldEnum | Prisma.AreaScalarFieldEnum[]
+}
+
+/**
+ * Area.workers
+ */
+export type Area$workersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerServiceArea
+   */
+  select?: Prisma.WorkerServiceAreaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkerServiceArea
+   */
+  omit?: Prisma.WorkerServiceAreaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkerServiceAreaInclude<ExtArgs> | null
+  where?: Prisma.WorkerServiceAreaWhereInput
+  orderBy?: Prisma.WorkerServiceAreaOrderByWithRelationInput | Prisma.WorkerServiceAreaOrderByWithRelationInput[]
+  cursor?: Prisma.WorkerServiceAreaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkerServiceAreaScalarFieldEnum | Prisma.WorkerServiceAreaScalarFieldEnum[]
+}
+
+/**
+ * Area.jobRequests
+ */
+export type Area$jobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobRequest
+   */
+  select?: Prisma.JobRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobRequest
+   */
+  omit?: Prisma.JobRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobRequestInclude<ExtArgs> | null
+  where?: Prisma.JobRequestWhereInput
+  orderBy?: Prisma.JobRequestOrderByWithRelationInput | Prisma.JobRequestOrderByWithRelationInput[]
+  cursor?: Prisma.JobRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobRequestScalarFieldEnum | Prisma.JobRequestScalarFieldEnum[]
 }
 
 /**

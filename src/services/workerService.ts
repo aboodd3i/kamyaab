@@ -73,7 +73,7 @@ export async function createWorker(input: CreateWorkerInput): Promise<WorkerDTO>
 
   // Pre-check for duplicate phone — improves UX with a fast 409
   // but does NOT guarantee correctness under concurrent requests.
-  const existing = await prisma.workerProfile.findUnique({
+  const existing = await prisma.workerProfile.findFirst({
     where: { phone },
     select: { id: true },
   });

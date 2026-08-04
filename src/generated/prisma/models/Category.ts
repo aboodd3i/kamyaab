@@ -158,11 +158,15 @@ export type CategoryWhereInput = {
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   id?: Prisma.StringFilter<"Category"> | string
   name?: Prisma.StringFilter<"Category"> | string
+  workers?: Prisma.WorkerCategoryListRelationFilter
+  jobRequests?: Prisma.JobRequestListRelationFilter
 }
 
 export type CategoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  workers?: Prisma.WorkerCategoryOrderByRelationAggregateInput
+  jobRequests?: Prisma.JobRequestOrderByRelationAggregateInput
 }
 
 export type CategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -171,6 +175,8 @@ export type CategoryWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   OR?: Prisma.CategoryWhereInput[]
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
+  workers?: Prisma.WorkerCategoryListRelationFilter
+  jobRequests?: Prisma.JobRequestListRelationFilter
 }, "id" | "name">
 
 export type CategoryOrderByWithAggregationInput = {
@@ -192,21 +198,29 @@ export type CategoryScalarWhereWithAggregatesInput = {
 export type CategoryCreateInput = {
   id?: string
   name: string
+  workers?: Prisma.WorkerCategoryCreateNestedManyWithoutCategoryInput
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutCategoryInput
 }
 
 export type CategoryUncheckedCreateInput = {
   id?: string
   name: string
+  workers?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutCategoryInput
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutCategoryInput
 }
 
 export type CategoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  workers?: Prisma.WorkerCategoryUpdateManyWithoutCategoryNestedInput
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutCategoryNestedInput
 }
 
 export type CategoryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  workers?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutCategoryNestedInput
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutCategoryNestedInput
 }
 
 export type CategoryCreateManyInput = {
@@ -239,11 +253,165 @@ export type CategoryMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
 }
 
+export type CategoryScalarRelationFilter = {
+  is?: Prisma.CategoryWhereInput
+  isNot?: Prisma.CategoryWhereInput
+}
+
+export type CategoryCreateNestedOneWithoutWorkersInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutWorkersInput, Prisma.CategoryUncheckedCreateWithoutWorkersInput>
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutWorkersInput
+  connect?: Prisma.CategoryWhereUniqueInput
+}
+
+export type CategoryUpdateOneRequiredWithoutWorkersNestedInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutWorkersInput, Prisma.CategoryUncheckedCreateWithoutWorkersInput>
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutWorkersInput
+  upsert?: Prisma.CategoryUpsertWithoutWorkersInput
+  connect?: Prisma.CategoryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CategoryUpdateToOneWithWhereWithoutWorkersInput, Prisma.CategoryUpdateWithoutWorkersInput>, Prisma.CategoryUncheckedUpdateWithoutWorkersInput>
+}
+
+export type CategoryCreateNestedOneWithoutJobRequestsInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutJobRequestsInput, Prisma.CategoryUncheckedCreateWithoutJobRequestsInput>
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutJobRequestsInput
+  connect?: Prisma.CategoryWhereUniqueInput
+}
+
+export type CategoryUpdateOneRequiredWithoutJobRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutJobRequestsInput, Prisma.CategoryUncheckedCreateWithoutJobRequestsInput>
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutJobRequestsInput
+  upsert?: Prisma.CategoryUpsertWithoutJobRequestsInput
+  connect?: Prisma.CategoryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CategoryUpdateToOneWithWhereWithoutJobRequestsInput, Prisma.CategoryUpdateWithoutJobRequestsInput>, Prisma.CategoryUncheckedUpdateWithoutJobRequestsInput>
+}
+
+export type CategoryCreateWithoutWorkersInput = {
+  id?: string
+  name: string
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutCategoryInput
+}
+
+export type CategoryUncheckedCreateWithoutWorkersInput = {
+  id?: string
+  name: string
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutCategoryInput
+}
+
+export type CategoryCreateOrConnectWithoutWorkersInput = {
+  where: Prisma.CategoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.CategoryCreateWithoutWorkersInput, Prisma.CategoryUncheckedCreateWithoutWorkersInput>
+}
+
+export type CategoryUpsertWithoutWorkersInput = {
+  update: Prisma.XOR<Prisma.CategoryUpdateWithoutWorkersInput, Prisma.CategoryUncheckedUpdateWithoutWorkersInput>
+  create: Prisma.XOR<Prisma.CategoryCreateWithoutWorkersInput, Prisma.CategoryUncheckedCreateWithoutWorkersInput>
+  where?: Prisma.CategoryWhereInput
+}
+
+export type CategoryUpdateToOneWithWhereWithoutWorkersInput = {
+  where?: Prisma.CategoryWhereInput
+  data: Prisma.XOR<Prisma.CategoryUpdateWithoutWorkersInput, Prisma.CategoryUncheckedUpdateWithoutWorkersInput>
+}
+
+export type CategoryUpdateWithoutWorkersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutCategoryNestedInput
+}
+
+export type CategoryUncheckedUpdateWithoutWorkersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutCategoryNestedInput
+}
+
+export type CategoryCreateWithoutJobRequestsInput = {
+  id?: string
+  name: string
+  workers?: Prisma.WorkerCategoryCreateNestedManyWithoutCategoryInput
+}
+
+export type CategoryUncheckedCreateWithoutJobRequestsInput = {
+  id?: string
+  name: string
+  workers?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutCategoryInput
+}
+
+export type CategoryCreateOrConnectWithoutJobRequestsInput = {
+  where: Prisma.CategoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.CategoryCreateWithoutJobRequestsInput, Prisma.CategoryUncheckedCreateWithoutJobRequestsInput>
+}
+
+export type CategoryUpsertWithoutJobRequestsInput = {
+  update: Prisma.XOR<Prisma.CategoryUpdateWithoutJobRequestsInput, Prisma.CategoryUncheckedUpdateWithoutJobRequestsInput>
+  create: Prisma.XOR<Prisma.CategoryCreateWithoutJobRequestsInput, Prisma.CategoryUncheckedCreateWithoutJobRequestsInput>
+  where?: Prisma.CategoryWhereInput
+}
+
+export type CategoryUpdateToOneWithWhereWithoutJobRequestsInput = {
+  where?: Prisma.CategoryWhereInput
+  data: Prisma.XOR<Prisma.CategoryUpdateWithoutJobRequestsInput, Prisma.CategoryUncheckedUpdateWithoutJobRequestsInput>
+}
+
+export type CategoryUpdateWithoutJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  workers?: Prisma.WorkerCategoryUpdateManyWithoutCategoryNestedInput
+}
+
+export type CategoryUncheckedUpdateWithoutJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  workers?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutCategoryNestedInput
+}
+
+
+/**
+ * Count Type CategoryCountOutputType
+ */
+
+export type CategoryCountOutputType = {
+  workers: number
+  jobRequests: number
+}
+
+export type CategoryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  workers?: boolean | CategoryCountOutputTypeCountWorkersArgs
+  jobRequests?: boolean | CategoryCountOutputTypeCountJobRequestsArgs
+}
+
+/**
+ * CategoryCountOutputType without action
+ */
+export type CategoryCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CategoryCountOutputType
+   */
+  select?: Prisma.CategoryCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CategoryCountOutputType without action
+ */
+export type CategoryCountOutputTypeCountWorkersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkerCategoryWhereInput
+}
+
+/**
+ * CategoryCountOutputType without action
+ */
+export type CategoryCountOutputTypeCountJobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobRequestWhereInput
+}
 
 
 export type CategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  workers?: boolean | Prisma.Category$workersArgs<ExtArgs>
+  jobRequests?: boolean | Prisma.Category$jobRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.CategoryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["category"]>
 
 export type CategorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -262,10 +430,20 @@ export type CategorySelectScalar = {
 }
 
 export type CategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name", ExtArgs["result"]["category"]>
+export type CategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  workers?: boolean | Prisma.Category$workersArgs<ExtArgs>
+  jobRequests?: boolean | Prisma.Category$jobRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.CategoryCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type CategoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type CategoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $CategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Category"
-  objects: {}
+  objects: {
+    workers: Prisma.$WorkerCategoryPayload<ExtArgs>[]
+    jobRequests: Prisma.$JobRequestPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
@@ -663,6 +841,8 @@ readonly fields: CategoryFieldRefs;
  */
 export interface Prisma__CategoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  workers<T extends Prisma.Category$workersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Category$workersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  jobRequests<T extends Prisma.Category$jobRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Category$jobRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -711,6 +891,10 @@ export type CategoryFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
+  /**
    * Filter, which Category to fetch.
    */
   where: Prisma.CategoryWhereUniqueInput
@@ -729,6 +913,10 @@ export type CategoryFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
+  /**
    * Filter, which Category to fetch.
    */
   where: Prisma.CategoryWhereUniqueInput
@@ -746,6 +934,10 @@ export type CategoryFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Category
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
   /**
    * Filter, which Category to fetch.
    */
@@ -795,6 +987,10 @@ export type CategoryFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
+  /**
    * Filter, which Category to fetch.
    */
   where?: Prisma.CategoryWhereInput
@@ -842,6 +1038,10 @@ export type CategoryFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Category
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
   /**
    * Filter, which Categories to fetch.
    */
@@ -891,6 +1091,10 @@ export type CategoryCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
+  /**
    * The data needed to create a Category.
    */
   data: Prisma.XOR<Prisma.CategoryCreateInput, Prisma.CategoryUncheckedCreateInput>
@@ -938,6 +1142,10 @@ export type CategoryUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Category
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
   /**
    * The data needed to update a Category.
    */
@@ -1005,6 +1213,10 @@ export type CategoryUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
+  /**
    * The filter to search for the Category to update in case it exists.
    */
   where: Prisma.CategoryWhereUniqueInput
@@ -1031,6 +1243,10 @@ export type CategoryDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
+  /**
    * Filter which Category to delete.
    */
   where: Prisma.CategoryWhereUniqueInput
@@ -1051,6 +1267,54 @@ export type CategoryDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * Category.workers
+ */
+export type Category$workersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerCategory
+   */
+  select?: Prisma.WorkerCategorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkerCategory
+   */
+  omit?: Prisma.WorkerCategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkerCategoryInclude<ExtArgs> | null
+  where?: Prisma.WorkerCategoryWhereInput
+  orderBy?: Prisma.WorkerCategoryOrderByWithRelationInput | Prisma.WorkerCategoryOrderByWithRelationInput[]
+  cursor?: Prisma.WorkerCategoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkerCategoryScalarFieldEnum | Prisma.WorkerCategoryScalarFieldEnum[]
+}
+
+/**
+ * Category.jobRequests
+ */
+export type Category$jobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobRequest
+   */
+  select?: Prisma.JobRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobRequest
+   */
+  omit?: Prisma.JobRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobRequestInclude<ExtArgs> | null
+  where?: Prisma.JobRequestWhereInput
+  orderBy?: Prisma.JobRequestOrderByWithRelationInput | Prisma.JobRequestOrderByWithRelationInput[]
+  cursor?: Prisma.JobRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobRequestScalarFieldEnum | Prisma.JobRequestScalarFieldEnum[]
+}
+
+/**
  * Category without action
  */
 export type CategoryDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1062,4 +1326,8 @@ export type CategoryDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Category
    */
   omit?: Prisma.CategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
 }

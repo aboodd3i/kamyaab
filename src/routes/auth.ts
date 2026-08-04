@@ -41,7 +41,7 @@ router.post('/login/staff', async (req: Request, res: Response, next: NextFuncti
 
     // Resolve internal user by the stable Supabase Auth ID
     const dbUser = await prisma.user.findUnique({
-      where: { authUserId: data.user.id },
+      where: { id: data.user.id },
       select: { id: true, role: true },
     });
 

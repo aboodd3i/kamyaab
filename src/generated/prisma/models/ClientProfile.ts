@@ -28,18 +28,24 @@ export type ClientProfileMinAggregateOutputType = {
   id: string | null
   userId: string | null
   name: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ClientProfileMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   name: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ClientProfileCountAggregateOutputType = {
   id: number
   userId: number
   name: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -48,18 +54,24 @@ export type ClientProfileMinAggregateInputType = {
   id?: true
   userId?: true
   name?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ClientProfileMaxAggregateInputType = {
   id?: true
   userId?: true
   name?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ClientProfileCountAggregateInputType = {
   id?: true
   userId?: true
   name?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -139,6 +151,8 @@ export type ClientProfileGroupByOutputType = {
   id: string
   userId: string
   name: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: ClientProfileCountAggregateOutputType | null
   _min: ClientProfileMinAggregateOutputType | null
   _max: ClientProfileMaxAggregateOutputType | null
@@ -166,14 +180,20 @@ export type ClientProfileWhereInput = {
   id?: Prisma.StringFilter<"ClientProfile"> | string
   userId?: Prisma.StringFilter<"ClientProfile"> | string
   name?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  jobRequests?: Prisma.JobRequestListRelationFilter
 }
 
 export type ClientProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  jobRequests?: Prisma.JobRequestOrderByRelationAggregateInput
 }
 
 export type ClientProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -183,13 +203,18 @@ export type ClientProfileWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ClientProfileWhereInput[]
   NOT?: Prisma.ClientProfileWhereInput | Prisma.ClientProfileWhereInput[]
   name?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  jobRequests?: Prisma.JobRequestListRelationFilter
 }, "id" | "userId">
 
 export type ClientProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClientProfileCountOrderByAggregateInput
   _max?: Prisma.ClientProfileMaxOrderByAggregateInput
   _min?: Prisma.ClientProfileMinOrderByAggregateInput
@@ -202,47 +227,67 @@ export type ClientProfileScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ClientProfile"> | string
   userId?: Prisma.StringWithAggregatesFilter<"ClientProfile"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClientProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ClientProfile"> | Date | string
 }
 
 export type ClientProfileCreateInput = {
   id?: string
   name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutClientProfileInput
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutClientInput
 }
 
 export type ClientProfileUncheckedCreateInput = {
   id?: string
   userId: string
   name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutClientProfileNestedInput
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutClientNestedInput
 }
 
 export type ClientProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientProfileCreateManyInput = {
   id?: string
   userId: string
   name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClientProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClientProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClientProfileNullableScalarRelationFilter = {
@@ -254,18 +299,29 @@ export type ClientProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClientProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClientProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type ClientProfileScalarRelationFilter = {
+  is?: Prisma.ClientProfileWhereInput
+  isNot?: Prisma.ClientProfileWhereInput
 }
 
 export type ClientProfileCreateNestedOneWithoutUserInput = {
@@ -300,14 +356,34 @@ export type ClientProfileUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientProfileUpdateToOneWithWhereWithoutUserInput, Prisma.ClientProfileUpdateWithoutUserInput>, Prisma.ClientProfileUncheckedUpdateWithoutUserInput>
 }
 
+export type ClientProfileCreateNestedOneWithoutJobRequestsInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutJobRequestsInput, Prisma.ClientProfileUncheckedCreateWithoutJobRequestsInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutJobRequestsInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+}
+
+export type ClientProfileUpdateOneRequiredWithoutJobRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutJobRequestsInput, Prisma.ClientProfileUncheckedCreateWithoutJobRequestsInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutJobRequestsInput
+  upsert?: Prisma.ClientProfileUpsertWithoutJobRequestsInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientProfileUpdateToOneWithWhereWithoutJobRequestsInput, Prisma.ClientProfileUpdateWithoutJobRequestsInput>, Prisma.ClientProfileUncheckedUpdateWithoutJobRequestsInput>
+}
+
 export type ClientProfileCreateWithoutUserInput = {
   id?: string
   name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  jobRequests?: Prisma.JobRequestCreateNestedManyWithoutClientInput
 }
 
 export type ClientProfileUncheckedCreateWithoutUserInput = {
   id?: string
   name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  jobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientProfileCreateOrConnectWithoutUserInput = {
@@ -329,26 +405,115 @@ export type ClientProfileUpdateToOneWithWhereWithoutUserInput = {
 export type ClientProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobRequests?: Prisma.JobRequestUpdateManyWithoutClientNestedInput
 }
 
 export type ClientProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutClientNestedInput
 }
 
+export type ClientProfileCreateWithoutJobRequestsInput = {
+  id?: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutClientProfileInput
+}
+
+export type ClientProfileUncheckedCreateWithoutJobRequestsInput = {
+  id?: string
+  userId: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ClientProfileCreateOrConnectWithoutJobRequestsInput = {
+  where: Prisma.ClientProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutJobRequestsInput, Prisma.ClientProfileUncheckedCreateWithoutJobRequestsInput>
+}
+
+export type ClientProfileUpsertWithoutJobRequestsInput = {
+  update: Prisma.XOR<Prisma.ClientProfileUpdateWithoutJobRequestsInput, Prisma.ClientProfileUncheckedUpdateWithoutJobRequestsInput>
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutJobRequestsInput, Prisma.ClientProfileUncheckedCreateWithoutJobRequestsInput>
+  where?: Prisma.ClientProfileWhereInput
+}
+
+export type ClientProfileUpdateToOneWithWhereWithoutJobRequestsInput = {
+  where?: Prisma.ClientProfileWhereInput
+  data: Prisma.XOR<Prisma.ClientProfileUpdateWithoutJobRequestsInput, Prisma.ClientProfileUncheckedUpdateWithoutJobRequestsInput>
+}
+
+export type ClientProfileUpdateWithoutJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutClientProfileNestedInput
+}
+
+export type ClientProfileUncheckedUpdateWithoutJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type ClientProfileCountOutputType
+ */
+
+export type ClientProfileCountOutputType = {
+  jobRequests: number
+}
+
+export type ClientProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  jobRequests?: boolean | ClientProfileCountOutputTypeCountJobRequestsArgs
+}
+
+/**
+ * ClientProfileCountOutputType without action
+ */
+export type ClientProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClientProfileCountOutputType
+   */
+  select?: Prisma.ClientProfileCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ClientProfileCountOutputType without action
+ */
+export type ClientProfileCountOutputTypeCountJobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobRequestWhereInput
+}
 
 
 export type ClientProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   name?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  jobRequests?: boolean | Prisma.ClientProfile$jobRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.ClientProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clientProfile"]>
 
 export type ClientProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   name?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clientProfile"]>
 
@@ -356,6 +521,8 @@ export type ClientProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   userId?: boolean
   name?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clientProfile"]>
 
@@ -363,11 +530,15 @@ export type ClientProfileSelectScalar = {
   id?: boolean
   userId?: boolean
   name?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ClientProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name", ExtArgs["result"]["clientProfile"]>
+export type ClientProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["clientProfile"]>
 export type ClientProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  jobRequests?: boolean | Prisma.ClientProfile$jobRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.ClientProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClientProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -380,11 +551,14 @@ export type $ClientProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "ClientProfile"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    jobRequests: Prisma.$JobRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
     name: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["clientProfile"]>
   composites: {}
 }
@@ -780,6 +954,7 @@ readonly fields: ClientProfileFieldRefs;
 export interface Prisma__ClientProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  jobRequests<T extends Prisma.ClientProfile$jobRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$jobRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -812,6 +987,8 @@ export interface ClientProfileFieldRefs {
   readonly id: Prisma.FieldRef<"ClientProfile", 'String'>
   readonly userId: Prisma.FieldRef<"ClientProfile", 'String'>
   readonly name: Prisma.FieldRef<"ClientProfile", 'String'>
+  readonly createdAt: Prisma.FieldRef<"ClientProfile", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"ClientProfile", 'DateTime'>
 }
     
 
@@ -1210,6 +1387,30 @@ export type ClientProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many ClientProfiles to delete.
    */
   limit?: number
+}
+
+/**
+ * ClientProfile.jobRequests
+ */
+export type ClientProfile$jobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobRequest
+   */
+  select?: Prisma.JobRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobRequest
+   */
+  omit?: Prisma.JobRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobRequestInclude<ExtArgs> | null
+  where?: Prisma.JobRequestWhereInput
+  orderBy?: Prisma.JobRequestOrderByWithRelationInput | Prisma.JobRequestOrderByWithRelationInput[]
+  cursor?: Prisma.JobRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobRequestScalarFieldEnum | Prisma.JobRequestScalarFieldEnum[]
 }
 
 /**

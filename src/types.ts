@@ -36,6 +36,7 @@ export interface MeResponseData {
   role: 'CLIENT' | 'AGENT' | 'ADMIN' | 'WORKER';
   phone?: string | null;
   email?: string | null;
+  createdAt: Date;
 }
 
 // ---------------------------------------------------------------------------

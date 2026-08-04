@@ -20,8 +20,22 @@ export type WorkerProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$W
 
 export type AggregateWorkerProfile = {
   _count: WorkerProfileCountAggregateOutputType | null
+  _avg: WorkerProfileAvgAggregateOutputType | null
+  _sum: WorkerProfileSumAggregateOutputType | null
   _min: WorkerProfileMinAggregateOutputType | null
   _max: WorkerProfileMaxAggregateOutputType | null
+}
+
+export type WorkerProfileAvgAggregateOutputType = {
+  rating: runtime.Decimal | null
+  ratingCount: number | null
+  completedJobsCount: number | null
+}
+
+export type WorkerProfileSumAggregateOutputType = {
+  rating: runtime.Decimal | null
+  ratingCount: number | null
+  completedJobsCount: number | null
 }
 
 export type WorkerProfileMinAggregateOutputType = {
@@ -29,6 +43,27 @@ export type WorkerProfileMinAggregateOutputType = {
   userId: string | null
   name: string | null
   phone: string | null
+  status: $Enums.WorkerStatus | null
+  suspensionReason: string | null
+  agentId: string | null
+  cnicNumber: string | null
+  cnicFrontPath: string | null
+  cnicBackPath: string | null
+  referenceName: string | null
+  referencePhone: string | null
+  referenceStatus: $Enums.ReferenceCheckStatus | null
+  referenceVerifiedById: string | null
+  referenceVerifiedAt: Date | null
+  identityChecked: boolean | null
+  phoneConfirmed: boolean | null
+  backgroundChecked: boolean | null
+  skillAssessed: boolean | null
+  rating: runtime.Decimal | null
+  ratingCount: number | null
+  completedJobsCount: number | null
+  isPriorityListed: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type WorkerProfileMaxAggregateOutputType = {
@@ -36,6 +71,27 @@ export type WorkerProfileMaxAggregateOutputType = {
   userId: string | null
   name: string | null
   phone: string | null
+  status: $Enums.WorkerStatus | null
+  suspensionReason: string | null
+  agentId: string | null
+  cnicNumber: string | null
+  cnicFrontPath: string | null
+  cnicBackPath: string | null
+  referenceName: string | null
+  referencePhone: string | null
+  referenceStatus: $Enums.ReferenceCheckStatus | null
+  referenceVerifiedById: string | null
+  referenceVerifiedAt: Date | null
+  identityChecked: boolean | null
+  phoneConfirmed: boolean | null
+  backgroundChecked: boolean | null
+  skillAssessed: boolean | null
+  rating: runtime.Decimal | null
+  ratingCount: number | null
+  completedJobsCount: number | null
+  isPriorityListed: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type WorkerProfileCountAggregateOutputType = {
@@ -43,15 +99,69 @@ export type WorkerProfileCountAggregateOutputType = {
   userId: number
   name: number
   phone: number
+  status: number
+  suspensionReason: number
+  agentId: number
+  cnicNumber: number
+  cnicFrontPath: number
+  cnicBackPath: number
+  referenceName: number
+  referencePhone: number
+  referenceStatus: number
+  referenceVerifiedById: number
+  referenceVerifiedAt: number
+  identityChecked: number
+  phoneConfirmed: number
+  backgroundChecked: number
+  skillAssessed: number
+  rating: number
+  ratingCount: number
+  completedJobsCount: number
+  isPriorityListed: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
+
+export type WorkerProfileAvgAggregateInputType = {
+  rating?: true
+  ratingCount?: true
+  completedJobsCount?: true
+}
+
+export type WorkerProfileSumAggregateInputType = {
+  rating?: true
+  ratingCount?: true
+  completedJobsCount?: true
+}
 
 export type WorkerProfileMinAggregateInputType = {
   id?: true
   userId?: true
   name?: true
   phone?: true
+  status?: true
+  suspensionReason?: true
+  agentId?: true
+  cnicNumber?: true
+  cnicFrontPath?: true
+  cnicBackPath?: true
+  referenceName?: true
+  referencePhone?: true
+  referenceStatus?: true
+  referenceVerifiedById?: true
+  referenceVerifiedAt?: true
+  identityChecked?: true
+  phoneConfirmed?: true
+  backgroundChecked?: true
+  skillAssessed?: true
+  rating?: true
+  ratingCount?: true
+  completedJobsCount?: true
+  isPriorityListed?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type WorkerProfileMaxAggregateInputType = {
@@ -59,6 +169,27 @@ export type WorkerProfileMaxAggregateInputType = {
   userId?: true
   name?: true
   phone?: true
+  status?: true
+  suspensionReason?: true
+  agentId?: true
+  cnicNumber?: true
+  cnicFrontPath?: true
+  cnicBackPath?: true
+  referenceName?: true
+  referencePhone?: true
+  referenceStatus?: true
+  referenceVerifiedById?: true
+  referenceVerifiedAt?: true
+  identityChecked?: true
+  phoneConfirmed?: true
+  backgroundChecked?: true
+  skillAssessed?: true
+  rating?: true
+  ratingCount?: true
+  completedJobsCount?: true
+  isPriorityListed?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type WorkerProfileCountAggregateInputType = {
@@ -66,6 +197,27 @@ export type WorkerProfileCountAggregateInputType = {
   userId?: true
   name?: true
   phone?: true
+  status?: true
+  suspensionReason?: true
+  agentId?: true
+  cnicNumber?: true
+  cnicFrontPath?: true
+  cnicBackPath?: true
+  referenceName?: true
+  referencePhone?: true
+  referenceStatus?: true
+  referenceVerifiedById?: true
+  referenceVerifiedAt?: true
+  identityChecked?: true
+  phoneConfirmed?: true
+  backgroundChecked?: true
+  skillAssessed?: true
+  rating?: true
+  ratingCount?: true
+  completedJobsCount?: true
+  isPriorityListed?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -107,6 +259,18 @@ export type WorkerProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: WorkerProfileAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: WorkerProfileSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: WorkerProfileMinAggregateInputType
@@ -137,16 +301,41 @@ export type WorkerProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: WorkerProfileCountAggregateInputType | true
+  _avg?: WorkerProfileAvgAggregateInputType
+  _sum?: WorkerProfileSumAggregateInputType
   _min?: WorkerProfileMinAggregateInputType
   _max?: WorkerProfileMaxAggregateInputType
 }
 
 export type WorkerProfileGroupByOutputType = {
   id: string
-  userId: string
+  userId: string | null
   name: string
   phone: string
+  status: $Enums.WorkerStatus
+  suspensionReason: string | null
+  agentId: string | null
+  cnicNumber: string | null
+  cnicFrontPath: string | null
+  cnicBackPath: string | null
+  referenceName: string | null
+  referencePhone: string | null
+  referenceStatus: $Enums.ReferenceCheckStatus
+  referenceVerifiedById: string | null
+  referenceVerifiedAt: Date | null
+  identityChecked: boolean
+  phoneConfirmed: boolean
+  backgroundChecked: boolean
+  skillAssessed: boolean
+  rating: runtime.Decimal
+  ratingCount: number
+  completedJobsCount: number
+  isPriorityListed: boolean
+  createdAt: Date
+  updatedAt: Date
   _count: WorkerProfileCountAggregateOutputType | null
+  _avg: WorkerProfileAvgAggregateOutputType | null
+  _sum: WorkerProfileSumAggregateOutputType | null
   _min: WorkerProfileMinAggregateOutputType | null
   _max: WorkerProfileMaxAggregateOutputType | null
 }
@@ -171,39 +360,149 @@ export type WorkerProfileWhereInput = {
   OR?: Prisma.WorkerProfileWhereInput[]
   NOT?: Prisma.WorkerProfileWhereInput | Prisma.WorkerProfileWhereInput[]
   id?: Prisma.StringFilter<"WorkerProfile"> | string
-  userId?: Prisma.StringFilter<"WorkerProfile"> | string
+  userId?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
   name?: Prisma.StringFilter<"WorkerProfile"> | string
   phone?: Prisma.StringFilter<"WorkerProfile"> | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  status?: Prisma.EnumWorkerStatusFilter<"WorkerProfile"> | $Enums.WorkerStatus
+  suspensionReason?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  agentId?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicNumber?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicFrontPath?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicBackPath?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceName?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referencePhone?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFilter<"WorkerProfile"> | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceVerifiedAt?: Prisma.DateTimeNullableFilter<"WorkerProfile"> | Date | string | null
+  identityChecked?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  phoneConfirmed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  backgroundChecked?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  skillAssessed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  rating?: Prisma.DecimalFilter<"WorkerProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFilter<"WorkerProfile"> | number
+  completedJobsCount?: Prisma.IntFilter<"WorkerProfile"> | number
+  isPriorityListed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"WorkerProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"WorkerProfile"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  agent?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  referenceVerifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  categories?: Prisma.WorkerCategoryListRelationFilter
+  serviceAreas?: Prisma.WorkerServiceAreaListRelationFilter
+  targetedJobRequests?: Prisma.JobRequestListRelationFilter
+  invitations?: Prisma.JobInvitationListRelationFilter
+  bookings?: Prisma.BookingListRelationFilter
+  availability?: Prisma.XOR<Prisma.WorkerAvailabilityNullableScalarRelationFilter, Prisma.WorkerAvailabilityWhereInput> | null
 }
 
 export type WorkerProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  suspensionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicFrontPath?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicBackPath?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceName?: Prisma.SortOrderInput | Prisma.SortOrder
+  referencePhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceStatus?: Prisma.SortOrder
+  referenceVerifiedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  identityChecked?: Prisma.SortOrder
+  phoneConfirmed?: Prisma.SortOrder
+  backgroundChecked?: Prisma.SortOrder
+  skillAssessed?: Prisma.SortOrder
+  rating?: Prisma.SortOrder
+  ratingCount?: Prisma.SortOrder
+  completedJobsCount?: Prisma.SortOrder
+  isPriorityListed?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  agent?: Prisma.UserOrderByWithRelationInput
+  referenceVerifiedBy?: Prisma.UserOrderByWithRelationInput
+  categories?: Prisma.WorkerCategoryOrderByRelationAggregateInput
+  serviceAreas?: Prisma.WorkerServiceAreaOrderByRelationAggregateInput
+  targetedJobRequests?: Prisma.JobRequestOrderByRelationAggregateInput
+  invitations?: Prisma.JobInvitationOrderByRelationAggregateInput
+  bookings?: Prisma.BookingOrderByRelationAggregateInput
+  availability?: Prisma.WorkerAvailabilityOrderByWithRelationInput
 }
 
 export type WorkerProfileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   userId?: string
+  phone?: string
+  cnicNumber?: string
   AND?: Prisma.WorkerProfileWhereInput | Prisma.WorkerProfileWhereInput[]
   OR?: Prisma.WorkerProfileWhereInput[]
   NOT?: Prisma.WorkerProfileWhereInput | Prisma.WorkerProfileWhereInput[]
   name?: Prisma.StringFilter<"WorkerProfile"> | string
-  phone?: Prisma.StringFilter<"WorkerProfile"> | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "userId">
+  status?: Prisma.EnumWorkerStatusFilter<"WorkerProfile"> | $Enums.WorkerStatus
+  suspensionReason?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  agentId?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicFrontPath?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicBackPath?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceName?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referencePhone?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFilter<"WorkerProfile"> | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceVerifiedAt?: Prisma.DateTimeNullableFilter<"WorkerProfile"> | Date | string | null
+  identityChecked?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  phoneConfirmed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  backgroundChecked?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  skillAssessed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  rating?: Prisma.DecimalFilter<"WorkerProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFilter<"WorkerProfile"> | number
+  completedJobsCount?: Prisma.IntFilter<"WorkerProfile"> | number
+  isPriorityListed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"WorkerProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"WorkerProfile"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  agent?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  referenceVerifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  categories?: Prisma.WorkerCategoryListRelationFilter
+  serviceAreas?: Prisma.WorkerServiceAreaListRelationFilter
+  targetedJobRequests?: Prisma.JobRequestListRelationFilter
+  invitations?: Prisma.JobInvitationListRelationFilter
+  bookings?: Prisma.BookingListRelationFilter
+  availability?: Prisma.XOR<Prisma.WorkerAvailabilityNullableScalarRelationFilter, Prisma.WorkerAvailabilityWhereInput> | null
+}, "id" | "userId" | "phone" | "cnicNumber">
 
 export type WorkerProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  suspensionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicFrontPath?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicBackPath?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceName?: Prisma.SortOrderInput | Prisma.SortOrder
+  referencePhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceStatus?: Prisma.SortOrder
+  referenceVerifiedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  identityChecked?: Prisma.SortOrder
+  phoneConfirmed?: Prisma.SortOrder
+  backgroundChecked?: Prisma.SortOrder
+  skillAssessed?: Prisma.SortOrder
+  rating?: Prisma.SortOrder
+  ratingCount?: Prisma.SortOrder
+  completedJobsCount?: Prisma.SortOrder
+  isPriorityListed?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.WorkerProfileCountOrderByAggregateInput
+  _avg?: Prisma.WorkerProfileAvgOrderByAggregateInput
   _max?: Prisma.WorkerProfileMaxOrderByAggregateInput
   _min?: Prisma.WorkerProfileMinOrderByAggregateInput
+  _sum?: Prisma.WorkerProfileSumOrderByAggregateInput
 }
 
 export type WorkerProfileScalarWhereWithAggregatesInput = {
@@ -211,57 +510,252 @@ export type WorkerProfileScalarWhereWithAggregatesInput = {
   OR?: Prisma.WorkerProfileScalarWhereWithAggregatesInput[]
   NOT?: Prisma.WorkerProfileScalarWhereWithAggregatesInput | Prisma.WorkerProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"WorkerProfile"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"WorkerProfile"> | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"WorkerProfile"> | string
   phone?: Prisma.StringWithAggregatesFilter<"WorkerProfile"> | string
+  status?: Prisma.EnumWorkerStatusWithAggregatesFilter<"WorkerProfile"> | $Enums.WorkerStatus
+  suspensionReason?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  agentId?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  cnicNumber?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  cnicFrontPath?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  cnicBackPath?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  referenceName?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  referencePhone?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusWithAggregatesFilter<"WorkerProfile"> | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.StringNullableWithAggregatesFilter<"WorkerProfile"> | string | null
+  referenceVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WorkerProfile"> | Date | string | null
+  identityChecked?: Prisma.BoolWithAggregatesFilter<"WorkerProfile"> | boolean
+  phoneConfirmed?: Prisma.BoolWithAggregatesFilter<"WorkerProfile"> | boolean
+  backgroundChecked?: Prisma.BoolWithAggregatesFilter<"WorkerProfile"> | boolean
+  skillAssessed?: Prisma.BoolWithAggregatesFilter<"WorkerProfile"> | boolean
+  rating?: Prisma.DecimalWithAggregatesFilter<"WorkerProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntWithAggregatesFilter<"WorkerProfile"> | number
+  completedJobsCount?: Prisma.IntWithAggregatesFilter<"WorkerProfile"> | number
+  isPriorityListed?: Prisma.BoolWithAggregatesFilter<"WorkerProfile"> | boolean
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"WorkerProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"WorkerProfile"> | Date | string
 }
 
 export type WorkerProfileCreateInput = {
   id?: string
   name: string
   phone: string
-  user: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
 }
 
 export type WorkerProfileUncheckedCreateInput = {
   id?: string
-  userId: string
+  userId?: string | null
   name: string
   phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
 }
 
 export type WorkerProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
-  user?: Prisma.UserUpdateOneRequiredWithoutWorkerProfileNestedInput
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
 }
 
 export type WorkerProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
 }
 
 export type WorkerProfileCreateManyInput = {
   id?: string
-  userId: string
+  userId?: string | null
   name: string
   phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type WorkerProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkerProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WorkerProfileScalarRelationFilter = {
+  is?: Prisma.WorkerProfileWhereInput
+  isNot?: Prisma.WorkerProfileWhereInput
 }
 
 export type WorkerProfileNullableScalarRelationFilter = {
@@ -269,11 +763,48 @@ export type WorkerProfileNullableScalarRelationFilter = {
   isNot?: Prisma.WorkerProfileWhereInput | null
 }
 
+export type WorkerProfileListRelationFilter = {
+  every?: Prisma.WorkerProfileWhereInput
+  some?: Prisma.WorkerProfileWhereInput
+  none?: Prisma.WorkerProfileWhereInput
+}
+
+export type WorkerProfileOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type WorkerProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  suspensionReason?: Prisma.SortOrder
+  agentId?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontPath?: Prisma.SortOrder
+  cnicBackPath?: Prisma.SortOrder
+  referenceName?: Prisma.SortOrder
+  referencePhone?: Prisma.SortOrder
+  referenceStatus?: Prisma.SortOrder
+  referenceVerifiedById?: Prisma.SortOrder
+  referenceVerifiedAt?: Prisma.SortOrder
+  identityChecked?: Prisma.SortOrder
+  phoneConfirmed?: Prisma.SortOrder
+  backgroundChecked?: Prisma.SortOrder
+  skillAssessed?: Prisma.SortOrder
+  rating?: Prisma.SortOrder
+  ratingCount?: Prisma.SortOrder
+  completedJobsCount?: Prisma.SortOrder
+  isPriorityListed?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type WorkerProfileAvgOrderByAggregateInput = {
+  rating?: Prisma.SortOrder
+  ratingCount?: Prisma.SortOrder
+  completedJobsCount?: Prisma.SortOrder
 }
 
 export type WorkerProfileMaxOrderByAggregateInput = {
@@ -281,6 +812,27 @@ export type WorkerProfileMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  suspensionReason?: Prisma.SortOrder
+  agentId?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontPath?: Prisma.SortOrder
+  cnicBackPath?: Prisma.SortOrder
+  referenceName?: Prisma.SortOrder
+  referencePhone?: Prisma.SortOrder
+  referenceStatus?: Prisma.SortOrder
+  referenceVerifiedById?: Prisma.SortOrder
+  referenceVerifiedAt?: Prisma.SortOrder
+  identityChecked?: Prisma.SortOrder
+  phoneConfirmed?: Prisma.SortOrder
+  backgroundChecked?: Prisma.SortOrder
+  skillAssessed?: Prisma.SortOrder
+  rating?: Prisma.SortOrder
+  ratingCount?: Prisma.SortOrder
+  completedJobsCount?: Prisma.SortOrder
+  isPriorityListed?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type WorkerProfileMinOrderByAggregateInput = {
@@ -288,6 +840,47 @@ export type WorkerProfileMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  suspensionReason?: Prisma.SortOrder
+  agentId?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontPath?: Prisma.SortOrder
+  cnicBackPath?: Prisma.SortOrder
+  referenceName?: Prisma.SortOrder
+  referencePhone?: Prisma.SortOrder
+  referenceStatus?: Prisma.SortOrder
+  referenceVerifiedById?: Prisma.SortOrder
+  referenceVerifiedAt?: Prisma.SortOrder
+  identityChecked?: Prisma.SortOrder
+  phoneConfirmed?: Prisma.SortOrder
+  backgroundChecked?: Prisma.SortOrder
+  skillAssessed?: Prisma.SortOrder
+  rating?: Prisma.SortOrder
+  ratingCount?: Prisma.SortOrder
+  completedJobsCount?: Prisma.SortOrder
+  isPriorityListed?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type WorkerProfileSumOrderByAggregateInput = {
+  rating?: Prisma.SortOrder
+  ratingCount?: Prisma.SortOrder
+  completedJobsCount?: Prisma.SortOrder
+}
+
+export type WorkerProfileCreateNestedOneWithoutAvailabilityInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAvailabilityInput, Prisma.WorkerProfileUncheckedCreateWithoutAvailabilityInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutAvailabilityInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+}
+
+export type WorkerProfileUpdateOneRequiredWithoutAvailabilityNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAvailabilityInput, Prisma.WorkerProfileUncheckedCreateWithoutAvailabilityInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutAvailabilityInput
+  upsert?: Prisma.WorkerProfileUpsertWithoutAvailabilityInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutAvailabilityInput, Prisma.WorkerProfileUpdateWithoutAvailabilityInput>, Prisma.WorkerProfileUncheckedUpdateWithoutAvailabilityInput>
 }
 
 export type WorkerProfileCreateNestedOneWithoutUserInput = {
@@ -296,10 +889,38 @@ export type WorkerProfileCreateNestedOneWithoutUserInput = {
   connect?: Prisma.WorkerProfileWhereUniqueInput
 }
 
+export type WorkerProfileCreateNestedManyWithoutAgentInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAgentInput, Prisma.WorkerProfileUncheckedCreateWithoutAgentInput> | Prisma.WorkerProfileCreateWithoutAgentInput[] | Prisma.WorkerProfileUncheckedCreateWithoutAgentInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutAgentInput | Prisma.WorkerProfileCreateOrConnectWithoutAgentInput[]
+  createMany?: Prisma.WorkerProfileCreateManyAgentInputEnvelope
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+}
+
+export type WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput> | Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput[] | Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput | Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput[]
+  createMany?: Prisma.WorkerProfileCreateManyReferenceVerifiedByInputEnvelope
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+}
+
 export type WorkerProfileUncheckedCreateNestedOneWithoutUserInput = {
   create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutUserInput, Prisma.WorkerProfileUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutUserInput
   connect?: Prisma.WorkerProfileWhereUniqueInput
+}
+
+export type WorkerProfileUncheckedCreateNestedManyWithoutAgentInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAgentInput, Prisma.WorkerProfileUncheckedCreateWithoutAgentInput> | Prisma.WorkerProfileCreateWithoutAgentInput[] | Prisma.WorkerProfileUncheckedCreateWithoutAgentInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutAgentInput | Prisma.WorkerProfileCreateOrConnectWithoutAgentInput[]
+  createMany?: Prisma.WorkerProfileCreateManyAgentInputEnvelope
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+}
+
+export type WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput> | Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput[] | Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput | Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput[]
+  createMany?: Prisma.WorkerProfileCreateManyReferenceVerifiedByInputEnvelope
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
 }
 
 export type WorkerProfileUpdateOneWithoutUserNestedInput = {
@@ -312,6 +933,34 @@ export type WorkerProfileUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutUserInput, Prisma.WorkerProfileUpdateWithoutUserInput>, Prisma.WorkerProfileUncheckedUpdateWithoutUserInput>
 }
 
+export type WorkerProfileUpdateManyWithoutAgentNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAgentInput, Prisma.WorkerProfileUncheckedCreateWithoutAgentInput> | Prisma.WorkerProfileCreateWithoutAgentInput[] | Prisma.WorkerProfileUncheckedCreateWithoutAgentInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutAgentInput | Prisma.WorkerProfileCreateOrConnectWithoutAgentInput[]
+  upsert?: Prisma.WorkerProfileUpsertWithWhereUniqueWithoutAgentInput | Prisma.WorkerProfileUpsertWithWhereUniqueWithoutAgentInput[]
+  createMany?: Prisma.WorkerProfileCreateManyAgentInputEnvelope
+  set?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  disconnect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  delete?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  update?: Prisma.WorkerProfileUpdateWithWhereUniqueWithoutAgentInput | Prisma.WorkerProfileUpdateWithWhereUniqueWithoutAgentInput[]
+  updateMany?: Prisma.WorkerProfileUpdateManyWithWhereWithoutAgentInput | Prisma.WorkerProfileUpdateManyWithWhereWithoutAgentInput[]
+  deleteMany?: Prisma.WorkerProfileScalarWhereInput | Prisma.WorkerProfileScalarWhereInput[]
+}
+
+export type WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput> | Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput[] | Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput | Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput[]
+  upsert?: Prisma.WorkerProfileUpsertWithWhereUniqueWithoutReferenceVerifiedByInput | Prisma.WorkerProfileUpsertWithWhereUniqueWithoutReferenceVerifiedByInput[]
+  createMany?: Prisma.WorkerProfileCreateManyReferenceVerifiedByInputEnvelope
+  set?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  disconnect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  delete?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  update?: Prisma.WorkerProfileUpdateWithWhereUniqueWithoutReferenceVerifiedByInput | Prisma.WorkerProfileUpdateWithWhereUniqueWithoutReferenceVerifiedByInput[]
+  updateMany?: Prisma.WorkerProfileUpdateManyWithWhereWithoutReferenceVerifiedByInput | Prisma.WorkerProfileUpdateManyWithWhereWithoutReferenceVerifiedByInput[]
+  deleteMany?: Prisma.WorkerProfileScalarWhereInput | Prisma.WorkerProfileScalarWhereInput[]
+}
+
 export type WorkerProfileUncheckedUpdateOneWithoutUserNestedInput = {
   create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutUserInput, Prisma.WorkerProfileUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutUserInput
@@ -322,21 +971,503 @@ export type WorkerProfileUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutUserInput, Prisma.WorkerProfileUpdateWithoutUserInput>, Prisma.WorkerProfileUncheckedUpdateWithoutUserInput>
 }
 
+export type WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAgentInput, Prisma.WorkerProfileUncheckedCreateWithoutAgentInput> | Prisma.WorkerProfileCreateWithoutAgentInput[] | Prisma.WorkerProfileUncheckedCreateWithoutAgentInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutAgentInput | Prisma.WorkerProfileCreateOrConnectWithoutAgentInput[]
+  upsert?: Prisma.WorkerProfileUpsertWithWhereUniqueWithoutAgentInput | Prisma.WorkerProfileUpsertWithWhereUniqueWithoutAgentInput[]
+  createMany?: Prisma.WorkerProfileCreateManyAgentInputEnvelope
+  set?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  disconnect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  delete?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  update?: Prisma.WorkerProfileUpdateWithWhereUniqueWithoutAgentInput | Prisma.WorkerProfileUpdateWithWhereUniqueWithoutAgentInput[]
+  updateMany?: Prisma.WorkerProfileUpdateManyWithWhereWithoutAgentInput | Prisma.WorkerProfileUpdateManyWithWhereWithoutAgentInput[]
+  deleteMany?: Prisma.WorkerProfileScalarWhereInput | Prisma.WorkerProfileScalarWhereInput[]
+}
+
+export type WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput> | Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput[] | Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput[]
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput | Prisma.WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput[]
+  upsert?: Prisma.WorkerProfileUpsertWithWhereUniqueWithoutReferenceVerifiedByInput | Prisma.WorkerProfileUpsertWithWhereUniqueWithoutReferenceVerifiedByInput[]
+  createMany?: Prisma.WorkerProfileCreateManyReferenceVerifiedByInputEnvelope
+  set?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  disconnect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  delete?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  connect?: Prisma.WorkerProfileWhereUniqueInput | Prisma.WorkerProfileWhereUniqueInput[]
+  update?: Prisma.WorkerProfileUpdateWithWhereUniqueWithoutReferenceVerifiedByInput | Prisma.WorkerProfileUpdateWithWhereUniqueWithoutReferenceVerifiedByInput[]
+  updateMany?: Prisma.WorkerProfileUpdateManyWithWhereWithoutReferenceVerifiedByInput | Prisma.WorkerProfileUpdateManyWithWhereWithoutReferenceVerifiedByInput[]
+  deleteMany?: Prisma.WorkerProfileScalarWhereInput | Prisma.WorkerProfileScalarWhereInput[]
+}
+
+export type EnumWorkerStatusFieldUpdateOperationsInput = {
+  set?: $Enums.WorkerStatus
+}
+
+export type EnumReferenceCheckStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ReferenceCheckStatus
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type WorkerProfileCreateNestedOneWithoutCategoriesInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutCategoriesInput, Prisma.WorkerProfileUncheckedCreateWithoutCategoriesInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutCategoriesInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+}
+
+export type WorkerProfileUpdateOneRequiredWithoutCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutCategoriesInput, Prisma.WorkerProfileUncheckedCreateWithoutCategoriesInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutCategoriesInput
+  upsert?: Prisma.WorkerProfileUpsertWithoutCategoriesInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutCategoriesInput, Prisma.WorkerProfileUpdateWithoutCategoriesInput>, Prisma.WorkerProfileUncheckedUpdateWithoutCategoriesInput>
+}
+
+export type WorkerProfileCreateNestedOneWithoutServiceAreasInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutServiceAreasInput, Prisma.WorkerProfileUncheckedCreateWithoutServiceAreasInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutServiceAreasInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+}
+
+export type WorkerProfileUpdateOneRequiredWithoutServiceAreasNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutServiceAreasInput, Prisma.WorkerProfileUncheckedCreateWithoutServiceAreasInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutServiceAreasInput
+  upsert?: Prisma.WorkerProfileUpsertWithoutServiceAreasInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutServiceAreasInput, Prisma.WorkerProfileUpdateWithoutServiceAreasInput>, Prisma.WorkerProfileUncheckedUpdateWithoutServiceAreasInput>
+}
+
+export type WorkerProfileCreateNestedOneWithoutTargetedJobRequestsInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutTargetedJobRequestsInput, Prisma.WorkerProfileUncheckedCreateWithoutTargetedJobRequestsInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutTargetedJobRequestsInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+}
+
+export type WorkerProfileUpdateOneWithoutTargetedJobRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutTargetedJobRequestsInput, Prisma.WorkerProfileUncheckedCreateWithoutTargetedJobRequestsInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutTargetedJobRequestsInput
+  upsert?: Prisma.WorkerProfileUpsertWithoutTargetedJobRequestsInput
+  disconnect?: Prisma.WorkerProfileWhereInput | boolean
+  delete?: Prisma.WorkerProfileWhereInput | boolean
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutTargetedJobRequestsInput, Prisma.WorkerProfileUpdateWithoutTargetedJobRequestsInput>, Prisma.WorkerProfileUncheckedUpdateWithoutTargetedJobRequestsInput>
+}
+
+export type WorkerProfileCreateNestedOneWithoutInvitationsInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutInvitationsInput, Prisma.WorkerProfileUncheckedCreateWithoutInvitationsInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutInvitationsInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+}
+
+export type WorkerProfileUpdateOneRequiredWithoutInvitationsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutInvitationsInput, Prisma.WorkerProfileUncheckedCreateWithoutInvitationsInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutInvitationsInput
+  upsert?: Prisma.WorkerProfileUpsertWithoutInvitationsInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutInvitationsInput, Prisma.WorkerProfileUpdateWithoutInvitationsInput>, Prisma.WorkerProfileUncheckedUpdateWithoutInvitationsInput>
+}
+
+export type WorkerProfileCreateNestedOneWithoutBookingsInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutBookingsInput, Prisma.WorkerProfileUncheckedCreateWithoutBookingsInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutBookingsInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+}
+
+export type WorkerProfileUpdateOneRequiredWithoutBookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkerProfileCreateWithoutBookingsInput, Prisma.WorkerProfileUncheckedCreateWithoutBookingsInput>
+  connectOrCreate?: Prisma.WorkerProfileCreateOrConnectWithoutBookingsInput
+  upsert?: Prisma.WorkerProfileUpsertWithoutBookingsInput
+  connect?: Prisma.WorkerProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkerProfileUpdateToOneWithWhereWithoutBookingsInput, Prisma.WorkerProfileUpdateWithoutBookingsInput>, Prisma.WorkerProfileUncheckedUpdateWithoutBookingsInput>
+}
+
+export type WorkerProfileCreateWithoutAvailabilityInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutAvailabilityInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutAvailabilityInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAvailabilityInput, Prisma.WorkerProfileUncheckedCreateWithoutAvailabilityInput>
+}
+
+export type WorkerProfileUpsertWithoutAvailabilityInput = {
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutAvailabilityInput, Prisma.WorkerProfileUncheckedUpdateWithoutAvailabilityInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAvailabilityInput, Prisma.WorkerProfileUncheckedCreateWithoutAvailabilityInput>
+  where?: Prisma.WorkerProfileWhereInput
+}
+
+export type WorkerProfileUpdateToOneWithWhereWithoutAvailabilityInput = {
+  where?: Prisma.WorkerProfileWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutAvailabilityInput, Prisma.WorkerProfileUncheckedUpdateWithoutAvailabilityInput>
+}
+
+export type WorkerProfileUpdateWithoutAvailabilityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutAvailabilityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+}
+
 export type WorkerProfileCreateWithoutUserInput = {
   id?: string
   name: string
   phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
 }
 
 export type WorkerProfileUncheckedCreateWithoutUserInput = {
   id?: string
   name: string
   phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
 }
 
 export type WorkerProfileCreateOrConnectWithoutUserInput = {
   where: Prisma.WorkerProfileWhereUniqueInput
   create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutUserInput, Prisma.WorkerProfileUncheckedCreateWithoutUserInput>
+}
+
+export type WorkerProfileCreateWithoutAgentInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutAgentInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutAgentInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAgentInput, Prisma.WorkerProfileUncheckedCreateWithoutAgentInput>
+}
+
+export type WorkerProfileCreateManyAgentInputEnvelope = {
+  data: Prisma.WorkerProfileCreateManyAgentInput | Prisma.WorkerProfileCreateManyAgentInput[]
+  skipDuplicates?: boolean
+}
+
+export type WorkerProfileCreateWithoutReferenceVerifiedByInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutReferenceVerifiedByInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput>
+}
+
+export type WorkerProfileCreateManyReferenceVerifiedByInputEnvelope = {
+  data: Prisma.WorkerProfileCreateManyReferenceVerifiedByInput | Prisma.WorkerProfileCreateManyReferenceVerifiedByInput[]
+  skipDuplicates?: boolean
 }
 
 export type WorkerProfileUpsertWithoutUserInput = {
@@ -354,14 +1485,1176 @@ export type WorkerProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
 }
 
 export type WorkerProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
 }
 
+export type WorkerProfileUpsertWithWhereUniqueWithoutAgentInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutAgentInput, Prisma.WorkerProfileUncheckedUpdateWithoutAgentInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutAgentInput, Prisma.WorkerProfileUncheckedCreateWithoutAgentInput>
+}
+
+export type WorkerProfileUpdateWithWhereUniqueWithoutAgentInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutAgentInput, Prisma.WorkerProfileUncheckedUpdateWithoutAgentInput>
+}
+
+export type WorkerProfileUpdateManyWithWhereWithoutAgentInput = {
+  where: Prisma.WorkerProfileScalarWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateManyMutationInput, Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentInput>
+}
+
+export type WorkerProfileScalarWhereInput = {
+  AND?: Prisma.WorkerProfileScalarWhereInput | Prisma.WorkerProfileScalarWhereInput[]
+  OR?: Prisma.WorkerProfileScalarWhereInput[]
+  NOT?: Prisma.WorkerProfileScalarWhereInput | Prisma.WorkerProfileScalarWhereInput[]
+  id?: Prisma.StringFilter<"WorkerProfile"> | string
+  userId?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  name?: Prisma.StringFilter<"WorkerProfile"> | string
+  phone?: Prisma.StringFilter<"WorkerProfile"> | string
+  status?: Prisma.EnumWorkerStatusFilter<"WorkerProfile"> | $Enums.WorkerStatus
+  suspensionReason?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  agentId?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicNumber?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicFrontPath?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  cnicBackPath?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceName?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referencePhone?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFilter<"WorkerProfile"> | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.StringNullableFilter<"WorkerProfile"> | string | null
+  referenceVerifiedAt?: Prisma.DateTimeNullableFilter<"WorkerProfile"> | Date | string | null
+  identityChecked?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  phoneConfirmed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  backgroundChecked?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  skillAssessed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  rating?: Prisma.DecimalFilter<"WorkerProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFilter<"WorkerProfile"> | number
+  completedJobsCount?: Prisma.IntFilter<"WorkerProfile"> | number
+  isPriorityListed?: Prisma.BoolFilter<"WorkerProfile"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"WorkerProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"WorkerProfile"> | Date | string
+}
+
+export type WorkerProfileUpsertWithWhereUniqueWithoutReferenceVerifiedByInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedUpdateWithoutReferenceVerifiedByInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedCreateWithoutReferenceVerifiedByInput>
+}
+
+export type WorkerProfileUpdateWithWhereUniqueWithoutReferenceVerifiedByInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutReferenceVerifiedByInput, Prisma.WorkerProfileUncheckedUpdateWithoutReferenceVerifiedByInput>
+}
+
+export type WorkerProfileUpdateManyWithWhereWithoutReferenceVerifiedByInput = {
+  where: Prisma.WorkerProfileScalarWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateManyMutationInput, Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByInput>
+}
+
+export type WorkerProfileCreateWithoutCategoriesInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutCategoriesInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutCategoriesInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutCategoriesInput, Prisma.WorkerProfileUncheckedCreateWithoutCategoriesInput>
+}
+
+export type WorkerProfileUpsertWithoutCategoriesInput = {
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutCategoriesInput, Prisma.WorkerProfileUncheckedUpdateWithoutCategoriesInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutCategoriesInput, Prisma.WorkerProfileUncheckedCreateWithoutCategoriesInput>
+  where?: Prisma.WorkerProfileWhereInput
+}
+
+export type WorkerProfileUpdateToOneWithWhereWithoutCategoriesInput = {
+  where?: Prisma.WorkerProfileWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutCategoriesInput, Prisma.WorkerProfileUncheckedUpdateWithoutCategoriesInput>
+}
+
+export type WorkerProfileUpdateWithoutCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileCreateWithoutServiceAreasInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutServiceAreasInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutServiceAreasInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutServiceAreasInput, Prisma.WorkerProfileUncheckedCreateWithoutServiceAreasInput>
+}
+
+export type WorkerProfileUpsertWithoutServiceAreasInput = {
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutServiceAreasInput, Prisma.WorkerProfileUncheckedUpdateWithoutServiceAreasInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutServiceAreasInput, Prisma.WorkerProfileUncheckedCreateWithoutServiceAreasInput>
+  where?: Prisma.WorkerProfileWhereInput
+}
+
+export type WorkerProfileUpdateToOneWithWhereWithoutServiceAreasInput = {
+  where?: Prisma.WorkerProfileWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutServiceAreasInput, Prisma.WorkerProfileUncheckedUpdateWithoutServiceAreasInput>
+}
+
+export type WorkerProfileUpdateWithoutServiceAreasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutServiceAreasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileCreateWithoutTargetedJobRequestsInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutTargetedJobRequestsInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutTargetedJobRequestsInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutTargetedJobRequestsInput, Prisma.WorkerProfileUncheckedCreateWithoutTargetedJobRequestsInput>
+}
+
+export type WorkerProfileUpsertWithoutTargetedJobRequestsInput = {
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutTargetedJobRequestsInput, Prisma.WorkerProfileUncheckedUpdateWithoutTargetedJobRequestsInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutTargetedJobRequestsInput, Prisma.WorkerProfileUncheckedCreateWithoutTargetedJobRequestsInput>
+  where?: Prisma.WorkerProfileWhereInput
+}
+
+export type WorkerProfileUpdateToOneWithWhereWithoutTargetedJobRequestsInput = {
+  where?: Prisma.WorkerProfileWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutTargetedJobRequestsInput, Prisma.WorkerProfileUncheckedUpdateWithoutTargetedJobRequestsInput>
+}
+
+export type WorkerProfileUpdateWithoutTargetedJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutTargetedJobRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileCreateWithoutInvitationsInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutInvitationsInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutInvitationsInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutInvitationsInput, Prisma.WorkerProfileUncheckedCreateWithoutInvitationsInput>
+}
+
+export type WorkerProfileUpsertWithoutInvitationsInput = {
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutInvitationsInput, Prisma.WorkerProfileUncheckedUpdateWithoutInvitationsInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutInvitationsInput, Prisma.WorkerProfileUncheckedCreateWithoutInvitationsInput>
+  where?: Prisma.WorkerProfileWhereInput
+}
+
+export type WorkerProfileUpdateToOneWithWhereWithoutInvitationsInput = {
+  where?: Prisma.WorkerProfileWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutInvitationsInput, Prisma.WorkerProfileUncheckedUpdateWithoutInvitationsInput>
+}
+
+export type WorkerProfileUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileCreateWithoutBookingsInput = {
+  id?: string
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWorkerProfileInput
+  agent?: Prisma.UserCreateNestedOneWithoutCreatedWorkersInput
+  referenceVerifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedWorkerReferencesInput
+  categories?: Prisma.WorkerCategoryCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileUncheckedCreateWithoutBookingsInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.WorkerCategoryUncheckedCreateNestedManyWithoutWorkerInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedCreateNestedManyWithoutWorkerInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedCreateNestedManyWithoutTargetWorkerInput
+  invitations?: Prisma.JobInvitationUncheckedCreateNestedManyWithoutWorkerInput
+  availability?: Prisma.WorkerAvailabilityUncheckedCreateNestedOneWithoutWorkerInput
+}
+
+export type WorkerProfileCreateOrConnectWithoutBookingsInput = {
+  where: Prisma.WorkerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutBookingsInput, Prisma.WorkerProfileUncheckedCreateWithoutBookingsInput>
+}
+
+export type WorkerProfileUpsertWithoutBookingsInput = {
+  update: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutBookingsInput, Prisma.WorkerProfileUncheckedUpdateWithoutBookingsInput>
+  create: Prisma.XOR<Prisma.WorkerProfileCreateWithoutBookingsInput, Prisma.WorkerProfileUncheckedCreateWithoutBookingsInput>
+  where?: Prisma.WorkerProfileWhereInput
+}
+
+export type WorkerProfileUpdateToOneWithWhereWithoutBookingsInput = {
+  where?: Prisma.WorkerProfileWhereInput
+  data: Prisma.XOR<Prisma.WorkerProfileUpdateWithoutBookingsInput, Prisma.WorkerProfileUncheckedUpdateWithoutBookingsInput>
+}
+
+export type WorkerProfileUpdateWithoutBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileCreateManyAgentInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: string | null
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WorkerProfileCreateManyReferenceVerifiedByInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  phone: string
+  status?: $Enums.WorkerStatus
+  suspensionReason?: string | null
+  agentId?: string | null
+  cnicNumber?: string | null
+  cnicFrontPath?: string | null
+  cnicBackPath?: string | null
+  referenceName?: string | null
+  referencePhone?: string | null
+  referenceStatus?: $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Date | string | null
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: number
+  completedJobsCount?: number
+  isPriorityListed?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WorkerProfileUpdateWithoutAgentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  referenceVerifiedBy?: Prisma.UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutAgentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateManyWithoutAgentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WorkerProfileUpdateWithoutReferenceVerifiedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWorkerProfileNestedInput
+  agent?: Prisma.UserUpdateOneWithoutCreatedWorkersNestedInput
+  categories?: Prisma.WorkerCategoryUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateWithoutReferenceVerifiedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.WorkerCategoryUncheckedUpdateManyWithoutWorkerNestedInput
+  serviceAreas?: Prisma.WorkerServiceAreaUncheckedUpdateManyWithoutWorkerNestedInput
+  targetedJobRequests?: Prisma.JobRequestUncheckedUpdateManyWithoutTargetWorkerNestedInput
+  invitations?: Prisma.JobInvitationUncheckedUpdateManyWithoutWorkerNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutWorkerNestedInput
+  availability?: Prisma.WorkerAvailabilityUncheckedUpdateOneWithoutWorkerNestedInput
+}
+
+export type WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceStatus?: Prisma.EnumReferenceCheckStatusFieldUpdateOperationsInput | $Enums.ReferenceCheckStatus
+  referenceVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  identityChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneConfirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backgroundChecked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  skillAssessed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ratingCount?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPriorityListed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type WorkerProfileCountOutputType
+ */
+
+export type WorkerProfileCountOutputType = {
+  categories: number
+  serviceAreas: number
+  targetedJobRequests: number
+  invitations: number
+  bookings: number
+}
+
+export type WorkerProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  categories?: boolean | WorkerProfileCountOutputTypeCountCategoriesArgs
+  serviceAreas?: boolean | WorkerProfileCountOutputTypeCountServiceAreasArgs
+  targetedJobRequests?: boolean | WorkerProfileCountOutputTypeCountTargetedJobRequestsArgs
+  invitations?: boolean | WorkerProfileCountOutputTypeCountInvitationsArgs
+  bookings?: boolean | WorkerProfileCountOutputTypeCountBookingsArgs
+}
+
+/**
+ * WorkerProfileCountOutputType without action
+ */
+export type WorkerProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerProfileCountOutputType
+   */
+  select?: Prisma.WorkerProfileCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * WorkerProfileCountOutputType without action
+ */
+export type WorkerProfileCountOutputTypeCountCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkerCategoryWhereInput
+}
+
+/**
+ * WorkerProfileCountOutputType without action
+ */
+export type WorkerProfileCountOutputTypeCountServiceAreasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkerServiceAreaWhereInput
+}
+
+/**
+ * WorkerProfileCountOutputType without action
+ */
+export type WorkerProfileCountOutputTypeCountTargetedJobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobRequestWhereInput
+}
+
+/**
+ * WorkerProfileCountOutputType without action
+ */
+export type WorkerProfileCountOutputTypeCountInvitationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobInvitationWhereInput
+}
+
+/**
+ * WorkerProfileCountOutputType without action
+ */
+export type WorkerProfileCountOutputTypeCountBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingWhereInput
+}
 
 
 export type WorkerProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -369,7 +2662,37 @@ export type WorkerProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   userId?: boolean
   name?: boolean
   phone?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  status?: boolean
+  suspensionReason?: boolean
+  agentId?: boolean
+  cnicNumber?: boolean
+  cnicFrontPath?: boolean
+  cnicBackPath?: boolean
+  referenceName?: boolean
+  referencePhone?: boolean
+  referenceStatus?: boolean
+  referenceVerifiedById?: boolean
+  referenceVerifiedAt?: boolean
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: boolean
+  ratingCount?: boolean
+  completedJobsCount?: boolean
+  isPriorityListed?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.WorkerProfile$userArgs<ExtArgs>
+  agent?: boolean | Prisma.WorkerProfile$agentArgs<ExtArgs>
+  referenceVerifiedBy?: boolean | Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs>
+  categories?: boolean | Prisma.WorkerProfile$categoriesArgs<ExtArgs>
+  serviceAreas?: boolean | Prisma.WorkerProfile$serviceAreasArgs<ExtArgs>
+  targetedJobRequests?: boolean | Prisma.WorkerProfile$targetedJobRequestsArgs<ExtArgs>
+  invitations?: boolean | Prisma.WorkerProfile$invitationsArgs<ExtArgs>
+  bookings?: boolean | Prisma.WorkerProfile$bookingsArgs<ExtArgs>
+  availability?: boolean | Prisma.WorkerProfile$availabilityArgs<ExtArgs>
+  _count?: boolean | Prisma.WorkerProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workerProfile"]>
 
 export type WorkerProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -377,7 +2700,30 @@ export type WorkerProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   userId?: boolean
   name?: boolean
   phone?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  status?: boolean
+  suspensionReason?: boolean
+  agentId?: boolean
+  cnicNumber?: boolean
+  cnicFrontPath?: boolean
+  cnicBackPath?: boolean
+  referenceName?: boolean
+  referencePhone?: boolean
+  referenceStatus?: boolean
+  referenceVerifiedById?: boolean
+  referenceVerifiedAt?: boolean
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: boolean
+  ratingCount?: boolean
+  completedJobsCount?: boolean
+  isPriorityListed?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.WorkerProfile$userArgs<ExtArgs>
+  agent?: boolean | Prisma.WorkerProfile$agentArgs<ExtArgs>
+  referenceVerifiedBy?: boolean | Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs>
 }, ExtArgs["result"]["workerProfile"]>
 
 export type WorkerProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -385,7 +2731,30 @@ export type WorkerProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   userId?: boolean
   name?: boolean
   phone?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  status?: boolean
+  suspensionReason?: boolean
+  agentId?: boolean
+  cnicNumber?: boolean
+  cnicFrontPath?: boolean
+  cnicBackPath?: boolean
+  referenceName?: boolean
+  referencePhone?: boolean
+  referenceStatus?: boolean
+  referenceVerifiedById?: boolean
+  referenceVerifiedAt?: boolean
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: boolean
+  ratingCount?: boolean
+  completedJobsCount?: boolean
+  isPriorityListed?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.WorkerProfile$userArgs<ExtArgs>
+  agent?: boolean | Prisma.WorkerProfile$agentArgs<ExtArgs>
+  referenceVerifiedBy?: boolean | Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs>
 }, ExtArgs["result"]["workerProfile"]>
 
 export type WorkerProfileSelectScalar = {
@@ -393,29 +2762,92 @@ export type WorkerProfileSelectScalar = {
   userId?: boolean
   name?: boolean
   phone?: boolean
+  status?: boolean
+  suspensionReason?: boolean
+  agentId?: boolean
+  cnicNumber?: boolean
+  cnicFrontPath?: boolean
+  cnicBackPath?: boolean
+  referenceName?: boolean
+  referencePhone?: boolean
+  referenceStatus?: boolean
+  referenceVerifiedById?: boolean
+  referenceVerifiedAt?: boolean
+  identityChecked?: boolean
+  phoneConfirmed?: boolean
+  backgroundChecked?: boolean
+  skillAssessed?: boolean
+  rating?: boolean
+  ratingCount?: boolean
+  completedJobsCount?: boolean
+  isPriorityListed?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type WorkerProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "phone", ExtArgs["result"]["workerProfile"]>
+export type WorkerProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "phone" | "status" | "suspensionReason" | "agentId" | "cnicNumber" | "cnicFrontPath" | "cnicBackPath" | "referenceName" | "referencePhone" | "referenceStatus" | "referenceVerifiedById" | "referenceVerifiedAt" | "identityChecked" | "phoneConfirmed" | "backgroundChecked" | "skillAssessed" | "rating" | "ratingCount" | "completedJobsCount" | "isPriorityListed" | "createdAt" | "updatedAt", ExtArgs["result"]["workerProfile"]>
 export type WorkerProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.WorkerProfile$userArgs<ExtArgs>
+  agent?: boolean | Prisma.WorkerProfile$agentArgs<ExtArgs>
+  referenceVerifiedBy?: boolean | Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs>
+  categories?: boolean | Prisma.WorkerProfile$categoriesArgs<ExtArgs>
+  serviceAreas?: boolean | Prisma.WorkerProfile$serviceAreasArgs<ExtArgs>
+  targetedJobRequests?: boolean | Prisma.WorkerProfile$targetedJobRequestsArgs<ExtArgs>
+  invitations?: boolean | Prisma.WorkerProfile$invitationsArgs<ExtArgs>
+  bookings?: boolean | Prisma.WorkerProfile$bookingsArgs<ExtArgs>
+  availability?: boolean | Prisma.WorkerProfile$availabilityArgs<ExtArgs>
+  _count?: boolean | Prisma.WorkerProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkerProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.WorkerProfile$userArgs<ExtArgs>
+  agent?: boolean | Prisma.WorkerProfile$agentArgs<ExtArgs>
+  referenceVerifiedBy?: boolean | Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs>
 }
 export type WorkerProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.WorkerProfile$userArgs<ExtArgs>
+  agent?: boolean | Prisma.WorkerProfile$agentArgs<ExtArgs>
+  referenceVerifiedBy?: boolean | Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs>
 }
 
 export type $WorkerProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "WorkerProfile"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs> | null
+    agent: Prisma.$UserPayload<ExtArgs> | null
+    referenceVerifiedBy: Prisma.$UserPayload<ExtArgs> | null
+    categories: Prisma.$WorkerCategoryPayload<ExtArgs>[]
+    serviceAreas: Prisma.$WorkerServiceAreaPayload<ExtArgs>[]
+    targetedJobRequests: Prisma.$JobRequestPayload<ExtArgs>[]
+    invitations: Prisma.$JobInvitationPayload<ExtArgs>[]
+    bookings: Prisma.$BookingPayload<ExtArgs>[]
+    availability: Prisma.$WorkerAvailabilityPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    userId: string
+    userId: string | null
     name: string
     phone: string
+    status: $Enums.WorkerStatus
+    suspensionReason: string | null
+    agentId: string | null
+    cnicNumber: string | null
+    cnicFrontPath: string | null
+    cnicBackPath: string | null
+    referenceName: string | null
+    referencePhone: string | null
+    referenceStatus: $Enums.ReferenceCheckStatus
+    referenceVerifiedById: string | null
+    referenceVerifiedAt: Date | null
+    identityChecked: boolean
+    phoneConfirmed: boolean
+    backgroundChecked: boolean
+    skillAssessed: boolean
+    rating: runtime.Decimal
+    ratingCount: number
+    completedJobsCount: number
+    isPriorityListed: boolean
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["workerProfile"]>
   composites: {}
 }
@@ -810,7 +3242,15 @@ readonly fields: WorkerProfileFieldRefs;
  */
 export interface Prisma__WorkerProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.WorkerProfile$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  agent<T extends Prisma.WorkerProfile$agentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$agentArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  referenceVerifiedBy<T extends Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$referenceVerifiedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  categories<T extends Prisma.WorkerProfile$categoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  serviceAreas<T extends Prisma.WorkerProfile$serviceAreasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$serviceAreasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerServiceAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  targetedJobRequests<T extends Prisma.WorkerProfile$targetedJobRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$targetedJobRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invitations<T extends Prisma.WorkerProfile$invitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bookings<T extends Prisma.WorkerProfile$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  availability<T extends Prisma.WorkerProfile$availabilityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkerProfile$availabilityArgs<ExtArgs>>): Prisma.Prisma__WorkerAvailabilityClient<runtime.Types.Result.GetResult<Prisma.$WorkerAvailabilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -844,6 +3284,27 @@ export interface WorkerProfileFieldRefs {
   readonly userId: Prisma.FieldRef<"WorkerProfile", 'String'>
   readonly name: Prisma.FieldRef<"WorkerProfile", 'String'>
   readonly phone: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly status: Prisma.FieldRef<"WorkerProfile", 'WorkerStatus'>
+  readonly suspensionReason: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly agentId: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly cnicNumber: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly cnicFrontPath: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly cnicBackPath: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly referenceName: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly referencePhone: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly referenceStatus: Prisma.FieldRef<"WorkerProfile", 'ReferenceCheckStatus'>
+  readonly referenceVerifiedById: Prisma.FieldRef<"WorkerProfile", 'String'>
+  readonly referenceVerifiedAt: Prisma.FieldRef<"WorkerProfile", 'DateTime'>
+  readonly identityChecked: Prisma.FieldRef<"WorkerProfile", 'Boolean'>
+  readonly phoneConfirmed: Prisma.FieldRef<"WorkerProfile", 'Boolean'>
+  readonly backgroundChecked: Prisma.FieldRef<"WorkerProfile", 'Boolean'>
+  readonly skillAssessed: Prisma.FieldRef<"WorkerProfile", 'Boolean'>
+  readonly rating: Prisma.FieldRef<"WorkerProfile", 'Decimal'>
+  readonly ratingCount: Prisma.FieldRef<"WorkerProfile", 'Int'>
+  readonly completedJobsCount: Prisma.FieldRef<"WorkerProfile", 'Int'>
+  readonly isPriorityListed: Prisma.FieldRef<"WorkerProfile", 'Boolean'>
+  readonly createdAt: Prisma.FieldRef<"WorkerProfile", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"WorkerProfile", 'DateTime'>
 }
     
 
@@ -1242,6 +3703,202 @@ export type WorkerProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many WorkerProfiles to delete.
    */
   limit?: number
+}
+
+/**
+ * WorkerProfile.user
+ */
+export type WorkerProfile$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * WorkerProfile.agent
+ */
+export type WorkerProfile$agentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * WorkerProfile.referenceVerifiedBy
+ */
+export type WorkerProfile$referenceVerifiedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * WorkerProfile.categories
+ */
+export type WorkerProfile$categoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerCategory
+   */
+  select?: Prisma.WorkerCategorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkerCategory
+   */
+  omit?: Prisma.WorkerCategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkerCategoryInclude<ExtArgs> | null
+  where?: Prisma.WorkerCategoryWhereInput
+  orderBy?: Prisma.WorkerCategoryOrderByWithRelationInput | Prisma.WorkerCategoryOrderByWithRelationInput[]
+  cursor?: Prisma.WorkerCategoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkerCategoryScalarFieldEnum | Prisma.WorkerCategoryScalarFieldEnum[]
+}
+
+/**
+ * WorkerProfile.serviceAreas
+ */
+export type WorkerProfile$serviceAreasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerServiceArea
+   */
+  select?: Prisma.WorkerServiceAreaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkerServiceArea
+   */
+  omit?: Prisma.WorkerServiceAreaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkerServiceAreaInclude<ExtArgs> | null
+  where?: Prisma.WorkerServiceAreaWhereInput
+  orderBy?: Prisma.WorkerServiceAreaOrderByWithRelationInput | Prisma.WorkerServiceAreaOrderByWithRelationInput[]
+  cursor?: Prisma.WorkerServiceAreaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkerServiceAreaScalarFieldEnum | Prisma.WorkerServiceAreaScalarFieldEnum[]
+}
+
+/**
+ * WorkerProfile.targetedJobRequests
+ */
+export type WorkerProfile$targetedJobRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobRequest
+   */
+  select?: Prisma.JobRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobRequest
+   */
+  omit?: Prisma.JobRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobRequestInclude<ExtArgs> | null
+  where?: Prisma.JobRequestWhereInput
+  orderBy?: Prisma.JobRequestOrderByWithRelationInput | Prisma.JobRequestOrderByWithRelationInput[]
+  cursor?: Prisma.JobRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobRequestScalarFieldEnum | Prisma.JobRequestScalarFieldEnum[]
+}
+
+/**
+ * WorkerProfile.invitations
+ */
+export type WorkerProfile$invitationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobInvitation
+   */
+  select?: Prisma.JobInvitationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobInvitation
+   */
+  omit?: Prisma.JobInvitationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobInvitationInclude<ExtArgs> | null
+  where?: Prisma.JobInvitationWhereInput
+  orderBy?: Prisma.JobInvitationOrderByWithRelationInput | Prisma.JobInvitationOrderByWithRelationInput[]
+  cursor?: Prisma.JobInvitationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobInvitationScalarFieldEnum | Prisma.JobInvitationScalarFieldEnum[]
+}
+
+/**
+ * WorkerProfile.bookings
+ */
+export type WorkerProfile$bookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Booking
+   */
+  select?: Prisma.BookingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Booking
+   */
+  omit?: Prisma.BookingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingInclude<ExtArgs> | null
+  where?: Prisma.BookingWhereInput
+  orderBy?: Prisma.BookingOrderByWithRelationInput | Prisma.BookingOrderByWithRelationInput[]
+  cursor?: Prisma.BookingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingScalarFieldEnum | Prisma.BookingScalarFieldEnum[]
+}
+
+/**
+ * WorkerProfile.availability
+ */
+export type WorkerProfile$availabilityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerAvailability
+   */
+  select?: Prisma.WorkerAvailabilitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkerAvailability
+   */
+  omit?: Prisma.WorkerAvailabilityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkerAvailabilityInclude<ExtArgs> | null
+  where?: Prisma.WorkerAvailabilityWhereInput
 }
 
 /**

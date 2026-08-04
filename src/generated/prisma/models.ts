@@ -8,9 +8,15 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/WorkerAvailability'
 export type * from './models/User'
 export type * from './models/ClientProfile'
 export type * from './models/WorkerProfile'
 export type * from './models/Category'
 export type * from './models/Area'
+export type * from './models/WorkerCategory'
+export type * from './models/WorkerServiceArea'
+export type * from './models/JobRequest'
+export type * from './models/JobInvitation'
+export type * from './models/Booking'
 export type * from './commonInputTypes'

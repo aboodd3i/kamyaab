@@ -384,11 +384,17 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  WorkerAvailability: 'WorkerAvailability',
   User: 'User',
   ClientProfile: 'ClientProfile',
   WorkerProfile: 'WorkerProfile',
   Category: 'Category',
-  Area: 'Area'
+  Area: 'Area',
+  WorkerCategory: 'WorkerCategory',
+  WorkerServiceArea: 'WorkerServiceArea',
+  JobRequest: 'JobRequest',
+  JobInvitation: 'JobInvitation',
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,10 +410,84 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "workerProfile" | "category" | "area"
+    modelProps: "workerAvailability" | "user" | "clientProfile" | "workerProfile" | "category" | "area" | "workerCategory" | "workerServiceArea" | "jobRequest" | "jobInvitation" | "booking"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    WorkerAvailability: {
+      payload: Prisma.$WorkerAvailabilityPayload<ExtArgs>
+      fields: Prisma.WorkerAvailabilityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkerAvailabilityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkerAvailabilityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkerAvailabilityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkerAvailabilityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>
+        }
+        findMany: {
+          args: Prisma.WorkerAvailabilityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>[]
+        }
+        create: {
+          args: Prisma.WorkerAvailabilityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>
+        }
+        createMany: {
+          args: Prisma.WorkerAvailabilityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkerAvailabilityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkerAvailabilityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>
+        }
+        update: {
+          args: Prisma.WorkerAvailabilityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkerAvailabilityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkerAvailabilityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkerAvailabilityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkerAvailabilityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAvailabilityPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkerAvailabilityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkerAvailability>
+        }
+        groupBy: {
+          args: Prisma.WorkerAvailabilityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerAvailabilityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkerAvailabilityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerAvailabilityCountAggregateOutputType> | number
+        }
+      }
+    }
     User: {
       payload: Prisma.$UserPayload<ExtArgs>
       fields: Prisma.UserFieldRefs
@@ -778,6 +858,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WorkerCategory: {
+      payload: Prisma.$WorkerCategoryPayload<ExtArgs>
+      fields: Prisma.WorkerCategoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkerCategoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkerCategoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkerCategoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkerCategoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>
+        }
+        findMany: {
+          args: Prisma.WorkerCategoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>[]
+        }
+        create: {
+          args: Prisma.WorkerCategoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>
+        }
+        createMany: {
+          args: Prisma.WorkerCategoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkerCategoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkerCategoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>
+        }
+        update: {
+          args: Prisma.WorkerCategoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkerCategoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkerCategoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkerCategoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkerCategoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerCategoryPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkerCategoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkerCategory>
+        }
+        groupBy: {
+          args: Prisma.WorkerCategoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerCategoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkerCategoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerCategoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkerServiceArea: {
+      payload: Prisma.$WorkerServiceAreaPayload<ExtArgs>
+      fields: Prisma.WorkerServiceAreaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkerServiceAreaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkerServiceAreaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkerServiceAreaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkerServiceAreaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>
+        }
+        findMany: {
+          args: Prisma.WorkerServiceAreaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>[]
+        }
+        create: {
+          args: Prisma.WorkerServiceAreaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>
+        }
+        createMany: {
+          args: Prisma.WorkerServiceAreaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkerServiceAreaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkerServiceAreaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>
+        }
+        update: {
+          args: Prisma.WorkerServiceAreaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkerServiceAreaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkerServiceAreaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkerServiceAreaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkerServiceAreaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerServiceAreaPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkerServiceAreaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkerServiceArea>
+        }
+        groupBy: {
+          args: Prisma.WorkerServiceAreaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerServiceAreaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkerServiceAreaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerServiceAreaCountAggregateOutputType> | number
+        }
+      }
+    }
+    JobRequest: {
+      payload: Prisma.$JobRequestPayload<ExtArgs>
+      fields: Prisma.JobRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JobRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JobRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.JobRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JobRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>
+        }
+        findMany: {
+          args: Prisma.JobRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>[]
+        }
+        create: {
+          args: Prisma.JobRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>
+        }
+        createMany: {
+          args: Prisma.JobRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JobRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.JobRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>
+        }
+        update: {
+          args: Prisma.JobRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.JobRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JobRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JobRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.JobRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.JobRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJobRequest>
+        }
+        groupBy: {
+          args: Prisma.JobRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JobRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    JobInvitation: {
+      payload: Prisma.$JobInvitationPayload<ExtArgs>
+      fields: Prisma.JobInvitationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JobInvitationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JobInvitationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>
+        }
+        findFirst: {
+          args: Prisma.JobInvitationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JobInvitationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>
+        }
+        findMany: {
+          args: Prisma.JobInvitationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>[]
+        }
+        create: {
+          args: Prisma.JobInvitationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>
+        }
+        createMany: {
+          args: Prisma.JobInvitationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JobInvitationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>[]
+        }
+        delete: {
+          args: Prisma.JobInvitationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>
+        }
+        update: {
+          args: Prisma.JobInvitationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>
+        }
+        deleteMany: {
+          args: Prisma.JobInvitationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JobInvitationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JobInvitationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>[]
+        }
+        upsert: {
+          args: Prisma.JobInvitationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobInvitationPayload>
+        }
+        aggregate: {
+          args: Prisma.JobInvitationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJobInvitation>
+        }
+        groupBy: {
+          args: Prisma.JobInvitationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobInvitationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JobInvitationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobInvitationCountAggregateOutputType> | number
+        }
+      }
+    }
+    Booking: {
+      payload: Prisma.$BookingPayload<ExtArgs>
+      fields: Prisma.BookingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        findMany: {
+          args: Prisma.BookingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        create: {
+          args: Prisma.BookingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        createMany: {
+          args: Prisma.BookingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        update: {
+          args: Prisma.BookingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBooking>
+        }
+        groupBy: {
+          args: Prisma.BookingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -817,12 +1267,28 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const WorkerAvailabilityScalarFieldEnum = {
+  id: 'id',
+  workerId: 'workerId',
+  status: 'status',
+  updateSource: 'updateSource',
+  busyUntil: 'busyUntil',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerAvailabilityScalarFieldEnum = (typeof WorkerAvailabilityScalarFieldEnum)[keyof typeof WorkerAvailabilityScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
+  authUserId: 'authUserId',
   phone: 'phone',
   email: 'email',
   role: 'role',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -831,7 +1297,9 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const ClientProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  name: 'name'
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ClientProfileScalarFieldEnum = (typeof ClientProfileScalarFieldEnum)[keyof typeof ClientProfileScalarFieldEnum]
@@ -841,7 +1309,28 @@ export const WorkerProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   name: 'name',
-  phone: 'phone'
+  phone: 'phone',
+  status: 'status',
+  suspensionReason: 'suspensionReason',
+  agentId: 'agentId',
+  cnicNumber: 'cnicNumber',
+  cnicFrontPath: 'cnicFrontPath',
+  cnicBackPath: 'cnicBackPath',
+  referenceName: 'referenceName',
+  referencePhone: 'referencePhone',
+  referenceStatus: 'referenceStatus',
+  referenceVerifiedById: 'referenceVerifiedById',
+  referenceVerifiedAt: 'referenceVerifiedAt',
+  identityChecked: 'identityChecked',
+  phoneConfirmed: 'phoneConfirmed',
+  backgroundChecked: 'backgroundChecked',
+  skillAssessed: 'skillAssessed',
+  rating: 'rating',
+  ratingCount: 'ratingCount',
+  completedJobsCount: 'completedJobsCount',
+  isPriorityListed: 'isPriorityListed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type WorkerProfileScalarFieldEnum = (typeof WorkerProfileScalarFieldEnum)[keyof typeof WorkerProfileScalarFieldEnum]
@@ -858,10 +1347,79 @@ export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typ
 export const AreaScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   parentId: 'parentId'
 } as const
 
 export type AreaScalarFieldEnum = (typeof AreaScalarFieldEnum)[keyof typeof AreaScalarFieldEnum]
+
+
+export const WorkerCategoryScalarFieldEnum = {
+  workerId: 'workerId',
+  categoryId: 'categoryId'
+} as const
+
+export type WorkerCategoryScalarFieldEnum = (typeof WorkerCategoryScalarFieldEnum)[keyof typeof WorkerCategoryScalarFieldEnum]
+
+
+export const WorkerServiceAreaScalarFieldEnum = {
+  workerId: 'workerId',
+  areaId: 'areaId'
+} as const
+
+export type WorkerServiceAreaScalarFieldEnum = (typeof WorkerServiceAreaScalarFieldEnum)[keyof typeof WorkerServiceAreaScalarFieldEnum]
+
+
+export const JobRequestScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  categoryId: 'categoryId',
+  areaId: 'areaId',
+  description: 'description',
+  urgency: 'urgency',
+  budget: 'budget',
+  type: 'type',
+  status: 'status',
+  targetWorkerId: 'targetWorkerId',
+  submittedAt: 'submittedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobRequestScalarFieldEnum = (typeof JobRequestScalarFieldEnum)[keyof typeof JobRequestScalarFieldEnum]
+
+
+export const JobInvitationScalarFieldEnum = {
+  id: 'id',
+  jobRequestId: 'jobRequestId',
+  workerId: 'workerId',
+  status: 'status',
+  smsSentAt: 'smsSentAt',
+  respondedAt: 'respondedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobInvitationScalarFieldEnum = (typeof JobInvitationScalarFieldEnum)[keyof typeof JobInvitationScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  jobRequestId: 'jobRequestId',
+  invitationId: 'invitationId',
+  workerId: 'workerId',
+  status: 'status',
+  clientPhone: 'clientPhone',
+  workerPhone: 'workerPhone',
+  confirmedAt: 'confirmedAt',
+  completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -909,6 +1467,34 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'AvailabilityStatus'
+ */
+export type EnumAvailabilityStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AvailabilityStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AvailabilityStatus[]'
+ */
+export type ListEnumAvailabilityStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AvailabilityStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AvailabilityUpdateSource'
+ */
+export type EnumAvailabilityUpdateSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AvailabilityUpdateSource'>
+    
+
+
+/**
+ * Reference to a field of type 'AvailabilityUpdateSource[]'
+ */
+export type ListEnumAvailabilityUpdateSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AvailabilityUpdateSource[]'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -923,6 +1509,69 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'UserRole'
+ */
+export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole[]'
+ */
+export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerStatus'
+ */
+export type EnumWorkerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerStatus[]'
+ */
+export type ListEnumWorkerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReferenceCheckStatus'
+ */
+export type EnumReferenceCheckStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReferenceCheckStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReferenceCheckStatus[]'
+ */
+export type ListEnumReferenceCheckStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReferenceCheckStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -933,6 +1582,90 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UrgencyLevel'
+ */
+export type EnumUrgencyLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UrgencyLevel'>
+    
+
+
+/**
+ * Reference to a field of type 'UrgencyLevel[]'
+ */
+export type ListEnumUrgencyLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UrgencyLevel[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JobRequestType'
+ */
+export type EnumJobRequestTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobRequestType'>
+    
+
+
+/**
+ * Reference to a field of type 'JobRequestType[]'
+ */
+export type ListEnumJobRequestTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobRequestType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JobRequestStatus'
+ */
+export type EnumJobRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobRequestStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'JobRequestStatus[]'
+ */
+export type ListEnumJobRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobRequestStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InvitationStatus'
+ */
+export type EnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'InvitationStatus[]'
+ */
+export type ListEnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BookingStatus'
+ */
+export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BookingStatus[]'
+ */
+export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1045,11 +1778,17 @@ export type PrismaClientOptions = ({
   queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
+  workerAvailability?: Prisma.WorkerAvailabilityOmit
   user?: Prisma.UserOmit
   clientProfile?: Prisma.ClientProfileOmit
   workerProfile?: Prisma.WorkerProfileOmit
   category?: Prisma.CategoryOmit
   area?: Prisma.AreaOmit
+  workerCategory?: Prisma.WorkerCategoryOmit
+  workerServiceArea?: Prisma.WorkerServiceAreaOmit
+  jobRequest?: Prisma.JobRequestOmit
+  jobInvitation?: Prisma.JobInvitationOmit
+  booking?: Prisma.BookingOmit
 }
 
 /* Types for Logging */

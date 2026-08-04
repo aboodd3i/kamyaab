@@ -47,7 +47,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     // Resolve internal user by the stable Supabase Auth ID
     const dbUser = await prisma.user.findUnique({
-      where: { authUserId: authUser.id },
+      where: { id: authUser.id },
       select: { id: true, role: true },
     });
 
@@ -58,7 +58,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     req.user = {
       userId: dbUser.id,
       authUserId: authUser.id,
-      role: dbUser.role,
+      role: dbUser.role as 'CLIENT' | 'AGENT' | 'ADMIN' | 'WORKER',
     };
 
     next();

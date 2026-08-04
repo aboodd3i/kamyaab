@@ -18,6 +18,11 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model WorkerAvailability
+ * 
+ */
+export type WorkerAvailability = Prisma.WorkerAvailabilityModel
+/**
  * Model User
  * 
  */
@@ -42,3 +47,33 @@ export type Category = Prisma.CategoryModel
  * 
  */
 export type Area = Prisma.AreaModel
+/**
+ * Model WorkerCategory
+ * 
+ */
+export type WorkerCategory = Prisma.WorkerCategoryModel
+/**
+ * Model WorkerServiceArea
+ * 
+ */
+export type WorkerServiceArea = Prisma.WorkerServiceAreaModel
+/**
+ * Model JobRequest
+ * A job request created by a client.
+ * Flow A (SPECIFIC_WORKER): targets one worker → one invitation → booking.
+ * Flow B (OPEN, Week 5): matched to multiple workers via deterministic ranking.
+ */
+export type JobRequest = Prisma.JobRequestModel
+/**
+ * Model JobInvitation
+ * One invitation sent to a worker for a specific JobRequest.
+ * Flow A: always exactly one invitation per SPECIFIC_WORKER request.
+ * Flow B (Week 5): one per matched worker (batch-created).
+ */
+export type JobInvitation = Prisma.JobInvitationModel
+/**
+ * Model Booking
+ * A confirmed booking created when a worker accepts a JobInvitation.
+ * Contact details (phone numbers) are released to both parties on creation.
+ */
+export type Booking = Prisma.BookingModel

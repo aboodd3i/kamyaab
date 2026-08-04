@@ -9,7 +9,98 @@
 * 🟢 You can import this file directly.
 */
 
+export const UserRole = {
+  CLIENT: 'CLIENT',
+  AGENT: 'AGENT',
+  ADMIN: 'ADMIN'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const WorkerStatus = {
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type WorkerStatus = (typeof WorkerStatus)[keyof typeof WorkerStatus]
+
+
+export const ReferenceCheckStatus = {
+  UNVERIFIED: 'UNVERIFIED',
+  CONTACTED: 'CONTACTED',
+  CONFIRMED: 'CONFIRMED',
+  FAILED: 'FAILED'
+} as const
+
+export type ReferenceCheckStatus = (typeof ReferenceCheckStatus)[keyof typeof ReferenceCheckStatus]
+
+
+export const JobRequestType = {
+  SPECIFIC_WORKER: 'SPECIFIC_WORKER',
+  OPEN: 'OPEN'
+} as const
+
+export type JobRequestType = (typeof JobRequestType)[keyof typeof JobRequestType]
+
+
+export const JobRequestStatus = {
+  DRAFT: 'DRAFT',
+  WORKER_CONTACTED: 'WORKER_CONTACTED',
+  MATCHING: 'MATCHING',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type JobRequestStatus = (typeof JobRequestStatus)[keyof typeof JobRequestStatus]
+
+
+export const UrgencyLevel = {
+  FLEXIBLE: 'FLEXIBLE',
+  THIS_WEEK: 'THIS_WEEK',
+  URGENT: 'URGENT'
+} as const
+
+export type UrgencyLevel = (typeof UrgencyLevel)[keyof typeof UrgencyLevel]
+
+
+export const InvitationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type InvitationStatus = (typeof InvitationStatus)[keyof typeof InvitationStatus]
+
+
+export const BookingStatus = {
+  CONFIRMED: 'CONFIRMED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
+
+
+export const AvailabilityStatus = {
+  AVAILABLE: 'AVAILABLE',
+  BUSY: 'BUSY',
+  UNAVAILABLE: 'UNAVAILABLE',
+  UNKNOWN: 'UNKNOWN'
+} as const
+
+export type AvailabilityStatus = (typeof AvailabilityStatus)[keyof typeof AvailabilityStatus]
+
+
+export const AvailabilityUpdateSource = {
+  WORKER_PORTAL: 'WORKER_PORTAL',
+  SMS: 'SMS',
+  AGENT: 'AGENT',
+  ADMIN: 'ADMIN',
+  AUTO_EXPIRY: 'AUTO_EXPIRY'
+} as const
+
+export type AvailabilityUpdateSource = (typeof AvailabilityUpdateSource)[keyof typeof AvailabilityUpdateSource]

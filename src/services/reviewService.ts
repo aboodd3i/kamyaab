@@ -1,12 +1,15 @@
 /**
  * Review service (Week 6) — internal reusable methods for review operations.
  *
- * This module establishes the service-layer interfaces and transaction
- * boundaries for the review system. No Express handlers or routes
- * are registered here — those will be added in a future task.
+ * This module provides the service-layer logic for the review system.
+ * No Express handlers or routes are registered here — routes remain thin.
  *
- * The createReview method intentionally throws NOT_IMPLEMENTED until
- * the API endpoint is added in the next task.
+ * createReview implements the CLIENT_TO_WORKER review flow:
+ *   - resolves ownership from the trusted authenticated user
+ *   - validates booking eligibility (COMPLETED, owned by caller)
+ *   - prevents duplicates via unique constraint + transaction
+ *   - maps through the safe DTO
+ *   - never returns raw Prisma objects
  */
 
 import prisma from '../lib/prisma';
@@ -17,16 +20,6 @@ import { toReviewDto, type ReviewDto } from '../lib/reviewDto';
 
 /** Direction of a review — who is reviewing whom. */
 export type ReviewDirection = 'CLIENT_TO_WORKER' | 'WORKER_TO_CLIENT';
-
-/** Input for creating a review. */
-export interface CreateReviewInput {
-  bookingId: string;
-  reviewerUserId: string;
-  revieweeUserId: string;
-  direction: ReviewDirection;
-  rating: number;
-  comment?: string | null;
-}
 
 /** Fields selected from Prisma for the DTO. */
 const REVIEW_SELECT = {
@@ -44,26 +37,122 @@ const REVIEW_SELECT = {
 // ─── Internal Methods ──────────────────────────────────────────────────────
 
 /**
- * Create a review for a booking.
+ * Create a CLIENT_TO_WORKER review for a completed booking.
  *
- * NOT IMPLEMENTED — this method intentionally throws until the API
- * endpoint is added in the next task. The signature and transaction
- * boundary are established here for interface stability.
+ * Authorization & Ownership:
+ *   - The caller must be a CLIENT (enforced at the route layer).
+ *   - The caller's ClientProfile must own the JobRequest linked to the booking.
+ *   - Ownership failure returns a generic not-found (no information leakage).
  *
- * When implemented, this method will:
- *   1. Verify the booking exists and is COMPLETED.
- *   2. Verify the reviewer is a participant in the booking.
- *   3. Verify no review already exists for this booking + direction.
- *   4. Insert the review within a transaction.
- *   5. Return a safe ReviewDto.
+ * Booking Eligibility:
+ *   - The booking must exist.
+ *   - The booking status must be COMPLETED.
+ *   - The booking must have a linked worker with a linked User.
  *
- * @throws AppError(NOT_IMPLEMENTED) — always, until the endpoint is added.
+ * Duplicate Prevention:
+ *   - Exactly one CLIENT_TO_WORKER review per booking (enforced by DB unique constraint).
+ *   - If a review already exists, returns REVIEW_ALREADY_EXISTS (409).
+ *   - Unique constraint violations from concurrent inserts are translated
+ *     to REVIEW_ALREADY_EXISTS — raw Prisma errors are never exposed.
+ *
+ * Concurrency:
+ *   - The insert runs inside a transaction. If two concurrent requests
+ *     race, the unique constraint on (bookingId, direction) ensures
+ *     exactly one row is created. The loser's P2002 error is caught
+ *     and translated to a REVIEW_ALREADY_EXISTS AppError.
+ *
+ * @param bookingId   The booking to review (from request body).
+ * @param reviewerUserId  The authenticated client's internal User ID (trusted, server-side).
+ * @param rating      1–5 integer (validated by Zod at the route layer).
+ * @param comment     Optional trimmed comment (max 1000 chars).
+ * @returns Safe ReviewDto — never a raw Prisma object.
  */
-export async function createReview(_input: CreateReviewInput): Promise<ReviewDto> {
-  throw errors.badRequest(
-    ErrorCode.NOT_IMPLEMENTED,
-    'Review creation is not yet implemented',
-  );
+export async function createReview(
+  bookingId: string,
+  reviewerUserId: string,
+  rating: number,
+  comment?: string | null,
+): Promise<ReviewDto> {
+  // Resolve the client profile from the trusted user ID
+  const clientProfile = await prisma.clientProfile.findUnique({
+    where: { userId: reviewerUserId },
+    select: { id: true },
+  });
+
+  if (!clientProfile) {
+    throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Client profile not found');
+  }
+
+  // Load the booking with ownership and worker info
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: {
+      id: true,
+      status: true,
+      jobRequest: { select: { clientId: true } },
+      worker: { select: { userId: true } },
+    },
+  });
+
+  // Generic not-found if booking doesn't exist OR client doesn't own it.
+  // This avoids leaking whether another client's booking exists.
+  if (!booking || booking.jobRequest.clientId !== clientProfile.id) {
+    throw errors.notFound(ErrorCode.BOOKING_NOT_FOUND, 'Booking not found');
+  }
+
+  // Only completed bookings may be reviewed
+  if (booking.status !== 'COMPLETED') {
+    throw errors.badRequest(
+      ErrorCode.REVIEW_NOT_ALLOWED,
+      'Only completed bookings may be reviewed',
+    );
+  }
+
+  // The booking must have a worker with a linked User
+  if (!booking.worker.userId) {
+    throw errors.badRequest(
+      ErrorCode.REVIEW_NOT_ALLOWED,
+      'Booking worker is not linked to a user account',
+    );
+  }
+
+  const revieweeUserId = booking.worker.userId;
+
+  // Create the review inside a transaction.
+  // If a concurrent request already inserted a CLIENT_TO_WORKER review,
+  // the unique constraint on (bookingId, direction) will reject the
+  // insert with a P2002 error, which we translate to REVIEW_ALREADY_EXISTS.
+  try {
+    const review = await prisma.$transaction(async (tx) => {
+      return tx.review.create({
+        data: {
+          bookingId,
+          reviewerUserId,
+          revieweeUserId,
+          direction: 'CLIENT_TO_WORKER',
+          rating,
+          comment: comment ?? null,
+        },
+        select: REVIEW_SELECT,
+      });
+    });
+
+    return toReviewDto(review);
+  } catch (err) {
+    // Translate Prisma P2002 unique constraint violation → REVIEW_ALREADY_EXISTS
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'code' in err &&
+      (err as { code: unknown }).code === 'P2002'
+    ) {
+      throw errors.conflict(
+        ErrorCode.REVIEW_ALREADY_EXISTS,
+        'A review for this booking already exists',
+      );
+    }
+    throw err;
+  }
 }
 
 /**

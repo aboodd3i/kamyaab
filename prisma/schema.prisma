@@ -156,8 +156,8 @@ model WorkerProfile {
   targetedJobRequests JobRequest[]    @relation("TargetWorker")
   invitations         JobInvitation[]
   bookings            Booking[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
 
   @@index([status, rating(desc), completedJobsCount(desc)])
 }
@@ -182,7 +182,7 @@ model Area {
   children Area[]  @relation("AreaHierarchy")
 
   // Week 3: Worker relationships
-  workers WorkerServiceArea[]
+  workers     WorkerServiceArea[]
   // Week 4: Job requests in this area
   jobRequests JobRequest[]
 }

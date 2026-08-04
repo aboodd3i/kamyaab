@@ -11,7 +11,7 @@
  *     optimistic concurrency protection.
  */
 
-import { UserRole } from '@prisma/client';
+import { UserRole } from '../generated/prisma';
 import prisma from '../lib/prisma';
 import { errors, ErrorCode, AppError } from '../lib/errors';
 import { normalizePakistaniPhone } from '../lib/phone';

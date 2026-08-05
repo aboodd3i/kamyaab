@@ -11,6 +11,7 @@
 import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { toBookingDto } from '../lib/bookingDto';
+import { logAction } from './auditService';
 
 /** Fields selected from Prisma for the DTO — never includes contact phones. */
 const BOOKING_SELECT = {
@@ -124,6 +125,16 @@ export async function completeBooking(bookingId: string, userId: string) {
   const finalBooking = await prisma.booking.findUnique({
     where: { id: bookingId },
     select: BOOKING_SELECT,
+  });
+
+  // Audit log — fire and forget (logAction never throws)
+  void logAction({
+    action: 'BOOKING_COMPLETED',
+    actorUserId: userId,
+    bookingId,
+    workerId: finalBooking?.workerId,
+    summary: `Booking ${bookingId} marked as completed by client ${userId}`,
+    metadata: { previousStatus: 'CONFIRMED', newStatus: 'COMPLETED' },
   });
 
   return toBookingDto(finalBooking!);

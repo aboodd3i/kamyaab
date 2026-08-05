@@ -6,6 +6,7 @@ import prisma from '../lib/prisma';
 import { errors, ErrorCode, AppError } from '../lib/errors';
 import { sendMockSms } from './mockSmsService';
 import { toPendingInvitationDto, toAcceptedInvitationDto } from '../lib/invitationDto';
+import { logAction } from './auditService';
 import type { InvitationResponseInput } from '../types';
 
 /**
@@ -18,7 +19,8 @@ import type { InvitationResponseInput } from '../types';
 export async function respondToInvitation(
   invitationId: string,
   workerId: string,
-  input: InvitationResponseInput
+  input: InvitationResponseInput,
+  actorUserId?: string,
 ) {
   const invitation = await prisma.jobInvitation.findUnique({
     where: { id: invitationId },
@@ -118,6 +120,18 @@ export async function respondToInvitation(
         );
       }
 
+      // Audit log — fire and forget (logAction never throws)
+      if (actorUserId) {
+        void logAction({
+          action: 'INVITATION_RESPONDED',
+          actorUserId,
+          bookingId: booking.id,
+          workerId: worker.id,
+          summary: `Invitation ${invitationId} accepted by worker ${workerId}`,
+          metadata: { invitationId, response: 'ACCEPTED', bookingId: booking.id },
+        });
+      }
+
       return toAcceptedInvitationDto(booking);
     } catch (err) {
       // P2002 — unique constraint violation on Booking.jobRequestId or Booking.invitationId.
@@ -164,6 +178,17 @@ export async function respondToInvitation(
         jobRequest.client.user.phone,
         `Kamyaab: ${worker.name} is currently unavailable for your ${jobRequest.category.name} job. Your request has been moved back to drafts so you can invite another worker.`
       );
+    }
+
+    // Audit log — fire and forget (logAction never throws)
+    if (actorUserId) {
+      void logAction({
+        action: 'INVITATION_RESPONDED',
+        actorUserId,
+        workerId: worker.id,
+        summary: `Invitation ${invitationId} rejected by worker ${workerId}`,
+        metadata: { invitationId, response: 'REJECTED' },
+      });
     }
 
     return { status: 'REJECTED' as const };

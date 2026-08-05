@@ -111,3 +111,10 @@ export type Review = Prisma.ReviewModel
  * Anyone authenticated can file; only admins can resolve or dismiss.
  */
 export type Complaint = Prisma.ComplaintModel
+/**
+ * Model AuditLog
+ * Week 6: Audit log — records significant state changes for compliance and debugging.
+ * Written by the audit service (logAction) which never throws — failures are
+ * logged to console but never bubble up to callers.
+ */
+export type AuditLog = Prisma.AuditLogModel

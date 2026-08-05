@@ -8,7 +8,10 @@ import areaRoutes from './routes/areas';
 import jobRequestRoutes from './routes/jobRequests';
 import invitationRoutes from './routes/invitations';
 import bookingRoutes from './routes/bookings';
-import reviewRoutes from './routes/reviews';import complaintRoutes from './routes/complaints';import { errorMiddleware } from './lib/errors';
+import reviewRoutes from './routes/reviews';
+import complaintRoutes from './routes/complaints';
+import auditLogRoutes from './routes/auditLogs';
+import { errorMiddleware } from './lib/errors';
 
 /**
  * Express application factory.
@@ -46,6 +49,7 @@ export function createApp() {
   app.use('/api/v1/bookings', bookingRoutes);
   app.use('/api/v1/reviews', reviewRoutes);
   app.use('/api/v1/complaints', complaintRoutes);
+  app.use('/api/v1/audit-logs', auditLogRoutes);
 
   // Centralized error handler — must be registered last
   app.use(errorMiddleware);

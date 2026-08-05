@@ -121,3 +121,15 @@ export const ComplaintStatus = {
 } as const
 
 export type ComplaintStatus = (typeof ComplaintStatus)[keyof typeof ComplaintStatus]
+
+
+export const AuditAction = {
+  BOOKING_COMPLETED: 'BOOKING_COMPLETED',
+  REVIEW_CREATED: 'REVIEW_CREATED',
+  COMPLAINT_FILED: 'COMPLAINT_FILED',
+  COMPLAINT_RESOLVED: 'COMPLAINT_RESOLVED',
+  WORKER_STATUS_CHANGED: 'WORKER_STATUS_CHANGED',
+  INVITATION_RESPONDED: 'INVITATION_RESPONDED'
+} as const
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]

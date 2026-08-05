@@ -15,6 +15,7 @@
 import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { toReviewDto, type ReviewDto } from '../lib/reviewDto';
+import { logAction } from './auditService';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -190,7 +191,7 @@ export async function createReview(
     );
   }
 
-  return insertReview(
+  const review = await insertReview(
     bookingId,
     reviewerUserId,
     booking.worker.userId,
@@ -199,6 +200,19 @@ export async function createReview(
     comment,
     booking.workerId,
   );
+
+  // Audit log — fire and forget (logAction never throws)
+  void logAction({
+    action: 'REVIEW_CREATED',
+    actorUserId: reviewerUserId,
+    bookingId,
+    reviewId: review.id,
+    workerId: booking.workerId,
+    summary: `CLIENT_TO_WORKER review (${rating}★) created on booking ${bookingId}`,
+    metadata: { direction: 'CLIENT_TO_WORKER', rating, reviewId: review.id },
+  });
+
+  return review;
 }
 
 /**
@@ -285,7 +299,7 @@ export async function createWorkerReview(
     );
   }
 
-  return insertReview(
+  const review = await insertReview(
     bookingId,
     reviewerUserId,
     booking.jobRequest.client.userId,
@@ -293,6 +307,19 @@ export async function createWorkerReview(
     rating,
     comment,
   );
+
+  // Audit log — fire and forget (logAction never throws)
+  void logAction({
+    action: 'REVIEW_CREATED',
+    actorUserId: reviewerUserId,
+    bookingId,
+    reviewId: review.id,
+    workerId: booking.workerId,
+    summary: `WORKER_TO_CLIENT review (${rating}★) created on booking ${bookingId}`,
+    metadata: { direction: 'WORKER_TO_CLIENT', rating, reviewId: review.id },
+  });
+
+  return review;
 }
 
 /**

@@ -107,6 +107,7 @@ router.patch(
         workerId: id,
         status: parsed.data.status,
         reason: parsed.data.reason,
+        actorUserId: req.user?.userId,
       });
 
       return sendSuccess(res, worker, `Worker status updated to ${parsed.data.status}`);

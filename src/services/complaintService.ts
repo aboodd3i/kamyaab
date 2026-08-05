@@ -12,6 +12,7 @@
 import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { toComplaintDto, type ComplaintDto } from '../lib/complaintDto';
+import { logAction } from './auditService';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -69,6 +70,16 @@ export async function createComplaint(
     select: COMPLAINT_SELECT,
   });
 
+  // Audit log — fire and forget (logAction never throws)
+  void logAction({
+    action: 'COMPLAINT_FILED',
+    actorUserId: filedByUserId,
+    bookingId,
+    complaintId: complaint.id,
+    summary: `Complaint filed on booking ${bookingId}`,
+    metadata: { reason, complaintId: complaint.id },
+  });
+
   return toComplaintDto(complaint);
 }
 
@@ -119,6 +130,16 @@ export async function resolveComplaint(
       resolvedAt: new Date(),
     },
     select: COMPLAINT_SELECT,
+  });
+
+  // Audit log — fire and forget (logAction never throws)
+  void logAction({
+    action: 'COMPLAINT_RESOLVED',
+    actorUserId: resolvedByUserId,
+    complaintId,
+    bookingId: updated.bookingId,
+    summary: `Complaint ${complaintId} ${status.toLowerCase()}`,
+    metadata: { status, resolution: resolution ?? null, complaintId },
   });
 
   return toComplaintDto(updated);

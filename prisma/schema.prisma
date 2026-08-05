@@ -128,6 +128,16 @@ enum ComplaintStatus {
   DISMISSED
 }
 
+// Week 6: Audit log actions — what kind of state change is being recorded
+enum AuditAction {
+  BOOKING_COMPLETED
+  REVIEW_CREATED
+  COMPLAINT_FILED
+  COMPLAINT_RESOLVED
+  WORKER_STATUS_CHANGED
+  INVITATION_RESPONDED
+}
+
 // --- Models -----------------------------------------------------------------
 
 model User {
@@ -153,6 +163,9 @@ model User {
   // Week 6: Complaints filed by and resolved by this user
   complaintsFiled    Complaint[] @relation("ComplaintFiledBy")
   complaintsResolved Complaint[] @relation("ComplaintResolvedBy")
+
+  // Week 6: Audit logs authored by this user
+  auditLogs AuditLog[] @relation("AuditLogActor")
 }
 
 model ClientProfile {
@@ -431,4 +444,37 @@ model Complaint {
   @@index([bookingId])
   @@index([filedByUserId])
   @@index([status, createdAt])
+}
+
+/// Week 6: Audit log — records significant state changes for compliance and debugging.
+/// Written by the audit service (logAction) which never throws — failures are
+/// logged to console but never bubble up to callers.
+model AuditLog {
+  id String @id @default(uuid())
+
+  action AuditAction
+
+  // Who performed the action (internal User ID — trusted, server-side)
+  actorUserId String
+  actor       User   @relation("AuditLogActor", fields: [actorUserId], references: [id])
+
+  // Optional references to the entities involved (nullable since not all
+  // actions necessarily have all entity types)
+  bookingId   String?
+  reviewId    String?
+  complaintId String?
+  workerId    String?
+
+  // Human-readable summary of what happened
+  summary String
+
+  // Structured metadata as JSON (e.g., previous status, new status, rating)
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([action, createdAt])
+  @@index([bookingId])
+  @@index([workerId])
 }

@@ -143,15 +143,8 @@ async function createTempOpenJob(categoryId: string, areaId: string, clientId: s
 }
 
 describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Matching Service Integration', () => {
-  let categoryId: string;
-  let areaId: string;
-  let clientId: string;
-
   beforeAll(async () => {
     await rawClient.connect();
-    categoryId = await createTempCategory();
-    areaId = await createTempArea();
-    clientId = await createTempClient();
   });
 
   afterAll(async () => {
@@ -183,12 +176,19 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Matching Service Integration',
   });
 
   it('1. returns empty array when no matching workers exist', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const clientId = await createTempClient();
     const jobId = await createTempOpenJob(categoryId, areaId, clientId);
     const matches = await findMatchingWorkers(jobId);
     expect(matches).toEqual([]);
   });
 
   it('2. returns workers sorted by rating DESC', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const clientId = await createTempClient();
+
     const w1 = await createTempWorker({ categoryId, areaId, rating: 3.5 });
     const w2 = await createTempWorker({ categoryId, areaId, rating: 4.8 });
     const w3 = await createTempWorker({ categoryId, areaId, rating: 2.0 });
@@ -203,6 +203,10 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Matching Service Integration',
   });
 
   it('3. priority-listed workers rank first', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const clientId = await createTempClient();
+
     const w1 = await createTempWorker({ categoryId, areaId, rating: 5.0, isPriorityListed: false });
     const w2 = await createTempWorker({ categoryId, areaId, rating: 2.0, isPriorityListed: true });
 
@@ -214,6 +218,10 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Matching Service Integration',
   });
 
   it('4. filters out UNAVAILABLE workers', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const clientId = await createTempClient();
+
     await createTempWorker({ categoryId, areaId, availabilityStatus: 'UNAVAILABLE' });
     const w2 = await createTempWorker({ categoryId, areaId, availabilityStatus: 'AVAILABLE' });
 
@@ -225,6 +233,10 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Matching Service Integration',
   });
 
   it('5. respects maxMatches limit', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const clientId = await createTempClient();
+
     for (let i = 0; i < 5; i++) {
       await createTempWorker({ categoryId, areaId, rating: 1 + i * 0.5 });
     }
@@ -236,6 +248,10 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Matching Service Integration',
   });
 
   it('6. assigns sequential rank starting at 1', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const clientId = await createTempClient();
+
     await createTempWorker({ categoryId, areaId, rating: 3.0 });
     await createTempWorker({ categoryId, areaId, rating: 4.0 });
 
@@ -247,6 +263,9 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Matching Service Integration',
   });
 
   it('7. only includes workers matching the specific category+area', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const clientId = await createTempClient();
     const otherCategory = await createTempCategory();
     const otherArea = await createTempArea();
 

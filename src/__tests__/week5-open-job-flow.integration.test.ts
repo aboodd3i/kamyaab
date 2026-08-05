@@ -49,14 +49,14 @@ async function createTempUser(role: 'CLIENT' | 'WORKER' | 'AGENT' | 'ADMIN' = 'C
   return user.id;
 }
 
-async function createTempClient(): Promise<string> {
+async function createTempClient(): Promise<{ clientId: string; userId: string }> {
   const userId = await createTempUser('CLIENT');
   const client = await prisma.clientProfile.create({
     data: { userId },
     select: { id: true },
   });
   tempClientIds.push(client.id);
-  return client.id;
+  return { clientId: client.id, userId };
 }
 
 async function createTempCategory(): Promise<string> {
@@ -124,15 +124,8 @@ async function createTempOpenJob(categoryId: string, areaId: string, clientId: s
 }
 
 describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', () => {
-  let categoryId: string;
-  let areaId: string;
-  let clientId: string;
-
   beforeAll(async () => {
     await rawClient.connect();
-    categoryId = await createTempCategory();
-    areaId = await createTempArea();
-    clientId = await createTempClient();
   });
 
   afterAll(async () => {
@@ -164,11 +157,15 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
   });
 
   it('1. submitting OPEN job with matching workers creates batch invitations + MATCHING status', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const { clientId, userId } = await createTempClient();
+
     await createTempWorker({ categoryId, areaId, rating: 4.0 });
     await createTempWorker({ categoryId, areaId, rating: 3.5 });
 
     const jobId = await createTempOpenJob(categoryId, areaId, clientId);
-    await submitJobRequest(jobId, { type: 'OPEN' });
+    await submitJobRequest(jobId, userId, {});
 
     const job = await prisma.jobRequest.findUnique({
       where: { id: jobId },
@@ -185,11 +182,15 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
   });
 
   it('2. first-accept-wins: accepting one invitation expires others + creates booking', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const { clientId, userId } = await createTempClient();
+
     const w1 = await createTempWorker({ categoryId, areaId, rating: 4.0 });
     const w2 = await createTempWorker({ categoryId, areaId, rating: 3.5 });
 
     const jobId = await createTempOpenJob(categoryId, areaId, clientId);
-    await submitJobRequest(jobId, { type: 'OPEN' });
+    await submitJobRequest(jobId, userId, {});
 
     const invitations = await prisma.jobInvitation.findMany({
       where: { jobRequestId: jobId },
@@ -200,7 +201,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
     const inv2 = invitations.find((i) => i.workerId === w2)!;
 
     // First worker accepts
-    await respondToInvitation(inv1.id, w1, { response: 'ACCEPTED' });
+    await respondToInvitation(inv1.id, w1, { status: 'ACCEPTED' });
 
     const job = await prisma.jobRequest.findUnique({
       where: { id: jobId },
@@ -224,11 +225,15 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
   });
 
   it('3. rejecting all invitations on MATCHING job moves it to EXPIRED', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const { clientId, userId } = await createTempClient();
+
     const w1 = await createTempWorker({ categoryId, areaId, rating: 4.0 });
     const w2 = await createTempWorker({ categoryId, areaId, rating: 3.5 });
 
     const jobId = await createTempOpenJob(categoryId, areaId, clientId);
-    await submitJobRequest(jobId, { type: 'OPEN' });
+    await submitJobRequest(jobId, userId, {});
 
     const invitations = await prisma.jobInvitation.findMany({
       where: { jobRequestId: jobId },
@@ -237,7 +242,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
 
     // Reject all
     for (const inv of invitations) {
-      await respondToInvitation(inv.id, inv.workerId, { response: 'REJECTED' });
+      await respondToInvitation(inv.id, inv.workerId, { status: 'REJECTED' });
     }
 
     const job = await prisma.jobRequest.findUnique({
@@ -248,11 +253,15 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
   });
 
   it('4. rejecting one invitation keeps MATCHING while others are PENDING', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const { clientId, userId } = await createTempClient();
+
     const w1 = await createTempWorker({ categoryId, areaId, rating: 4.0 });
     const w2 = await createTempWorker({ categoryId, areaId, rating: 3.5 });
 
     const jobId = await createTempOpenJob(categoryId, areaId, clientId);
-    await submitJobRequest(jobId, { type: 'OPEN' });
+    await submitJobRequest(jobId, userId, {});
 
     const invitations = await prisma.jobInvitation.findMany({
       where: { jobRequestId: jobId },
@@ -260,7 +269,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
     });
 
     const inv1 = invitations.find((i) => i.workerId === w1)!;
-    await respondToInvitation(inv1.id, w1, { response: 'REJECTED' });
+    await respondToInvitation(inv1.id, w1, { status: 'REJECTED' });
 
     const job = await prisma.jobRequest.findUnique({
       where: { id: jobId },
@@ -270,10 +279,14 @@ describe.skipIf(!RUN_GATE || IS_PROD)('Week 5 — Open Job Flow Integration', ()
   });
 
   it('5. expiry service expires MATCHING jobs past their deadline', async () => {
+    const categoryId = await createTempCategory();
+    const areaId = await createTempArea();
+    const { clientId, userId } = await createTempClient();
+
     await createTempWorker({ categoryId, areaId, rating: 4.0 });
 
     const jobId = await createTempOpenJob(categoryId, areaId, clientId);
-    await submitJobRequest(jobId, { type: 'OPEN' });
+    await submitJobRequest(jobId, userId, {});
 
     // Manually set expiresAt to the past
     await prisma.jobRequest.update({

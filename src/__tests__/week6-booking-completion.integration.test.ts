@@ -98,7 +98,7 @@ const tempBookingIds: string[] = [];
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 async function createTempUser(
-  role: 'CLIENT' | 'AGENT' | 'ADMIN' | 'WORKER' = 'CLIENT',
+  role: 'CLIENT' | 'AGENT' | 'ADMIN' = 'CLIENT',
   phone?: string,
 ): Promise<string> {
   const idx = tempUserIds.length;
@@ -186,7 +186,7 @@ async function createConfirmedBooking(): Promise<{
   await createTempClientProfile(clientUserId);
   const categoryId = await createTempCategory();
   const areaId = await createTempArea();
-  const workerUserId = await createTempUser('WORKER');
+  const workerUserId = await createTempUser('CLIENT');
   const workerId = await createTempClaimedWorker(workerUserId, categoryId, areaId);
 
   const clientApp = createAppWithUser(clientUserId, 'CLIENT');

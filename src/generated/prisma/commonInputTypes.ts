@@ -399,6 +399,40 @@ export type EnumBookingStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumBookingStatusFilter<$PrismaModel>
 }
 
+export type EnumReviewDirectionFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReviewDirection | Prisma.EnumReviewDirectionFieldRefInput<$PrismaModel>
+  in?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReviewDirectionFilter<$PrismaModel> | $Enums.ReviewDirection
+}
+
+export type EnumReviewDirectionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReviewDirection | Prisma.EnumReviewDirectionFieldRefInput<$PrismaModel>
+  in?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReviewDirectionWithAggregatesFilter<$PrismaModel> | $Enums.ReviewDirection
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumReviewDirectionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumReviewDirectionFilter<$PrismaModel>
+}
+
+export type EnumComplaintStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplaintStatus | Prisma.EnumComplaintStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComplaintStatusFilter<$PrismaModel> | $Enums.ComplaintStatus
+}
+
+export type EnumComplaintStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplaintStatus | Prisma.EnumComplaintStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComplaintStatusWithAggregatesFilter<$PrismaModel> | $Enums.ComplaintStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplaintStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplaintStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -795,6 +829,40 @@ export type NestedEnumBookingStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumBookingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumBookingStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumReviewDirectionFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReviewDirection | Prisma.EnumReviewDirectionFieldRefInput<$PrismaModel>
+  in?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReviewDirectionFilter<$PrismaModel> | $Enums.ReviewDirection
+}
+
+export type NestedEnumReviewDirectionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReviewDirection | Prisma.EnumReviewDirectionFieldRefInput<$PrismaModel>
+  in?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReviewDirection[] | Prisma.ListEnumReviewDirectionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReviewDirectionWithAggregatesFilter<$PrismaModel> | $Enums.ReviewDirection
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumReviewDirectionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumReviewDirectionFilter<$PrismaModel>
+}
+
+export type NestedEnumComplaintStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplaintStatus | Prisma.EnumComplaintStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComplaintStatusFilter<$PrismaModel> | $Enums.ComplaintStatus
+}
+
+export type NestedEnumComplaintStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplaintStatus | Prisma.EnumComplaintStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComplaintStatus[] | Prisma.ListEnumComplaintStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComplaintStatusWithAggregatesFilter<$PrismaModel> | $Enums.ComplaintStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplaintStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplaintStatusFilter<$PrismaModel>
 }
 
 

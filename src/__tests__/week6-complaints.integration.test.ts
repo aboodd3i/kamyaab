@@ -1,26 +1,34 @@
 /**
- * Week 6 — Client Review Integration Tests
+ * Week 6 — Complaint Integration Tests
  *
- * Tests the POST /api/v1/reviews endpoint (CLIENT → WORKER review):
- *   1.  CLIENT can review a completed booking
- *   2.  Review direction is CLIENT_TO_WORKER
- *   3.  Reviewer is the authenticated client
- *   4.  Reviewee is the assigned worker's User
- *   5.  Rating is stored correctly
- *   6.  Comment is stored correctly
- *   7.  Safe DTO returned (no forbidden fields)
- *   8.  Duplicate review rejected (409)
- *   9.  Another client cannot review the booking (404)
- *   10. Worker cannot access endpoint (403)
- *   11. Admin cannot access endpoint (403)
- *   12. Agent cannot access endpoint (403)
- *   13. Unauthenticated caller rejected (403)
- *   14. Booking not completed rejected (400)
- *   15. Non-existent booking rejected (404)
- *   16. Booking owned by another client rejected (404)
- *   17. Invalid rating rejected (400)
- *   18. Concurrent review creation creates exactly one review row
- *   19. No sensitive fields appear anywhere in the response
+ * Tests the complaints system:
+ *   1.  Any authenticated user can file a complaint
+ *   2.  Complaint status defaults to OPEN
+ *   3.  Filed-by user is the authenticated user
+ *   4.  Reason is stored correctly
+ *   5.  Safe DTO returned (no forbidden fields)
+ *   6.  Non-existent booking rejected (404)
+ *   7.  Missing reason rejected (400)
+ *   8.  Empty reason rejected (400)
+ *   9.  Reason exceeding max length rejected (400)
+ *   10. Admin can resolve a complaint
+ *   11. Admin can dismiss a complaint
+ *   12. Resolved complaint has resolvedByUserId set
+ *   13. Resolved complaint has resolvedAt set
+ *   14. Cannot resolve an already-resolved complaint (409)
+ *   15. Non-admin cannot resolve a complaint (403)
+ *   16. Non-existent complaint resolution rejected (404)
+ *   17. Invalid resolution status rejected (400)
+ *   18. Admin can list complaints
+ *   19. Admin can filter complaints by status
+ *   20. Non-admin cannot list complaints (403)
+ *   21. Any authenticated user can get a complaint by ID
+ *   22. Non-existent complaint lookup rejected (404)
+ *
+ * Also tests path-based review endpoints:
+ *   23. POST /bookings/:id/reviews creates a CLIENT_TO_WORKER review
+ *   24. POST /bookings/:id/reviews/worker creates a WORKER_TO_CLIENT review
+ *   25. Worker rating is recalculated after a client review
  *
  * Uses a real PostgreSQL database with mocked auth middleware.
  */
@@ -80,12 +88,13 @@ import 'dotenv/config';
 import { PrismaClient } from '../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
+import complaintRoutes from '../routes/complaints';
 import reviewRoutes from '../routes/reviews';
 import bookingRoutes from '../routes/bookings';
 import jobRequestRoutes from '../routes/jobRequests';
 import invitationRoutes from '../routes/invitations';
 import { errorMiddleware } from '../lib/errors';
-import { findForbiddenReviewKey } from '../lib/reviewDto';
+import { findForbiddenComplaintKey } from '../lib/complaintDto';
 
 // ─── Setup ─────────────────────────────────────────────────────────────────
 
@@ -104,6 +113,7 @@ const tempAreaIds: string[] = [];
 const tempJobRequestIds: string[] = [];
 const tempInvitationIds: string[] = [];
 const tempBookingIds: string[] = [];
+const tempComplaintIds: string[] = [];
 const tempReviewIds: string[] = [];
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -259,6 +269,7 @@ function createAppWithUser(
   app.use('/api/v1/invitations', invitationRoutes);
   app.use('/api/v1/bookings', bookingRoutes);
   app.use('/api/v1/reviews', reviewRoutes);
+  app.use('/api/v1/complaints', complaintRoutes);
   app.use(errorMiddleware);
   return app;
 }
@@ -266,7 +277,7 @@ function createAppWithUser(
 // ─── Tests ─────────────────────────────────────────────────────────────────
 
 describe.skipIf(!RUN_GATE || IS_PROD)(
-  'Week 6 — Client Review',
+  'Week 6 — Complaints',
   () => {
     beforeAll(async () => {
       await rawClient.connect();
@@ -274,14 +285,24 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
     afterAll(async () => {
       // Clean up in reverse dependency order
+      if (tempComplaintIds.length > 0) {
+        await rawClient.query(
+          `DELETE FROM "Complaint" WHERE "id" = ANY($1::text[])`,
+          [tempComplaintIds],
+        );
+      }
       if (tempReviewIds.length > 0) {
         await rawClient.query(
           `DELETE FROM "Review" WHERE "id" = ANY($1::text[])`,
           [tempReviewIds],
         );
       }
-      // Also clean up any reviews for our job requests (in case IDs weren't captured)
+      // Also clean up any reviews/complaints for our bookings
       if (tempBookingIds.length > 0) {
+        await rawClient.query(
+          `DELETE FROM "Complaint" WHERE "bookingId" = ANY($1::text[])`,
+          [tempBookingIds],
+        );
         await rawClient.query(
           `DELETE FROM "Review" WHERE "bookingId" = ANY($1::text[])`,
           [tempBookingIds],
@@ -357,34 +378,441 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 1. CLIENT can review a completed booking
+    // 1. Any authenticated user can file a complaint
     // ═══════════════════════════════════════════════════════════════════════
 
-    it('1. the owning CLIENT can review a completed booking', async () => {
+    it('1. any authenticated user can file a complaint', async () => {
       const { clientUserId, bookingId } = await createCompletedBooking();
       const app = createAppWithUser(clientUserId, 'CLIENT');
 
       const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Worker did not show up' });
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.data.id).toBeDefined();
-      tempReviewIds.push(res.body.data.id);
+      tempComplaintIds.push(res.body.data.id);
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 2. Review direction is CLIENT_TO_WORKER
+    // 2. Complaint status defaults to OPEN
     // ═══════════════════════════════════════════════════════════════════════
 
-    it('2. the review direction is CLIENT_TO_WORKER', async () => {
+    it('2. complaint status defaults to OPEN', async () => {
       const { clientUserId, bookingId } = await createCompletedBooking();
       const app = createAppWithUser(clientUserId, 'CLIENT');
 
       const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 4 });
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Poor quality work' });
+
+      expect(res.status).toBe(201);
+      expect(res.body.data.status).toBe('OPEN');
+      tempComplaintIds.push(res.body.data.id);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 3. Filed-by user is the authenticated user
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('3. filedByUserId is the authenticated user', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Unprofessional behavior' });
+
+      expect(res.status).toBe(201);
+      expect(res.body.data.filedByUserId).toBe(clientUserId);
+      tempComplaintIds.push(res.body.data.id);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 4. Reason is stored correctly
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('4. reason is stored correctly', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: '  Overcharged  ' });
+
+      expect(res.status).toBe(201);
+      expect(res.body.data.reason).toBe('Overcharged');
+      tempComplaintIds.push(res.body.data.id);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 5. Safe DTO returned (no forbidden fields)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('5. safe DTO returned with no forbidden fields', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Safety check' });
+
+      expect(res.status).toBe(201);
+      const forbidden = findForbiddenComplaintKey(res.body.data);
+      expect(forbidden).toBeNull();
+      tempComplaintIds.push(res.body.data.id);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 6. Non-existent booking rejected (404)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('6. non-existent booking rejected', async () => {
+      const clientUserId = await createTempUser('CLIENT');
+      await createTempClientProfile(clientUserId);
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post('/api/v1/complaints')
+        .send({ bookingId: randomUUID(), reason: 'Test' });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error.code).toBe('BOOKING_NOT_FOUND');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 7. Missing reason rejected (400)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('7. missing reason rejected', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post('/api/v1/complaints')
+        .send({ bookingId });
+
+      expect(res.status).toBe(400);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 8. Empty reason rejected (400)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('8. empty reason rejected', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: '   ' });
+
+      expect(res.status).toBe(400);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 9. Reason exceeding max length rejected (400)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('9. reason exceeding max length rejected', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'x'.repeat(2001) });
+
+      expect(res.status).toBe(400);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 10. Admin can resolve a complaint
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('10. admin can resolve a complaint', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Need resolution' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'RESOLVED', resolution: 'Refunded the client' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.status).toBe('RESOLVED');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 11. Admin can dismiss a complaint
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('11. admin can dismiss a complaint', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Unfounded complaint' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'DISMISSED' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.status).toBe('DISMISSED');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 12. Resolved complaint has resolvedByUserId set
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('12. resolved complaint has resolvedByUserId set', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Check resolvedBy' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'RESOLVED', resolution: 'Fixed' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.resolvedByUserId).toBe(adminUserId);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 13. Resolved complaint has resolvedAt set
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('13. resolved complaint has resolvedAt set', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Check resolvedAt' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'RESOLVED' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.resolvedAt).not.toBeNull();
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 14. Cannot resolve an already-resolved complaint (409)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('14. cannot resolve an already-resolved complaint', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Double resolve' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      await request(adminApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'RESOLVED' });
+
+      const res = await request(adminApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'RESOLVED' });
+
+      expect(res.status).toBe(409);
+      expect(res.body.error.code).toBe('COMPLAINT_ALREADY_RESOLVED');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 15. Non-admin cannot resolve a complaint (403)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('15. non-admin cannot resolve a complaint', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Client trying to resolve' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const res = await request(clientApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'RESOLVED' });
+
+      expect(res.status).toBe(403);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 16. Non-existent complaint resolution rejected (404)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('16. non-existent complaint resolution rejected', async () => {
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp)
+        .post(`/api/v1/complaints/${randomUUID()}/resolve`)
+        .send({ status: 'RESOLVED' });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error.code).toBe('COMPLAINT_NOT_FOUND');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 17. Invalid resolution status rejected (400)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('17. invalid resolution status rejected', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Invalid status test' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp)
+        .post(`/api/v1/complaints/${fileRes.body.data.id}/resolve`)
+        .send({ status: 'OPEN' });
+
+      expect(res.status).toBe(400);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 18. Admin can list complaints
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('18. admin can list complaints', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'List test' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp).get('/api/v1/complaints');
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(Array.isArray(res.body.data)).toBe(true);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 19. Admin can filter complaints by status
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('19. admin can filter complaints by status', async () => {
+      const adminUserId = await createTempUser('ADMIN');
+      const adminApp = createAppWithUser(adminUserId, 'ADMIN');
+
+      const res = await request(adminApp)
+        .get('/api/v1/complaints')
+        .query({ status: 'OPEN' });
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      // All returned complaints should have status OPEN
+      for (const c of res.body.data) {
+        expect(c.status).toBe('OPEN');
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 20. Non-admin cannot list complaints (403)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('20. non-admin cannot list complaints', async () => {
+      const clientUserId = await createTempUser('CLIENT');
+      await createTempClientProfile(clientUserId);
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app).get('/api/v1/complaints');
+
+      expect(res.status).toBe(403);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 21. Any authenticated user can get a complaint by ID
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('21. any authenticated user can get a complaint by ID', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
+
+      const fileRes = await request(clientApp)
+        .post('/api/v1/complaints')
+        .send({ bookingId, reason: 'Get by ID test' });
+      tempComplaintIds.push(fileRes.body.data.id);
+
+      const res = await request(clientApp).get(
+        `/api/v1/complaints/${fileRes.body.data.id}`,
+      );
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.id).toBe(fileRes.body.data.id);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 22. Non-existent complaint lookup rejected (404)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('22. non-existent complaint lookup rejected', async () => {
+      const clientUserId = await createTempUser('CLIENT');
+      await createTempClientProfile(clientUserId);
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app).get(`/api/v1/complaints/${randomUUID()}`);
+
+      expect(res.status).toBe(404);
+      expect(res.body.error.code).toBe('COMPLAINT_NOT_FOUND');
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 23. POST /bookings/:id/reviews creates a CLIENT_TO_WORKER review (path-based)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    it('23. path-based POST /bookings/:id/reviews creates a client review', async () => {
+      const { clientUserId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
+
+      const res = await request(app)
+        .post(`/api/v1/bookings/${bookingId}/reviews`)
+        .send({ rating: 5 });
 
       expect(res.status).toBe(201);
       expect(res.body.data.direction).toBe('CLIENT_TO_WORKER');
@@ -392,411 +820,53 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 3. Reviewer is the authenticated client
+    // 24. POST /bookings/:id/reviews/worker creates a WORKER_TO_CLIENT review (path-based)
     // ═══════════════════════════════════════════════════════════════════════
 
-    it('3. the reviewerUserId is the authenticated client\'s User ID', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 3 });
-
-      expect(res.status).toBe(201);
-      expect(res.body.data.reviewerUserId).toBe(clientUserId);
-      tempReviewIds.push(res.body.data.id);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 4. Reviewee is the assigned worker's User
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('4. the revieweeUserId is the assigned worker\'s User ID', async () => {
-      const { clientUserId, workerUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
-
-      expect(res.status).toBe(201);
-      expect(res.body.data.revieweeUserId).toBe(workerUserId);
-      tempReviewIds.push(res.body.data.id);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 5. Rating is stored correctly
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('5. the rating is stored correctly in the database', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 2 });
-
-      expect(res.status).toBe(201);
-      expect(res.body.data.rating).toBe(2);
-
-      const review = await prisma.review.findUnique({
-        where: { id: res.body.data.id },
-        select: { rating: true },
-      });
-      expect(review?.rating).toBe(2);
-      tempReviewIds.push(res.body.data.id);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 6. Comment is stored correctly
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('6. the comment is stored correctly and trimmed', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 4, comment: '  Great work!  ' });
-
-      expect(res.status).toBe(201);
-      expect(res.body.data.comment).toBe('Great work!');
-
-      const review = await prisma.review.findUnique({
-        where: { id: res.body.data.id },
-        select: { comment: true },
-      });
-      expect(review?.comment).toBe('Great work!');
-      tempReviewIds.push(res.body.data.id);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 7 & 19. Safe DTO returned — no sensitive fields
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('7-19. the response uses the safe DTO with no sensitive fields', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5, comment: 'Excellent service' });
-
-      expect(res.status).toBe(201);
-
-      // Check allowlisted fields are present
-      expect(res.body.data.id).toBeDefined();
-      expect(res.body.data.bookingId).toBeDefined();
-      expect(res.body.data.direction).toBeDefined();
-      expect(res.body.data.rating).toBeDefined();
-      expect(res.body.data.comment).toBeDefined();
-      expect(res.body.data.createdAt).toBeDefined();
-      expect(res.body.data.updatedAt).toBeDefined();
-      expect(res.body.data.reviewerUserId).toBeDefined();
-      expect(res.body.data.revieweeUserId).toBeDefined();
-
-      // Scan for forbidden keys
-      const forbidden = findForbiddenReviewKey(res.body.data);
-      expect(forbidden).toBeNull();
-
-      // Explicitly check no sensitive fields
-      expect(res.body.data).not.toHaveProperty('clientPhone');
-      expect(res.body.data).not.toHaveProperty('workerPhone');
-      expect(res.body.data).not.toHaveProperty('cnicNumber');
-      expect(res.body.data).not.toHaveProperty('cnicFrontPath');
-      expect(res.body.data).not.toHaveProperty('cnicBackPath');
-      expect(res.body.data).not.toHaveProperty('referenceName');
-      expect(res.body.data).not.toHaveProperty('referencePhone');
-
-      // No nested Prisma objects
-      expect(res.body.data).not.toHaveProperty('booking');
-      expect(res.body.data).not.toHaveProperty('reviewer');
-      expect(res.body.data).not.toHaveProperty('reviewee');
-      tempReviewIds.push(res.body.data.id);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 8. Duplicate review rejected
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('8. a duplicate CLIENT_TO_WORKER review is rejected with 409', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res1 = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
-      expect(res1.status).toBe(201);
-      tempReviewIds.push(res1.body.data.id);
-
-      const res2 = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 3, comment: 'Trying again' });
-      expect(res2.status).toBe(409);
-      expect(res2.body.success).toBe(false);
-
-      // Original review is unchanged
-      const review = await prisma.review.findUnique({
-        where: { id: res1.body.data.id },
-        select: { rating: true, comment: true },
-      });
-      expect(review?.rating).toBe(5);
-      expect(review?.comment).toBeNull();
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 9. Another client cannot review the booking
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('9. another CLIENT cannot review a booking they do not own', async () => {
-      const { bookingId } = await createCompletedBooking();
-
-      const otherClientUserId = await createTempUser('CLIENT');
-      await createTempClientProfile(otherClientUserId);
-      const app = createAppWithUser(otherClientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
-
-      expect(res.status).toBe(404);
-      expect(res.body.success).toBe(false);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 10. Worker cannot access endpoint
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('10. a WORKER cannot access the review endpoint', async () => {
+    it('24. path-based POST /bookings/:id/reviews/worker creates a worker review', async () => {
       const { workerUserId, bookingId } = await createCompletedBooking();
       const app = createAppWithUser(workerUserId, 'WORKER');
 
       const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
+        .post(`/api/v1/bookings/${bookingId}/reviews/worker`)
+        .send({ rating: 4 });
 
-      expect(res.status).toBe(403);
-      expect(res.body.success).toBe(false);
+      expect(res.status).toBe(201);
+      expect(res.body.data.direction).toBe('WORKER_TO_CLIENT');
+      tempReviewIds.push(res.body.data.id);
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 11. Admin cannot access endpoint
+    // 25. Worker rating is recalculated after a client review
     // ═══════════════════════════════════════════════════════════════════════
 
-    it('11. an ADMIN cannot access the review endpoint', async () => {
-      const { bookingId } = await createCompletedBooking();
+    it('25. worker rating is recalculated after a client review', async () => {
+      const { clientUserId, workerId, bookingId } = await createCompletedBooking();
+      const app = createAppWithUser(clientUserId, 'CLIENT');
 
-      const adminUserId = await createTempUser('ADMIN');
-      const app = createAppWithUser(adminUserId, 'ADMIN');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
-
-      expect(res.status).toBe(403);
-      expect(res.body.success).toBe(false);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 12. Agent cannot access endpoint
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('12. an AGENT cannot access the review endpoint', async () => {
-      const { bookingId } = await createCompletedBooking();
-
-      const agentUserId = await createTempUser('AGENT');
-      const app = createAppWithUser(agentUserId, 'AGENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
-
-      expect(res.status).toBe(403);
-      expect(res.body.success).toBe(false);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 13. Unauthenticated caller rejected
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('13. an unauthenticated caller is rejected', async () => {
-      const { bookingId } = await createCompletedBooking();
-
-      // App without auth middleware injection — req.user is undefined
-      const app = express();
-      app.use(express.json());
-      app.use('/api/v1/reviews', reviewRoutes);
-      app.use(errorMiddleware);
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
-
-      expect(res.status).toBe(403);
-      expect(res.body.success).toBe(false);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 14. Booking not completed rejected
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('14. a CONFIRMED (not completed) booking cannot be reviewed', async () => {
-      // Create a booking but don't complete it
-      const clientUserId = await createTempUser('CLIENT');
-      await createTempClientProfile(clientUserId);
-      const categoryId = await createTempCategory();
-      const areaId = await createTempArea();
-      const workerUserId = await createTempUser('CLIENT');
-      const workerId = await createTempClaimedWorker(workerUserId, categoryId, areaId);
-
-      const clientApp = createAppWithUser(clientUserId, 'CLIENT');
-      const draftRes = await request(clientApp)
-        .post('/api/v1/job-requests')
-        .send({ categoryId, areaId, description: `${PREFIX} — need service` });
-      const jobRequestId = draftRes.body.data.id;
-      tempJobRequestIds.push(jobRequestId);
-
-      await request(clientApp)
-        .post(`/api/v1/job-requests/${jobRequestId}/submit`)
-        .send({ targetWorkerId: workerId });
-
-      const invitation = await prisma.jobInvitation.findFirst({
-        where: { jobRequestId },
-        select: { id: true },
+      // Before review, rating should be 0 and count 0
+      const before = await prisma.workerProfile.findUnique({
+        where: { id: workerId },
+        select: { rating: true, ratingCount: true },
       });
-      tempInvitationIds.push(invitation!.id);
+      expect(Number(before?.rating)).toBe(0);
+      expect(before?.ratingCount).toBe(0);
 
-      const workerApp = createAppWithUser(workerUserId, 'WORKER');
-      const acceptRes = await request(workerApp)
-        .post(`/api/v1/invitations/${invitation!.id}/respond`)
-        .send({ status: 'ACCEPTED' });
-
-      const bookingId = acceptRes.body.data.booking.id;
-      tempBookingIds.push(bookingId);
-
-      // Booking is CONFIRMED, not COMPLETED — try to review
-      const res = await request(clientApp)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 5 });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 15. Non-existent booking rejected
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('15. a non-existent booking returns 404', async () => {
-      const clientUserId = await createTempUser('CLIENT');
-      await createTempClientProfile(clientUserId);
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
+      // Create a 5-star review
       const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId: 'nonexistent-booking-id', rating: 5 });
-
-      expect(res.status).toBe(404);
-      expect(res.body.success).toBe(false);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 16. Booking owned by another client rejected (covered by test 9, but
-    //     this test explicitly uses a booking that was completed by another)
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('16. a booking owned by another client is rejected with 404 (no leak)', async () => {
-      const { bookingId } = await createCompletedBooking();
-
-      const otherClientUserId = await createTempUser('CLIENT');
-      await createTempClientProfile(otherClientUserId);
-      const app = createAppWithUser(otherClientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 4, comment: 'Not my booking' });
-
-      // Generic 404 — does not reveal the booking exists
-      expect(res.status).toBe(404);
-      expect(res.body.success).toBe(false);
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 17. Invalid rating rejected
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('17. an invalid rating (0) is rejected', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 0 });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-    });
-
-    it('17b. an invalid rating (6) is rejected', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId, rating: 6 });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-    });
-
-    it('17c. a missing rating is rejected', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
-        .send({ bookingId });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-    });
-
-    it('17d. a missing bookingId is rejected', async () => {
-      const { clientUserId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const res = await request(app)
-        .post('/api/v1/reviews')
+        .post(`/api/v1/bookings/${bookingId}/reviews`)
         .send({ rating: 5 });
+      tempReviewIds.push(res.body.data.id);
 
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-    });
+      expect(res.status).toBe(201);
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 18. Concurrent review creation creates exactly one review row
-    // ═══════════════════════════════════════════════════════════════════════
-
-    it('18. two concurrent review submissions create exactly one review row', async () => {
-      const { clientUserId, bookingId } = await createCompletedBooking();
-      const app = createAppWithUser(clientUserId, 'CLIENT');
-
-      const [res1, res2] = await Promise.all([
-        request(app).post('/api/v1/reviews').send({ bookingId, rating: 5, comment: 'First' }),
-        request(app).post('/api/v1/reviews').send({ bookingId, rating: 4, comment: 'Second' }),
-      ]);
-
-      // One succeeds (201), the other gets duplicate (409)
-      const statuses = [res1.status, res2.status].sort();
-      expect(statuses).toEqual([201, 409]);
-
-      // Exactly one review row exists
-      const reviews = await prisma.review.findMany({
-        where: { bookingId, direction: 'CLIENT_TO_WORKER' },
+      // After review, rating should be 5 and count 1
+      const after = await prisma.workerProfile.findUnique({
+        where: { id: workerId },
+        select: { rating: true, ratingCount: true },
       });
-      expect(reviews).toHaveLength(1);
-      tempReviewIds.push(reviews[0].id);
+      expect(Number(after?.rating)).toBe(5);
+      expect(after?.ratingCount).toBe(1);
     });
   },
 );

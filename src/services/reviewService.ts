@@ -51,10 +51,11 @@ async function insertReview(
   direction: ReviewDirection,
   rating: number,
   comment?: string | null,
+  workerId?: string,
 ): Promise<ReviewDto> {
   try {
     const review = await prisma.$transaction(async (tx) => {
-      return tx.review.create({
+      const created = await tx.review.create({
         data: {
           bookingId,
           reviewerUserId,
@@ -65,6 +66,29 @@ async function insertReview(
         },
         select: REVIEW_SELECT,
       });
+
+      // Recalculate worker's aggregate rating for CLIENT_TO_WORKER reviews.
+      // Runs inside the same transaction so the new review is included.
+      if (workerId && direction === 'CLIENT_TO_WORKER') {
+        const agg = await tx.review.aggregate({
+          where: {
+            revieweeUserId,
+            direction: 'CLIENT_TO_WORKER',
+          },
+          _avg: { rating: true },
+          _count: { rating: true },
+        });
+
+        await tx.workerProfile.update({
+          where: { id: workerId },
+          data: {
+            rating: agg._avg.rating ?? 0,
+            ratingCount: agg._count.rating,
+          },
+        });
+      }
+
+      return created;
     });
 
     return toReviewDto(review);
@@ -138,6 +162,7 @@ export async function createReview(
     select: {
       id: true,
       status: true,
+      workerId: true,
       jobRequest: { select: { clientId: true } },
       worker: { select: { userId: true } },
     },
@@ -172,6 +197,7 @@ export async function createReview(
     'CLIENT_TO_WORKER',
     rating,
     comment,
+    booking.workerId,
   );
 }
 

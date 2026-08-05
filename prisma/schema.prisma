@@ -118,6 +118,16 @@ enum ReviewDirection {
   WORKER_TO_CLIENT
 }
 
+// Week 6: Complaint lifecycle
+// OPEN     — complaint filed, awaiting admin review
+// RESOLVED — admin has resolved the complaint
+// DISMISSED — admin has dismissed the complaint (no action needed)
+enum ComplaintStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
 // --- Models -----------------------------------------------------------------
 
 model User {
@@ -139,6 +149,10 @@ model User {
   // Week 6: Reviews authored by and targeting this user
   reviewsGiven    Review[] @relation("ReviewReviewer")
   reviewsReceived Review[] @relation("ReviewReviewee")
+
+  // Week 6: Complaints filed by and resolved by this user
+  complaintsFiled    Complaint[] @relation("ComplaintFiledBy")
+  complaintsResolved Complaint[] @relation("ComplaintResolvedBy")
 }
 
 model ClientProfile {
@@ -358,6 +372,9 @@ model Booking {
   // Week 6: Reviews for this booking (max one per direction)
   reviews Review[]
 
+  // Week 6: Complaints filed against this booking
+  complaints Complaint[]
+
   @@index([workerId, status])
 }
 
@@ -385,4 +402,33 @@ model Review {
   @@unique([bookingId, direction]) /// One review per direction per booking
   @@index([reviewerUserId])
   @@index([revieweeUserId])
+}
+
+/// Week 6: A complaint filed by a client or worker against a booking.
+/// Anyone authenticated can file; only admins can resolve or dismiss.
+model Complaint {
+  id String @id @default(uuid())
+
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  // Who filed the complaint (internal User ID — trusted, server-side)
+  filedByUserId String
+  filedBy       User   @relation("ComplaintFiledBy", fields: [filedByUserId], references: [id])
+
+  reason String /// Free-text description of the complaint (max 2000 chars)
+  status ComplaintStatus @default(OPEN)
+
+  // Admin resolution fields
+  resolvedByUserId String?
+  resolvedBy       User?     @relation("ComplaintResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+  resolution       String? /// Admin's resolution note (max 2000 chars)
+  resolvedAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([filedByUserId])
+  @@index([status, createdAt])
 }

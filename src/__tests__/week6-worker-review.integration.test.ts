@@ -110,7 +110,7 @@ const tempReviewIds: string[] = [];
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 async function createTempUser(
-  role: 'CLIENT' | 'AGENT' | 'ADMIN' | 'WORKER' = 'CLIENT',
+  role: 'CLIENT' | 'AGENT' | 'ADMIN' = 'CLIENT',
   phone?: string,
 ): Promise<string> {
   const idx = tempUserIds.length;
@@ -199,7 +199,7 @@ async function createCompletedBooking(): Promise<{
   await createTempClientProfile(clientUserId);
   const categoryId = await createTempCategory();
   const areaId = await createTempArea();
-  const workerUserId = await createTempUser('WORKER');
+  const workerUserId = await createTempUser('CLIENT');
   const workerId = await createTempClaimedWorker(workerUserId, categoryId, areaId);
 
   const clientApp = createAppWithUser(clientUserId, 'CLIENT');
@@ -556,7 +556,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
       // Create a different worker
       const categoryId = await createTempCategory();
       const areaId = await createTempArea();
-      const otherWorkerUserId = await createTempUser('WORKER');
+      const otherWorkerUserId = await createTempUser('CLIENT');
       await createTempClaimedWorker(otherWorkerUserId, categoryId, areaId);
       const app = createAppWithUser(otherWorkerUserId, 'WORKER');
 
@@ -651,7 +651,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
       await createTempClientProfile(clientUserId);
       const categoryId = await createTempCategory();
       const areaId = await createTempArea();
-      const workerUserId = await createTempUser('WORKER');
+      const workerUserId = await createTempUser('CLIENT');
       const workerId = await createTempClaimedWorker(workerUserId, categoryId, areaId);
 
       const clientApp = createAppWithUser(clientUserId, 'CLIENT');
@@ -695,7 +695,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
     it('15. a non-existent booking returns 404', async () => {
       const categoryId = await createTempCategory();
       const areaId = await createTempArea();
-      const workerUserId = await createTempUser('WORKER');
+      const workerUserId = await createTempUser('CLIENT');
       await createTempClaimedWorker(workerUserId, categoryId, areaId);
       const app = createAppWithUser(workerUserId, 'WORKER');
 
@@ -717,7 +717,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
       // Create a different worker
       const categoryId = await createTempCategory();
       const areaId = await createTempArea();
-      const otherWorkerUserId = await createTempUser('WORKER');
+      const otherWorkerUserId = await createTempUser('CLIENT');
       await createTempClaimedWorker(otherWorkerUserId, categoryId, areaId);
       const app = createAppWithUser(otherWorkerUserId, 'WORKER');
 

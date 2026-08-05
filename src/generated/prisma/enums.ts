@@ -104,3 +104,20 @@ export const AvailabilityUpdateSource = {
 } as const
 
 export type AvailabilityUpdateSource = (typeof AvailabilityUpdateSource)[keyof typeof AvailabilityUpdateSource]
+
+
+export const ReviewDirection = {
+  CLIENT_TO_WORKER: 'CLIENT_TO_WORKER',
+  WORKER_TO_CLIENT: 'WORKER_TO_CLIENT'
+} as const
+
+export type ReviewDirection = (typeof ReviewDirection)[keyof typeof ReviewDirection]
+
+
+export const ComplaintStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type ComplaintStatus = (typeof ComplaintStatus)[keyof typeof ComplaintStatus]

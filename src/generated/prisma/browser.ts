@@ -77,3 +77,15 @@ export type JobInvitation = Prisma.JobInvitationModel
  * Contact details (phone numbers) are released to both parties on creation.
  */
 export type Booking = Prisma.BookingModel
+/**
+ * Model Review
+ * Week 6: A review left by one party on a completed booking.
+ * Exactly one CLIENT_TO_WORKER and one WORKER_TO_CLIENT review per booking.
+ */
+export type Review = Prisma.ReviewModel
+/**
+ * Model Complaint
+ * Week 6: A complaint filed by a client or worker against a booking.
+ * Anyone authenticated can file; only admins can resolve or dismiss.
+ */
+export type Complaint = Prisma.ComplaintModel

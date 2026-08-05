@@ -61,7 +61,9 @@ export const ModelName = {
   WorkerServiceArea: 'WorkerServiceArea',
   JobRequest: 'JobRequest',
   JobInvitation: 'JobInvitation',
-  Booking: 'Booking'
+  Booking: 'Booking',
+  Review: 'Review',
+  Complaint: 'Complaint'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -233,6 +235,37 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  reviewerUserId: 'reviewerUserId',
+  revieweeUserId: 'revieweeUserId',
+  direction: 'direction',
+  rating: 'rating',
+  comment: 'comment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const ComplaintScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  filedByUserId: 'filedByUserId',
+  reason: 'reason',
+  status: 'status',
+  resolvedByUserId: 'resolvedByUserId',
+  resolution: 'resolution',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ComplaintScalarFieldEnum = (typeof ComplaintScalarFieldEnum)[keyof typeof ComplaintScalarFieldEnum]
 
 
 export const SortOrder = {

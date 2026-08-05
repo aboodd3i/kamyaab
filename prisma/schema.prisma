@@ -136,6 +136,7 @@ enum AuditAction {
   COMPLAINT_RESOLVED
   WORKER_STATUS_CHANGED
   INVITATION_RESPONDED
+  ADMIN_ASSIGNMENT
 }
 
 // --- Models -----------------------------------------------------------------

@@ -58,7 +58,8 @@ export async function respondToInvitation(
     );
   }
   // Check if job request is still waiting for response
-  if (invitation.jobRequest.status !== 'WORKER_CONTACTED') {
+  // WORKER_CONTACTED = SPECIFIC_WORKER flow, MATCHING = OPEN job flow (Week 5)
+  if (invitation.jobRequest.status !== 'WORKER_CONTACTED' && invitation.jobRequest.status !== 'MATCHING') {
     throw errors.badRequest(
       ErrorCode.INVALID_STATE_TRANSITION,
       'The associated job request is no longer available'
@@ -76,9 +77,11 @@ export async function respondToInvitation(
 
   if (input.status === 'ACCEPTED') {
     // Transaction: Accept Invitation -> Update JobRequest -> Create Booking
+    // For OPEN jobs (MATCHING): also expire all other PENDING invitations (first-accept-wins).
     // If a concurrent accept already created a booking (P2002 on jobRequestId
     // or invitationId unique constraints), we treat it as idempotent and
     // return the existing booking.
+    const isOpenJob = jobRequest.status === 'MATCHING';
     try {
       const booking = await prisma.$transaction(async (tx) => {
         await tx.jobInvitation.update({
@@ -88,6 +91,21 @@ export async function respondToInvitation(
             respondedAt: new Date(),
           },
         });
+
+        // For OPEN jobs: expire all other PENDING invitations (first-accept-wins)
+        if (isOpenJob) {
+          await tx.jobInvitation.updateMany({
+            where: {
+              jobRequestId: jobRequest.id,
+              status: 'PENDING',
+              id: { not: invitationId },
+            },
+            data: {
+              status: 'EXPIRED',
+              respondedAt: new Date(),
+            },
+          });
+        }
 
         await tx.jobRequest.update({
           where: { id: jobRequest.id },
@@ -137,33 +155,72 @@ export async function respondToInvitation(
     }
   } else {
     // REJECTED
-    // Transaction: Reject Invitation -> Revert JobRequest to DRAFT
-    await prisma.$transaction(async (tx) => {
-      await tx.jobInvitation.update({
-        where: { id: invitationId },
-        data: {
-          status: 'REJECTED',
-          respondedAt: new Date(),
-        },
+    if (jobRequest.status === 'MATCHING') {
+      // OPEN job rejection: do NOT revert to DRAFT.
+      // Keep status MATCHING while other PENDING invitations remain.
+      // If all invitations are now REJECTED/EXPIRED, move job to EXPIRED.
+      await prisma.$transaction(async (tx) => {
+        await tx.jobInvitation.update({
+          where: { id: invitationId },
+          data: {
+            status: 'REJECTED',
+            respondedAt: new Date(),
+          },
+        });
+
+        // Check if any PENDING invitations remain for this job
+        const pendingCount = await tx.jobInvitation.count({
+          where: {
+            jobRequestId: jobRequest.id,
+            status: 'PENDING',
+          },
+        });
+
+        if (pendingCount === 0) {
+          // All invitations resolved — expire the job request
+          await tx.jobRequest.update({
+            where: { id: jobRequest.id },
+            data: { status: 'EXPIRED' },
+          });
+        }
       });
 
-      await tx.jobRequest.update({
-        where: { id: jobRequest.id },
-        data: {
-          status: 'DRAFT',
-          targetWorkerId: null, // Clear target so they can pick someone else
-          submittedAt: null,
-          expiresAt: null,
-        },
-      });
-    });
+      // Notify client via Mock SMS
+      if (jobRequest.client.user.phone) {
+        await sendMockSms(
+          jobRequest.client.user.phone,
+          `Kamyaab: ${worker.name} declined your ${jobRequest.category.name} job request. We are still matching you with other available workers.`,
+        );
+      }
+    } else {
+      // SPECIFIC_WORKER rejection: revert to DRAFT so client can invite someone else
+      await prisma.$transaction(async (tx) => {
+        await tx.jobInvitation.update({
+          where: { id: invitationId },
+          data: {
+            status: 'REJECTED',
+            respondedAt: new Date(),
+          },
+        });
 
-    // Notify client via Mock SMS
-    if (jobRequest.client.user.phone) {
-      await sendMockSms(
-        jobRequest.client.user.phone,
-        `Kamyaab: ${worker.name} is currently unavailable for your ${jobRequest.category.name} job. Your request has been moved back to drafts so you can invite another worker.`
-      );
+        await tx.jobRequest.update({
+          where: { id: jobRequest.id },
+          data: {
+            status: 'DRAFT',
+            targetWorkerId: null,
+            submittedAt: null,
+            expiresAt: null,
+          },
+        });
+      });
+
+      // Notify client via Mock SMS
+      if (jobRequest.client.user.phone) {
+        await sendMockSms(
+          jobRequest.client.user.phone,
+          `Kamyaab: ${worker.name} is currently unavailable for your ${jobRequest.category.name} job. Your request has been moved back to drafts so you can invite another worker.`,
+        );
+      }
     }
 
     return { status: 'REJECTED' as const };
@@ -176,7 +233,7 @@ export async function getPendingInvitations(workerId: string) {
     where: {
       workerId,
       status: 'PENDING',
-      jobRequest: { status: 'WORKER_CONTACTED' },
+      jobRequest: { status: { in: ['WORKER_CONTACTED', 'MATCHING'] } },
     },
     select: {
       id: true,

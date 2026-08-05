@@ -432,6 +432,9 @@ model Complaint {
   reason String /// Free-text description of the complaint (max 2000 chars)
   status ComplaintStatus @default(OPEN)
 
+  // Week 6: Evidence files uploaded to private Supabase Storage
+  evidenceFilePaths String[] @default([]) /// Storage paths for uploaded evidence files (max 5)
+
   // Admin resolution fields
   resolvedByUserId String?
   resolvedBy       User?     @relation("ComplaintResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)

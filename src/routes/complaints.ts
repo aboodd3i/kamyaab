@@ -11,10 +11,25 @@
 import { Router } from 'express';
 import { authenticate, requireRole } from '../middleware/auth';
 import { errors, ErrorCode } from '../lib/errors';
-import { createComplaintSchema, resolveComplaintSchema } from '../lib/complaintValidation';
+import {
+  createComplaintSchema,
+  resolveComplaintSchema,
+  MAX_EVIDENCE_FILES,
+  MAX_EVIDENCE_FILE_SIZE,
+  ACCEPTED_EVIDENCE_MIME_TYPES,
+} from '../lib/complaintValidation';
 import * as complaintService from '../services/complaintService';
+import { createSupabaseStorageAdapter } from '../services/supabaseStorageAdapter';
+import multer from 'multer';
+import { env } from '../config/env';
 
 const router = Router();
+
+// Multer setup for evidence file uploads — memory storage, no disk files
+const evidenceUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_EVIDENCE_FILE_SIZE },
+});
 
 // All complaint endpoints require authentication
 router.use(authenticate);
@@ -22,37 +37,82 @@ router.use(authenticate);
 /**
  * POST /api/v1/complaints
  *
- * File a complaint against a booking.
+ * File a complaint against a booking (multipart/form-data).
  *
- * Request body:
- *   {
- *     "bookingId": "...",  // required — the booking to complain about
- *     "reason": "..."       // required — trimmed, max 2000 chars
- *   }
+ * Form fields:
+ *   bookingId  — required — the booking to complain about
+ *   reason     — required — trimmed, max 2000 chars
+ *   evidence   — optional — file field, up to 5 files (images/PDF, max 5 MiB each)
  *
  * Any authenticated user may file a complaint.
  */
-router.post('/', async (req, res, next) => {
-  try {
-    const { bookingId, reason } = req.body ?? {};
+router.post(
+  '/',
+  evidenceUpload.array('evidence', MAX_EVIDENCE_FILES),
+  async (req, res, next) => {
+    try {
+      const bookingId = req.body.bookingId as string | undefined;
+      const reason = req.body.reason as string | undefined;
 
-    if (typeof bookingId !== 'string' || bookingId.trim().length === 0) {
-      throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Valid bookingId is required');
+      if (typeof bookingId !== 'string' || bookingId.trim().length === 0) {
+        throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Valid bookingId is required');
+      }
+
+      const parsed = createComplaintSchema.parse({ reason });
+
+      // Process evidence files if present
+      const files = req.files as Express.Multer.File[] | undefined;
+      const evidenceFiles: complaintService.EvidenceFile[] = [];
+
+      if (files && files.length > 0) {
+        if (files.length > MAX_EVIDENCE_FILES) {
+          throw errors.badRequest(
+            ErrorCode.VALIDATION_ERROR,
+            `Maximum ${MAX_EVIDENCE_FILES} evidence files allowed`,
+          );
+        }
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (!ACCEPTED_EVIDENCE_MIME_TYPES.has(file.mimetype)) {
+            throw errors.badRequest(
+              ErrorCode.VALIDATION_ERROR,
+              `Unsupported file type for evidence file ${i + 1}`,
+            );
+          }
+          evidenceFiles.push({ buffer: file.buffer, mimetype: file.mimetype });
+        }
+      }
+
+      // Create storage adapter — requires service-role key and bucket name
+      const bucketName = process.env.SUPABASE_COMPLAINT_BUCKET;
+      if (!bucketName) {
+        throw errors.internal('Complaint evidence storage bucket is not configured');
+      }
+      if (!env.supabaseServiceRoleKey) {
+        throw errors.internal('Storage service credentials are not configured');
+      }
+
+      const storage = createSupabaseStorageAdapter(
+        env.supabaseUrl,
+        env.supabaseServiceRoleKey,
+        bucketName,
+      );
+
+      const result = await complaintService.uploadComplaintEvidence({
+        bookingId: bookingId.trim(),
+        filedByUserId: req.user!.userId,
+        reason: parsed.reason,
+        evidenceFiles,
+        storage,
+      });
+
+      res.status(201).json({ success: true, data: result });
+    } catch (err) {
+      next(err);
     }
-
-    const parsed = createComplaintSchema.parse({ reason });
-
-    const result = await complaintService.createComplaint(
-      bookingId.trim(),
-      req.user!.userId,
-      parsed.reason,
-    );
-
-    res.status(201).json({ success: true, data: result });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 /**
  * GET /api/v1/complaints/:id

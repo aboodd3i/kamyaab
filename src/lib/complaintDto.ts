@@ -14,6 +14,7 @@ export interface ComplaintDto {
   filedByUserId: string;
   reason: string;
   status: string;
+  evidenceFilePaths: string[];
   resolvedByUserId: string | null;
   resolution: string | null;
   resolvedAt: string | null;
@@ -29,6 +30,7 @@ interface PrismaComplaintForDto {
   filedByUserId: string;
   reason: string;
   status: string;
+  evidenceFilePaths: string[];
   resolvedByUserId: string | null;
   resolution: string | null;
   resolvedAt: Date | null;
@@ -51,6 +53,7 @@ export function toComplaintDto(complaint: PrismaComplaintForDto): ComplaintDto {
     filedByUserId: complaint.filedByUserId,
     reason: complaint.reason,
     status: complaint.status,
+    evidenceFilePaths: complaint.evidenceFilePaths,
     resolvedByUserId: complaint.resolvedByUserId,
     resolution: complaint.resolution,
     resolvedAt: complaint.resolvedAt ? complaint.resolvedAt.toISOString() : null,

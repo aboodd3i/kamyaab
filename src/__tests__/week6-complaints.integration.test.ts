@@ -57,12 +57,15 @@ vi.mock('../config/env', () => ({
     directUrl: process.env.DIRECT_URL!,
     supabaseUrl: 'https://dummy.supabase.co',
     supabaseAnonKey: 'dummy-anon-key',
-    supabaseServiceRoleKey: undefined,
+    supabaseServiceRoleKey: 'dummy-service-role-key',
     port: 3000,
     nodeEnv: 'test',
     isProduction: false,
   },
 }));
+
+// Set env vars needed by the route layer
+process.env.SUPABASE_COMPLAINT_BUCKET = 'test-complaint-bucket';
 
 vi.mock('../middleware/auth', async () => {
   const { AppError, ErrorCode } = await vi.importActual<typeof import('../lib/errors')>('../lib/errors');
@@ -81,6 +84,14 @@ vi.mock('../middleware/auth', async () => {
 });
 
 vi.mock('../lib/supabase', () => ({ supabase: {} }));
+
+// Mock the storage adapter with an in-memory fake — no real Supabase calls
+vi.mock('../services/supabaseStorageAdapter', () => ({
+  createSupabaseStorageAdapter: () => ({
+    uploadPrivateObject: async (path: string) => ({ path }),
+    removePrivateObject: async () => {},
+  }),
+}));
 
 // ─── Imports ───────────────────────────────────────────────────────────────
 
@@ -368,6 +379,10 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
       }
       if (tempUserIds.length > 0) {
         await rawClient.query(
+          `DELETE FROM "AuditLog" WHERE "actorUserId" = ANY($1::text[])`,
+          [tempUserIds],
+        );
+        await rawClient.query(
           `DELETE FROM "User" WHERE "id" = ANY($1::text[])`,
           [tempUserIds],
         );
@@ -387,7 +402,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Worker did not show up' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Worker did not show up');
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
@@ -405,7 +421,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Poor quality work' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Poor quality work');
 
       expect(res.status).toBe(201);
       expect(res.body.data.status).toBe('OPEN');
@@ -422,7 +439,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Unprofessional behavior' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Unprofessional behavior');
 
       expect(res.status).toBe(201);
       expect(res.body.data.filedByUserId).toBe(clientUserId);
@@ -439,7 +457,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: '  Overcharged  ' });
+        .field('bookingId', bookingId)
+        .field('reason', '  Overcharged  ');
 
       expect(res.status).toBe(201);
       expect(res.body.data.reason).toBe('Overcharged');
@@ -456,7 +475,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Safety check' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Safety check');
 
       expect(res.status).toBe(201);
       const forbidden = findForbiddenComplaintKey(res.body.data);
@@ -475,7 +495,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId: randomUUID(), reason: 'Test' });
+        .field('bookingId', randomUUID())
+        .field('reason', 'Test');
 
       expect(res.status).toBe(404);
       expect(res.body.error.code).toBe('BOOKING_NOT_FOUND');
@@ -491,7 +512,7 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId });
+        .field('bookingId', bookingId);
 
       expect(res.status).toBe(400);
     });
@@ -506,7 +527,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: '   ' });
+        .field('bookingId', bookingId)
+        .field('reason', '   ');
 
       expect(res.status).toBe(400);
     });
@@ -521,7 +543,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const res = await request(app)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'x'.repeat(2001) });
+        .field('bookingId', bookingId)
+        .field('reason', 'x'.repeat(2001));
 
       expect(res.status).toBe(400);
     });
@@ -536,7 +559,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Need resolution' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Need resolution');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const adminUserId = await createTempUser('ADMIN');
@@ -560,7 +584,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Unfounded complaint' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Unfounded complaint');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const adminUserId = await createTempUser('ADMIN');
@@ -584,7 +609,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Check resolvedBy' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Check resolvedBy');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const adminUserId = await createTempUser('ADMIN');
@@ -608,7 +634,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Check resolvedAt' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Check resolvedAt');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const adminUserId = await createTempUser('ADMIN');
@@ -632,7 +659,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Double resolve' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Double resolve');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const adminUserId = await createTempUser('ADMIN');
@@ -660,7 +688,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Client trying to resolve' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Client trying to resolve');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const res = await request(clientApp)
@@ -696,7 +725,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Invalid status test' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Invalid status test');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const adminUserId = await createTempUser('ADMIN');
@@ -719,7 +749,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'List test' });
+        .field('bookingId', bookingId)
+        .field('reason', 'List test');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const adminUserId = await createTempUser('ADMIN');
@@ -776,7 +807,8 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
       const fileRes = await request(clientApp)
         .post('/api/v1/complaints')
-        .send({ bookingId, reason: 'Get by ID test' });
+        .field('bookingId', bookingId)
+        .field('reason', 'Get by ID test');
       tempComplaintIds.push(fileRes.body.data.id);
 
       const res = await request(clientApp).get(

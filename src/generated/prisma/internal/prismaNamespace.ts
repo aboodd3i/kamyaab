@@ -1668,6 +1668,7 @@ export const ComplaintScalarFieldEnum = {
   filedByUserId: 'filedByUserId',
   reason: 'reason',
   status: 'status',
+  evidenceFilePaths: 'evidenceFilePaths',
   resolvedByUserId: 'resolvedByUserId',
   resolution: 'resolution',
   resolvedAt: 'resolvedAt',

@@ -11,3 +11,6 @@ src/generated/
 # Project docs to ignore
 "Kamyaab_Backend_Roadmap_Updated (1).pdf"
 *.pdf
+
+# Git bundles
+*.bundle

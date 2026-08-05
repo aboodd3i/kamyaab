@@ -149,6 +149,19 @@ export function errorMiddleware(
     return;
   }
 
+  // Multer file-upload errors (e.g. too many files, file too large)
+  if (err.name === 'MulterError' || (typeof (err as unknown as { code?: string }).code === 'string' && (err as unknown as { code: string }).code.startsWith('LIMIT_'))) {
+    const multerCode = (err as unknown as { code: string }).code;
+    let message = 'File upload error';
+    if (multerCode === 'LIMIT_FILE_SIZE') {
+      message = 'File size exceeds the maximum allowed limit';
+    } else if (multerCode === 'LIMIT_UNEXPECTED_FILE') {
+      message = 'Too many files uploaded';
+    }
+    sendError(res, 400, ErrorCode.VALIDATION_ERROR, message);
+    return;
+  }
+
   // Log full error server-side, never send to client
   console.error('Unhandled error:', err);
 

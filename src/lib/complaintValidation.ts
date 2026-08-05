@@ -54,6 +54,26 @@ export const resolveComplaintSchema = z.object({
   resolution: complaintResolutionSchema,
 });
 
+// ─── Evidence File Constants ───────────────────────────────────────────────
+
+export const MAX_EVIDENCE_FILES = 5;
+export const MAX_EVIDENCE_FILE_SIZE = 5 * 1024 * 1024; // 5 MiB
+
+export const ACCEPTED_EVIDENCE_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'application/pdf',
+]);
+
+/** MIME type → file extension mapping for evidence files */
+export const EVIDENCE_MIME_EXTENSIONS: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'application/pdf': 'pdf',
+};
+
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 export type CreateComplaintInput = z.infer<typeof createComplaintSchema>;

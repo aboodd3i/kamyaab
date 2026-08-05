@@ -13,6 +13,14 @@ import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { toComplaintDto, type ComplaintDto } from '../lib/complaintDto';
 import { logAction } from './auditService';
+import type { StorageAdapter } from './storageAdapter';
+import { randomUUID } from 'crypto';
+import {
+  MAX_EVIDENCE_FILES,
+  MAX_EVIDENCE_FILE_SIZE,
+  ACCEPTED_EVIDENCE_MIME_TYPES,
+  EVIDENCE_MIME_EXTENSIONS,
+} from '../lib/complaintValidation';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -25,6 +33,7 @@ const COMPLAINT_SELECT = {
   filedByUserId: true,
   reason: true,
   status: true,
+  evidenceFilePaths: true,
   resolvedByUserId: true,
   resolution: true,
   resolvedAt: true,
@@ -78,6 +87,133 @@ export async function createComplaint(
     complaintId: complaint.id,
     summary: `Complaint filed on booking ${bookingId}`,
     metadata: { reason, complaintId: complaint.id },
+  });
+
+  return toComplaintDto(complaint);
+}
+
+// ─── Create Complaint with Evidence Files ──────────────────────────────────
+
+export interface EvidenceFile {
+  buffer: Buffer;
+  mimetype: string;
+}
+
+export interface UploadComplaintEvidenceInput {
+  bookingId: string;
+  filedByUserId: string;
+  reason: string;
+  evidenceFiles?: EvidenceFile[];
+  storage: StorageAdapter;
+}
+
+/**
+ * File a complaint against a booking, optionally with evidence files.
+ *
+ * Uploads evidence files to private Supabase Storage, then creates the
+ * Complaint record with the storage paths. If any upload fails, all
+ * successfully uploaded objects are removed (compensation).
+ *
+ * Handles both with and without files — single code path.
+ */
+export async function uploadComplaintEvidence(
+  input: UploadComplaintEvidenceInput,
+): Promise<ComplaintDto> {
+  const { bookingId, filedByUserId, reason, storage } = input;
+  const evidenceFiles = input.evidenceFiles ?? [];
+
+  // Verify the booking exists
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: { id: true },
+  });
+
+  if (!booking) {
+    throw errors.notFound(ErrorCode.BOOKING_NOT_FOUND, 'Booking not found');
+  }
+
+  // Validate evidence files
+  if (evidenceFiles.length > MAX_EVIDENCE_FILES) {
+    throw errors.badRequest(
+      ErrorCode.VALIDATION_ERROR,
+      `Maximum ${MAX_EVIDENCE_FILES} evidence files allowed`,
+    );
+  }
+
+  for (let i = 0; i < evidenceFiles.length; i++) {
+    const file = evidenceFiles[i];
+    if (!ACCEPTED_EVIDENCE_MIME_TYPES.has(file.mimetype)) {
+      throw errors.badRequest(
+        ErrorCode.VALIDATION_ERROR,
+        `Unsupported file type for evidence file ${i + 1}`,
+      );
+    }
+    if (file.buffer.length > MAX_EVIDENCE_FILE_SIZE) {
+      throw errors.badRequest(
+        ErrorCode.VALIDATION_ERROR,
+        `Evidence file ${i + 1} exceeds maximum size of 5 MiB`,
+      );
+    }
+  }
+
+  // Upload evidence files to storage
+  const uploadedPaths: string[] = [];
+  const complaintId = randomUUID();
+
+  if (evidenceFiles.length > 0) {
+    try {
+      for (const file of evidenceFiles) {
+        const ext = EVIDENCE_MIME_EXTENSIONS[file.mimetype];
+        const path = `complaints/${complaintId}/evidence/${randomUUID()}.${ext}`;
+        await storage.uploadPrivateObject(path, file.buffer, file.mimetype);
+        uploadedPaths.push(path);
+      }
+    } catch (uploadErr) {
+      // Compensation: remove any successfully uploaded objects
+      for (const path of uploadedPaths) {
+        try {
+          await storage.removePrivateObject(path);
+        } catch {
+          console.error('Failed to clean up uploaded evidence file after upload failure');
+        }
+      }
+      throw errors.internal('Evidence file upload failed');
+    }
+  }
+
+  // Create the complaint record with evidence paths
+  let complaint;
+  try {
+    complaint = await prisma.complaint.create({
+      data: {
+        id: complaintId,
+        bookingId,
+        filedByUserId,
+        reason,
+        evidenceFilePaths: uploadedPaths,
+      },
+      select: COMPLAINT_SELECT,
+    });
+  } catch (dbErr) {
+    // Compensation: remove uploaded files if DB write fails
+    for (const path of uploadedPaths) {
+      try {
+        await storage.removePrivateObject(path);
+      } catch {
+        console.error('Failed to clean up uploaded evidence file after DB failure');
+      }
+    }
+    throw dbErr;
+  }
+
+  // Audit log — fire and forget (logAction never throws)
+  void logAction({
+    action: 'COMPLAINT_FILED',
+    actorUserId: filedByUserId,
+    bookingId,
+    complaintId: complaint.id,
+    summary: `Complaint filed on booking ${bookingId} with ${uploadedPaths.length} evidence file(s)`,
+    metadata: { reason, complaintId: complaint.id, evidenceFileCount: uploadedPaths.length },
   });
 
   return toComplaintDto(complaint);

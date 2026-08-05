@@ -21,7 +21,8 @@ export type AuditAction =
   | 'COMPLAINT_FILED'
   | 'COMPLAINT_RESOLVED'
   | 'WORKER_STATUS_CHANGED'
-  | 'INVITATION_RESPONDED';
+  | 'INVITATION_RESPONDED'
+  | 'ADMIN_ASSIGNMENT';
 
 /** Fields selected from Prisma for the DTO. */
 const AUDIT_LOG_SELECT = {
@@ -32,6 +33,7 @@ const AUDIT_LOG_SELECT = {
   reviewId: true,
   complaintId: true,
   workerId: true,
+  jobRequestId: true,
   summary: true,
   metadata: true,
   createdAt: true,
@@ -53,6 +55,7 @@ const AUDIT_LOG_SELECT = {
  * @param params.reviewId     Optional review involved.
  * @param params.complaintId  Optional complaint involved.
  * @param params.workerId     Optional worker involved.
+ * @param params.jobRequestId Optional job request involved.
  * @param params.summary      Human-readable summary.
  * @param params.metadata     Optional structured metadata (JSON).
  */
@@ -63,6 +66,7 @@ export async function logAction(params: {
   reviewId?: string;
   complaintId?: string;
   workerId?: string;
+  jobRequestId?: string;
   summary: string;
   metadata?: Record<string, unknown>;
 }): Promise<void> {
@@ -75,6 +79,7 @@ export async function logAction(params: {
         reviewId: params.reviewId ?? null,
         complaintId: params.complaintId ?? null,
         workerId: params.workerId ?? null,
+        jobRequestId: params.jobRequestId ?? null,
         summary: params.summary,
         metadata: params.metadata
           ? (params.metadata as Record<string, unknown> as never)

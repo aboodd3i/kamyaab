@@ -16,6 +16,7 @@ export interface AuditLogDto {
   reviewId: string | null;
   complaintId: string | null;
   workerId: string | null;
+  jobRequestId: string | null;
   summary: string;
   metadata: unknown;
   createdAt: string;
@@ -31,6 +32,7 @@ interface PrismaAuditLogForDto {
   reviewId: string | null;
   complaintId: string | null;
   workerId: string | null;
+  jobRequestId: string | null;
   summary: string;
   metadata: unknown;
   createdAt: Date;
@@ -50,6 +52,7 @@ export function toAuditLogDto(log: PrismaAuditLogForDto): AuditLogDto {
     reviewId: log.reviewId,
     complaintId: log.complaintId,
     workerId: log.workerId,
+    jobRequestId: log.jobRequestId,
     summary: log.summary,
     metadata: log.metadata,
     createdAt: log.createdAt.toISOString(),

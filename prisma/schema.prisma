@@ -464,10 +464,11 @@ model AuditLog {
 
   // Optional references to the entities involved (nullable since not all
   // actions necessarily have all entity types)
-  bookingId   String?
-  reviewId    String?
-  complaintId String?
-  workerId    String?
+  bookingId    String?
+  reviewId     String?
+  complaintId  String?
+  workerId     String?
+  jobRequestId String?
 
   // Human-readable summary of what happened
   summary String
@@ -481,4 +482,5 @@ model AuditLog {
   @@index([action, createdAt])
   @@index([bookingId])
   @@index([workerId])
+  @@index([jobRequestId])
 }

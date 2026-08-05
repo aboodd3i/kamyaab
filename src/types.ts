@@ -137,7 +137,7 @@ export const UpdateJobRequestSchema = z.object({
 export type UpdateJobRequestInput = z.infer<typeof UpdateJobRequestSchema>;
 
 export const SubmitJobRequestSchema = z.object({
-  targetWorkerId: z.string().uuid('Target worker is required for specific worker job requests'),
+  targetWorkerId: z.string().uuid().optional(),
 });
 export type SubmitJobRequestInput = z.infer<typeof SubmitJobRequestSchema>;
 

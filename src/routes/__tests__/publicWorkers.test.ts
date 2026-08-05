@@ -69,6 +69,7 @@ function mockApprovedWorker(overrides: Record<string, unknown> = {}) {
     rating: { toString: () => '4.50' } as unknown as number,
     ratingCount: 10,
     completedJobsCount: 5,
+    isPriorityListed: false,
     identityChecked: true,
     phoneConfirmed: true,
     referenceStatus: 'UNVERIFIED',
@@ -179,7 +180,7 @@ describe('GET /api/v1/workers — search', () => {
     expect(res.status).toBe(400);
   });
 
-  it('orders by rating desc, completedJobsCount desc, id asc', async () => {
+  it('orders by isPriorityListed desc, rating desc, completedJobsCount desc, id asc', async () => {
     mockPrismaObj.workerProfile.findMany.mockResolvedValue([]);
     mockPrismaObj.workerProfile.count.mockResolvedValue(0);
 
@@ -188,6 +189,7 @@ describe('GET /api/v1/workers — search', () => {
 
     const orderBy = mockPrismaObj.workerProfile.findMany.mock.calls[0][0].orderBy;
     expect(orderBy).toEqual([
+      { isPriorityListed: 'desc' },
       { rating: 'desc' },
       { completedJobsCount: 'desc' },
       { id: 'asc' },

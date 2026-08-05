@@ -127,6 +127,16 @@ export const CreateJobRequestSchema = z.object({
 });
 export type CreateJobRequestInput = z.infer<typeof CreateJobRequestSchema>;
 
+// ---------------------------------------------------------------------------
+// Worker Availability (Week 5)
+// ---------------------------------------------------------------------------
+
+export const SetAvailabilitySchema = z.object({
+  status: z.enum(['AVAILABLE', 'BUSY', 'UNAVAILABLE']),
+  busyUntil: z.coerce.date().optional().nullable(),
+});
+export type SetAvailabilityInput = z.infer<typeof SetAvailabilitySchema>;
+
 export const UpdateJobRequestSchema = z.object({
   categoryId: z.string().uuid().optional(),
   areaId: z.string().uuid().optional(),

@@ -35,6 +35,7 @@ export interface PublicWorker {
   rating: number;
   ratingCount: number;
   completedJobsCount: number;
+  isPriorityListed: boolean;
   verification: PublicVerificationBadges;
   categories: PublicCategorySummary[];
   serviceAreas: PublicAreaSummary[];
@@ -48,6 +49,7 @@ interface PrismaWorkerForDto {
   rating: { toString(): string } | number; // Prisma Decimal or number
   ratingCount: number;
   completedJobsCount: number;
+  isPriorityListed: boolean;
   identityChecked: boolean;
   phoneConfirmed: boolean;
   referenceStatus: string; // ReferenceCheckStatus enum
@@ -74,6 +76,7 @@ export function toPublicWorker(worker: PrismaWorkerForDto): PublicWorker {
     rating: Number(worker.rating),
     ratingCount: worker.ratingCount,
     completedJobsCount: worker.completedJobsCount,
+    isPriorityListed: worker.isPriorityListed,
     verification: {
       identityChecked: worker.identityChecked,
       phoneConfirmed: worker.phoneConfirmed,

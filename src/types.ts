@@ -137,6 +137,15 @@ export const SetAvailabilitySchema = z.object({
 });
 export type SetAvailabilityInput = z.infer<typeof SetAvailabilitySchema>;
 
+// ---------------------------------------------------------------------------
+// Admin Manual Assignment (Week 5)
+// ---------------------------------------------------------------------------
+
+export const ManualAssignSchema = z.object({
+  workerId: z.string().uuid('Valid worker ID is required'),
+});
+export type ManualAssignInput = z.infer<typeof ManualAssignSchema>;
+
 export const UpdateJobRequestSchema = z.object({
   categoryId: z.string().uuid().optional(),
   areaId: z.string().uuid().optional(),

@@ -237,7 +237,7 @@ describe('authenticate middleware', () => {
       .set('Authorization', 'Bearer valid-token');
 
     expect(mockPrismaObj.user.findUnique).toHaveBeenCalledWith({
-      where: { authUserId: 'supabase-auth-id-123' },
+      where: { id: 'supabase-auth-id-123' },
       select: { id: true, role: true },
     });
   });

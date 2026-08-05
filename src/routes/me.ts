@@ -40,8 +40,8 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
     // Try to find the internal user by the stable Supabase Auth ID
     let dbUser = await prisma.user.findUnique({
-      where: { authUserId: authUser.id },
-      select: { id: true, authUserId: true, role: true, phone: true, email: true },
+      where: { id: authUser.id },
+      select: { id: true, role: true, phone: true, email: true, createdAt: true },
     });
 
     // If not found, this may be a first-time client — bootstrap idempotently
@@ -54,12 +54,12 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
       dbUser = await prisma.$transaction(async (tx) => {
         const newUser = await tx.user.create({
           data: {
-            authUserId: authUser.id,
+            id: authUser.id,
             phone,
             email,
             role: 'CLIENT',
           },
-          select: { id: true, authUserId: true, role: true, phone: true, email: true },
+          select: { id: true, role: true, phone: true, email: true, createdAt: true },
         });
 
         await tx.clientProfile.create({
@@ -83,10 +83,11 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
     const response: MeResponseData = {
       userId: dbUser.id,
-      authUserId: dbUser.authUserId!,
-      role: dbUser.role,
+      authUserId: authUser.id,
+      role: dbUser.role as 'CLIENT' | 'AGENT' | 'ADMIN' | 'WORKER',
       phone: dbUser.phone,
       email: dbUser.email,
+      createdAt: dbUser.createdAt,
     };
 
     return sendSuccess(res, response);

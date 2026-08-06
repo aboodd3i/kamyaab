@@ -11,6 +11,8 @@ import bookingRoutes from './routes/bookings';
 import reviewRoutes from './routes/reviews';
 import complaintRoutes from './routes/complaints';
 import auditLogRoutes from './routes/auditLogs';
+import availabilityRoutes from './routes/availability';
+import adminRoutes from './routes/admin';
 import { errorMiddleware } from './lib/errors';
 
 /**
@@ -50,6 +52,8 @@ export function createApp() {
   app.use('/api/v1/reviews', reviewRoutes);
   app.use('/api/v1/complaints', complaintRoutes);
   app.use('/api/v1/audit-logs', auditLogRoutes);
+  app.use('/api/v1/availability', availabilityRoutes);
+  app.use('/api/v1/admin', adminRoutes);
 
   // Centralized error handler — must be registered last
   app.use(errorMiddleware);

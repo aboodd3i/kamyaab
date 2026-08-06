@@ -84,28 +84,38 @@ router.post(
         }
       }
 
-      // Create storage adapter — requires service-role key and bucket name
-      const bucketName = process.env.SUPABASE_COMPLAINT_BUCKET;
-      if (!bucketName) {
-        throw errors.internal('Complaint evidence storage bucket is not configured');
-      }
-      if (!env.supabaseServiceRoleKey) {
-        throw errors.internal('Storage service credentials are not configured');
-      }
+      let result;
+      if (evidenceFiles.length > 0) {
+        // Create storage adapter — requires service-role key and bucket name
+        const bucketName = process.env.SUPABASE_COMPLAINT_BUCKET;
+        if (!bucketName) {
+          throw errors.internal('Complaint evidence storage bucket is not configured');
+        }
+        if (!env.supabaseServiceRoleKey) {
+          throw errors.internal('Storage service credentials are not configured');
+        }
 
-      const storage = createSupabaseStorageAdapter(
-        env.supabaseUrl,
-        env.supabaseServiceRoleKey,
-        bucketName,
-      );
+        const storage = createSupabaseStorageAdapter(
+          env.supabaseUrl,
+          env.supabaseServiceRoleKey,
+          bucketName,
+        );
 
-      const result = await complaintService.uploadComplaintEvidence({
-        bookingId: bookingId.trim(),
-        filedByUserId: req.user!.userId,
-        reason: parsed.reason,
-        evidenceFiles,
-        storage,
-      });
+        result = await complaintService.uploadComplaintEvidence({
+          bookingId: bookingId.trim(),
+          filedByUserId: req.user!.userId,
+          reason: parsed.reason,
+          evidenceFiles,
+          storage,
+        });
+      } else {
+        // No evidence files — skip storage entirely
+        result = await complaintService.createComplaint(
+          bookingId.trim(),
+          req.user!.userId,
+          parsed.reason,
+        );
+      }
 
       res.status(201).json({ success: true, data: result });
     } catch (err) {

@@ -257,6 +257,20 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
     });
 
     afterAll(async () => {
+      // Clean up AuditLog records first (Week 6 audit logging creates these
+      // with FK references to User, Booking, etc.)
+      if (tempUserIds.length > 0) {
+        await rawClient.query(
+          `DELETE FROM "AuditLog" WHERE "actorUserId" = ANY($1::text[])`,
+          [tempUserIds],
+        );
+      }
+      if (tempBookingIds.length > 0) {
+        await rawClient.query(
+          `DELETE FROM "AuditLog" WHERE "bookingId" = ANY($1::text[])`,
+          [tempBookingIds],
+        );
+      }
       if (tempJobRequestIds.length > 0) {
         await rawClient.query(
           `DELETE FROM "Booking" WHERE "jobRequestId" = ANY($1::text[])`,

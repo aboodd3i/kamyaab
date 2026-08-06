@@ -1,11 +1,16 @@
 /**
- * Job Request service — handles the lifecycle of job requests (Flow A: Specific Worker).
+ * Job Request service — handles the lifecycle of job requests.
+ *
+ * Flow A (SPECIFIC_WORKER): client targets one worker → one invitation → booking.
+ * Flow B (OPEN, Week 5): system matches multiple workers → batch invitations →
+ *   first-accept-wins → booking.
  */
 
 import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { sendMockSms } from './mockSmsService';
 import { toMyJobItem } from '../lib/myJobsDto';
+import { findMatchingWorkers } from './matchingService';
 import type {
   CreateJobRequestInput,
   UpdateJobRequestInput,
@@ -115,11 +120,26 @@ export async function submitJobRequest(
     throw errors.badRequest(ErrorCode.INVALID_STATE_TRANSITION, 'Only draft job requests can be submitted');
   }
 
-  // Week 4 only supports SPECIFIC_WORKER flow. OPEN requests are Week 5.
-  if (job.type !== 'SPECIFIC_WORKER') {
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+
+  // Week 5: OPEN jobs use deterministic matching + batch invitations.
+  // SPECIFIC_WORKER jobs use the original single-invitation flow.
+  if (job.type === 'OPEN') {
+    if (input.targetWorkerId) {
+      throw errors.badRequest(
+        ErrorCode.VALIDATION_ERROR,
+        'Cannot specify a target worker for an OPEN job request',
+      );
+    }
+    return submitOpenJobRequest(jobRequestId, job, expiresAt);
+  }
+
+  // ── SPECIFIC_WORKER flow ──────────────────────────────────────────────
+
+  if (!input.targetWorkerId) {
     throw errors.badRequest(
-      ErrorCode.INVALID_STATE_TRANSITION,
-      'Only SPECIFIC_WORKER requests can be submitted in the current flow',
+      ErrorCode.VALIDATION_ERROR,
+      'Target worker is required for SPECIFIC_WORKER job requests',
     );
   }
 
@@ -149,9 +169,6 @@ export async function submitJobRequest(
   if (!servesArea) {
     throw errors.badRequest(ErrorCode.VALIDATION_ERROR, 'Worker does not serve the requested area');
   }
-
-  // Execute in a transaction: update job request -> create invitation
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
 
   const submittedJob = await prisma.$transaction(async (tx) => {
     // 1. Update JobRequest
@@ -188,6 +205,77 @@ export async function submitJobRequest(
     worker.phone,
     `Kamyaab: ${clientName} has invited you to a new ${submittedJob.category.name} job in ${submittedJob.area.name}. Log in to view details and accept within 24 hours!`
   );
+
+  return submittedJob;
+}
+
+/**
+ * Submit an OPEN job request — match workers, batch-create invitations.
+ *
+ * Uses the deterministic matching service to find ranked workers,
+ * creates invitations for each, and sends mock SMS notifications.
+ */
+async function submitOpenJobRequest(
+  jobRequestId: string,
+  job: { client: { name: string | null; user: { phone: string | null } | null } | null; categoryId: string; areaId: string },
+  expiresAt: Date,
+) {
+  // Find matching workers
+  const matches = await findMatchingWorkers(jobRequestId);
+
+  if (matches.length === 0) {
+    throw errors.badRequest(
+      ErrorCode.VALIDATION_ERROR,
+      'No matching workers found for this job. Try a different category or area.',
+    );
+  }
+
+  // Fetch worker phone numbers for SMS (not included in the match DTO)
+  const workers = await prisma.workerProfile.findMany({
+    where: { id: { in: matches.map((m) => m.workerId) } },
+    select: { id: true, phone: true },
+  });
+
+  const clientName = job.client?.name || 'A client';
+
+  // Transaction: update job status + batch-create invitations
+  const submittedJob = await prisma.$transaction(async (tx) => {
+    const updatedJob = await tx.jobRequest.update({
+      where: { id: jobRequestId },
+      data: {
+        status: 'MATCHING',
+        submittedAt: new Date(),
+        expiresAt,
+      },
+      include: {
+        category: { select: { id: true, name: true } },
+        area: { select: { id: true, name: true } },
+      },
+    });
+
+    // Batch-create invitations for all matched workers
+    await tx.jobInvitation.createMany({
+      data: matches.map((m) => ({
+        jobRequestId,
+        workerId: m.workerId,
+        status: 'PENDING' as const,
+        smsSentAt: new Date(),
+      })),
+    });
+
+    return updatedJob;
+  });
+
+  // Send mock SMS to each matched worker (outside transaction)
+  for (const match of matches) {
+    const worker = workers.find((w) => w.id === match.workerId);
+    if (worker) {
+      await sendMockSms(
+        worker.phone,
+        `Kamyaab: ${clientName} has posted a new ${submittedJob.category.name} job in ${submittedJob.area.name} that matches your profile. Log in to view details and accept within 24 hours!`,
+      );
+    }
+  }
 
   return submittedJob;
 }

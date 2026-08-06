@@ -31,6 +31,7 @@ const publicWorkerSelect = {
   rating: true,
   ratingCount: true,
   completedJobsCount: true,
+  isPriorityListed: true,
   identityChecked: true,
   phoneConfirmed: true,
   referenceStatus: true,
@@ -92,6 +93,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
         where,
         select: publicWorkerSelect,
         orderBy: [
+          { isPriorityListed: 'desc' },
           { rating: 'desc' },
           { completedJobsCount: 'desc' },
           { id: 'asc' },

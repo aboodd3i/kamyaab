@@ -127,6 +127,25 @@ export const CreateJobRequestSchema = z.object({
 });
 export type CreateJobRequestInput = z.infer<typeof CreateJobRequestSchema>;
 
+// ---------------------------------------------------------------------------
+// Worker Availability (Week 5)
+// ---------------------------------------------------------------------------
+
+export const SetAvailabilitySchema = z.object({
+  status: z.enum(['AVAILABLE', 'BUSY', 'UNAVAILABLE']),
+  busyUntil: z.coerce.date().optional().nullable(),
+});
+export type SetAvailabilityInput = z.infer<typeof SetAvailabilitySchema>;
+
+// ---------------------------------------------------------------------------
+// Admin Manual Assignment (Week 5)
+// ---------------------------------------------------------------------------
+
+export const ManualAssignSchema = z.object({
+  workerId: z.string().uuid('Valid worker ID is required'),
+});
+export type ManualAssignInput = z.infer<typeof ManualAssignSchema>;
+
 export const UpdateJobRequestSchema = z.object({
   categoryId: z.string().uuid().optional(),
   areaId: z.string().uuid().optional(),
@@ -137,7 +156,7 @@ export const UpdateJobRequestSchema = z.object({
 export type UpdateJobRequestInput = z.infer<typeof UpdateJobRequestSchema>;
 
 export const SubmitJobRequestSchema = z.object({
-  targetWorkerId: z.string().uuid('Target worker is required for specific worker job requests'),
+  targetWorkerId: z.string().uuid().optional(),
 });
 export type SubmitJobRequestInput = z.infer<typeof SubmitJobRequestSchema>;
 

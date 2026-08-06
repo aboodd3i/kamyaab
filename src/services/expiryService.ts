@@ -20,9 +20,13 @@ export interface ExpiryResult {
 }
 
 /**
- * Expire all SPECIFIC_WORKER job requests that are still WORKER_CONTACTED
+ * Expire all job requests that are still WORKER_CONTACTED or MATCHING
  * past their expiresAt deadline, and mark their PENDING invitations as
  * EXPIRED.
+ *
+ * For SPECIFIC_WORKER (WORKER_CONTACTED) jobs: the client is told they
+ * can invite someone else.
+ * For OPEN (MATCHING) jobs: the client is told no workers accepted.
  *
  * Safe to run repeatedly — on a second invocation with no new stale
  * records, it returns { 0, 0 } and performs no writes.
@@ -34,15 +38,16 @@ export interface ExpiryResult {
  *            tests to pass a fixed timestamp if needed.
  */
 export async function expireStaleInvitations(now: Date = new Date()): Promise<ExpiryResult> {
-  // Find all job requests that are WORKER_CONTACTED and expired
+  // Find all job requests that are WORKER_CONTACTED or MATCHING and expired
   const expiredRequests = await prisma.jobRequest.findMany({
     where: {
-      status: 'WORKER_CONTACTED',
+      status: { in: ['WORKER_CONTACTED', 'MATCHING'] },
       expiresAt: { lt: now },
     },
     include: {
       client: { include: { user: true } },
       targetWorker: true,
+      category: { select: { name: true } },
       invitations: {
         where: { status: 'PENDING' },
       },
@@ -75,10 +80,10 @@ export async function expireStaleInvitations(now: Date = new Date()): Promise<Ex
 
     // Notify client via mock SMS (outside transaction)
     if (req.client.user.phone) {
-      await sendMockSms(
-        req.client.user.phone,
-        `Kamyaab: Your job request for ${req.targetWorker?.name || 'the worker'} has expired without a response. You can create a new request and invite someone else.`
-      );
+      const message = req.status === 'MATCHING'
+        ? `Kamyaab: Your open job request for ${req.category.name} has expired. No matched workers accepted in time. You can create a new request.`
+        : `Kamyaab: Your job request for ${req.targetWorker?.name || 'the worker'} has expired without a response. You can create a new request and invite someone else.`;
+      await sendMockSms(req.client.user.phone, message);
     }
   }
 

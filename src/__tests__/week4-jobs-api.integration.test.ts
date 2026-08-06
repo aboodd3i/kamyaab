@@ -230,6 +230,13 @@ describe.skipIf(!RUN_GATE || IS_PROD)(
 
     afterAll(async () => {
       // Clean up all temporary records in reverse dependency order.
+      // AuditLog records first (Week 6 audit logging creates FK references to User)
+      if (tempUserIds.length > 0) {
+        await rawClient.query(
+          `DELETE FROM "AuditLog" WHERE "actorUserId" = ANY($1::text[])`,
+          [tempUserIds],
+        );
+      }
       // Delete ALL bookings and invitations that reference any temp job
       // requests first — not just tracked ones, since the service layer
       // creates invitations/bookings that may not have been recorded.

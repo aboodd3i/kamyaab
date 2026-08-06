@@ -1,0 +1,36 @@
+﻿Un-named
+WPS Docs
+0?d??
+Identity
+Adobe
+Calibri
+???
+Calibri
+ST?
+Calibri
+???
+?jQY-
+wl0
+wl1
+wl10
+wl11
+wl2
+wl3
+wl4
+wl5
+wl6
+wl7
+wl8
+wl9
+Changelog ? What Changed From the Original Roadmap
+Tech Stack
+Week 1 ? Project Skeleton & Database Schema
+Week 2 ? Authentication & Worker Onboarding
+Week 3 ? Worker Profiles, Verification & Search
+Specific Wor
+Week 5 ? Open Jobs, Availability, Priority Listing
+Week 6 ? Reviews, Complaints & Audit Trail
+Week 7 ? Integration Testing, Security & Staging D
+Build Order ? Summary
+Still Open
+

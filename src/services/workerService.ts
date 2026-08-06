@@ -8,6 +8,7 @@
 import prisma from '../lib/prisma';
 import { errors, ErrorCode } from '../lib/errors';
 import { normalizePakistaniPhone } from '../lib/phone';
+import { logAction } from './auditService';
 import { translateWorkerPhoneConflict } from '../lib/prismaErrors';
 import type { WorkerDTO } from '../types';
 
@@ -166,6 +167,7 @@ export interface VerifyWorkerInput {
   workerId: string;
   status: 'APPROVED' | 'SUSPENDED';
   reason?: string;
+  actorUserId?: string;
 }
 
 /**
@@ -204,6 +206,21 @@ export async function verifyWorker(input: VerifyWorkerInput): Promise<WorkerDTO>
       },
     });
   });
+
+  // Audit log — fire and forget (logAction never throws)
+  if (input.actorUserId) {
+    void logAction({
+      action: 'WORKER_STATUS_CHANGED',
+      actorUserId: input.actorUserId,
+      workerId: input.workerId,
+      summary: `Worker ${input.workerId} status changed to ${input.status}`,
+      metadata: {
+        previousStatus: current.status,
+        newStatus: input.status,
+        reason: input.reason ?? null,
+      },
+    });
+  }
 
   return toDTO(worker);
 }

@@ -202,6 +202,11 @@ export type UserWhereInput = {
   workerProfile?: Prisma.XOR<Prisma.WorkerProfileNullableScalarRelationFilter, Prisma.WorkerProfileWhereInput> | null
   createdWorkers?: Prisma.WorkerProfileListRelationFilter
   verifiedWorkerReferences?: Prisma.WorkerProfileListRelationFilter
+  reviewsGiven?: Prisma.ReviewListRelationFilter
+  reviewsReceived?: Prisma.ReviewListRelationFilter
+  complaintsFiled?: Prisma.ComplaintListRelationFilter
+  complaintsResolved?: Prisma.ComplaintListRelationFilter
+  auditLogs?: Prisma.AuditLogListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -216,6 +221,11 @@ export type UserOrderByWithRelationInput = {
   workerProfile?: Prisma.WorkerProfileOrderByWithRelationInput
   createdWorkers?: Prisma.WorkerProfileOrderByRelationAggregateInput
   verifiedWorkerReferences?: Prisma.WorkerProfileOrderByRelationAggregateInput
+  reviewsGiven?: Prisma.ReviewOrderByRelationAggregateInput
+  reviewsReceived?: Prisma.ReviewOrderByRelationAggregateInput
+  complaintsFiled?: Prisma.ComplaintOrderByRelationAggregateInput
+  complaintsResolved?: Prisma.ComplaintOrderByRelationAggregateInput
+  auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -233,6 +243,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   workerProfile?: Prisma.XOR<Prisma.WorkerProfileNullableScalarRelationFilter, Prisma.WorkerProfileWhereInput> | null
   createdWorkers?: Prisma.WorkerProfileListRelationFilter
   verifiedWorkerReferences?: Prisma.WorkerProfileListRelationFilter
+  reviewsGiven?: Prisma.ReviewListRelationFilter
+  reviewsReceived?: Prisma.ReviewListRelationFilter
+  complaintsFiled?: Prisma.ComplaintListRelationFilter
+  complaintsResolved?: Prisma.ComplaintListRelationFilter
+  auditLogs?: Prisma.AuditLogListRelationFilter
 }, "id" | "authUserId" | "phone" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -273,6 +288,11 @@ export type UserCreateInput = {
   workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
   verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -287,6 +307,11 @@ export type UserUncheckedCreateInput = {
   workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserUpdateInput = {
@@ -301,6 +326,11 @@ export type UserUpdateInput = {
   workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -315,6 +345,11 @@ export type UserUncheckedUpdateInput = {
   workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -457,6 +492,78 @@ export type UserUpdateOneWithoutVerifiedWorkerReferencesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVerifiedWorkerReferencesInput, Prisma.UserUpdateWithoutVerifiedWorkerReferencesInput>, Prisma.UserUncheckedUpdateWithoutVerifiedWorkerReferencesInput>
 }
 
+export type UserCreateNestedOneWithoutReviewsGivenInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewsGivenInput, Prisma.UserUncheckedCreateWithoutReviewsGivenInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewsGivenInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReviewsReceivedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewsReceivedInput, Prisma.UserUncheckedCreateWithoutReviewsReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewsReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReviewsGivenNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewsGivenInput, Prisma.UserUncheckedCreateWithoutReviewsGivenInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewsGivenInput
+  upsert?: Prisma.UserUpsertWithoutReviewsGivenInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewsGivenInput, Prisma.UserUpdateWithoutReviewsGivenInput>, Prisma.UserUncheckedUpdateWithoutReviewsGivenInput>
+}
+
+export type UserUpdateOneRequiredWithoutReviewsReceivedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewsReceivedInput, Prisma.UserUncheckedCreateWithoutReviewsReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewsReceivedInput
+  upsert?: Prisma.UserUpsertWithoutReviewsReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewsReceivedInput, Prisma.UserUpdateWithoutReviewsReceivedInput>, Prisma.UserUncheckedUpdateWithoutReviewsReceivedInput>
+}
+
+export type UserCreateNestedOneWithoutComplaintsFiledInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutComplaintsFiledInput, Prisma.UserUncheckedCreateWithoutComplaintsFiledInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutComplaintsFiledInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutComplaintsResolvedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutComplaintsResolvedInput, Prisma.UserUncheckedCreateWithoutComplaintsResolvedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutComplaintsResolvedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutComplaintsFiledNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutComplaintsFiledInput, Prisma.UserUncheckedCreateWithoutComplaintsFiledInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutComplaintsFiledInput
+  upsert?: Prisma.UserUpsertWithoutComplaintsFiledInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutComplaintsFiledInput, Prisma.UserUpdateWithoutComplaintsFiledInput>, Prisma.UserUncheckedUpdateWithoutComplaintsFiledInput>
+}
+
+export type UserUpdateOneWithoutComplaintsResolvedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutComplaintsResolvedInput, Prisma.UserUncheckedCreateWithoutComplaintsResolvedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutComplaintsResolvedInput
+  upsert?: Prisma.UserUpsertWithoutComplaintsResolvedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutComplaintsResolvedInput, Prisma.UserUpdateWithoutComplaintsResolvedInput>, Prisma.UserUncheckedUpdateWithoutComplaintsResolvedInput>
+}
+
+export type UserCreateNestedOneWithoutAuditLogsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAuditLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
+  upsert?: Prisma.UserUpsertWithoutAuditLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.UserUpdateWithoutAuditLogsInput>, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
+}
+
 export type UserCreateWithoutClientProfileInput = {
   id?: string
   authUserId?: string | null
@@ -468,6 +575,11 @@ export type UserCreateWithoutClientProfileInput = {
   workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
   verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutClientProfileInput = {
@@ -481,6 +593,11 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutClientProfileInput = {
@@ -510,6 +627,11 @@ export type UserUpdateWithoutClientProfileInput = {
   workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientProfileInput = {
@@ -523,6 +645,11 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserCreateWithoutWorkerProfileInput = {
@@ -536,6 +663,11 @@ export type UserCreateWithoutWorkerProfileInput = {
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
   verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutWorkerProfileInput = {
@@ -549,6 +681,11 @@ export type UserUncheckedCreateWithoutWorkerProfileInput = {
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutWorkerProfileInput = {
@@ -567,6 +704,11 @@ export type UserCreateWithoutCreatedWorkersInput = {
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
   verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutCreatedWorkersInput = {
@@ -580,6 +722,11 @@ export type UserUncheckedCreateWithoutCreatedWorkersInput = {
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutCreatedWorkersInput = {
@@ -598,6 +745,11 @@ export type UserCreateWithoutVerifiedWorkerReferencesInput = {
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
 }
 
 export type UserUncheckedCreateWithoutVerifiedWorkerReferencesInput = {
@@ -611,6 +763,11 @@ export type UserUncheckedCreateWithoutVerifiedWorkerReferencesInput = {
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
   createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UserCreateOrConnectWithoutVerifiedWorkerReferencesInput = {
@@ -640,6 +797,11 @@ export type UserUpdateWithoutWorkerProfileInput = {
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkerProfileInput = {
@@ -653,6 +815,11 @@ export type UserUncheckedUpdateWithoutWorkerProfileInput = {
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserUpsertWithoutCreatedWorkersInput = {
@@ -677,6 +844,11 @@ export type UserUpdateWithoutCreatedWorkersInput = {
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedWorkersInput = {
@@ -690,6 +862,11 @@ export type UserUncheckedUpdateWithoutCreatedWorkersInput = {
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
   verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UserUpsertWithoutVerifiedWorkerReferencesInput = {
@@ -714,6 +891,11 @@ export type UserUpdateWithoutVerifiedWorkerReferencesInput = {
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerifiedWorkerReferencesInput = {
@@ -727,6 +909,451 @@ export type UserUncheckedUpdateWithoutVerifiedWorkerReferencesInput = {
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
   createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserCreateWithoutReviewsGivenInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutReviewsGivenInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutReviewsGivenInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewsGivenInput, Prisma.UserUncheckedCreateWithoutReviewsGivenInput>
+}
+
+export type UserCreateWithoutReviewsReceivedInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutReviewsReceivedInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutReviewsReceivedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewsReceivedInput, Prisma.UserUncheckedCreateWithoutReviewsReceivedInput>
+}
+
+export type UserUpsertWithoutReviewsGivenInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewsGivenInput, Prisma.UserUncheckedUpdateWithoutReviewsGivenInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewsGivenInput, Prisma.UserUncheckedCreateWithoutReviewsGivenInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewsGivenInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewsGivenInput, Prisma.UserUncheckedUpdateWithoutReviewsGivenInput>
+}
+
+export type UserUpdateWithoutReviewsGivenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewsGivenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserUpsertWithoutReviewsReceivedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewsReceivedInput, Prisma.UserUncheckedUpdateWithoutReviewsReceivedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewsReceivedInput, Prisma.UserUncheckedCreateWithoutReviewsReceivedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewsReceivedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewsReceivedInput, Prisma.UserUncheckedUpdateWithoutReviewsReceivedInput>
+}
+
+export type UserUpdateWithoutReviewsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserCreateWithoutComplaintsFiledInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutComplaintsFiledInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutComplaintsFiledInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutComplaintsFiledInput, Prisma.UserUncheckedCreateWithoutComplaintsFiledInput>
+}
+
+export type UserCreateWithoutComplaintsResolvedInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutComplaintsResolvedInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutComplaintsResolvedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutComplaintsResolvedInput, Prisma.UserUncheckedCreateWithoutComplaintsResolvedInput>
+}
+
+export type UserUpsertWithoutComplaintsFiledInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutComplaintsFiledInput, Prisma.UserUncheckedUpdateWithoutComplaintsFiledInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutComplaintsFiledInput, Prisma.UserUncheckedCreateWithoutComplaintsFiledInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutComplaintsFiledInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutComplaintsFiledInput, Prisma.UserUncheckedUpdateWithoutComplaintsFiledInput>
+}
+
+export type UserUpdateWithoutComplaintsFiledInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutComplaintsFiledInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserUpsertWithoutComplaintsResolvedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutComplaintsResolvedInput, Prisma.UserUncheckedUpdateWithoutComplaintsResolvedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutComplaintsResolvedInput, Prisma.UserUncheckedCreateWithoutComplaintsResolvedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutComplaintsResolvedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutComplaintsResolvedInput, Prisma.UserUncheckedUpdateWithoutComplaintsResolvedInput>
+}
+
+export type UserUpdateWithoutComplaintsResolvedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutComplaintsResolvedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserCreateWithoutAuditLogsInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintCreateNestedManyWithoutResolvedByInput
+}
+
+export type UserUncheckedCreateWithoutAuditLogsInput = {
+  id?: string
+  authUserId?: string | null
+  phone?: string | null
+  email?: string | null
+  role: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  workerProfile?: Prisma.WorkerProfileUncheckedCreateNestedOneWithoutUserInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutAgentInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedCreateNestedManyWithoutReferenceVerifiedByInput
+  reviewsGiven?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  reviewsReceived?: Prisma.ReviewUncheckedCreateNestedManyWithoutRevieweeInput
+  complaintsFiled?: Prisma.ComplaintUncheckedCreateNestedManyWithoutFiledByInput
+  complaintsResolved?: Prisma.ComplaintUncheckedCreateNestedManyWithoutResolvedByInput
+}
+
+export type UserCreateOrConnectWithoutAuditLogsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+}
+
+export type UserUpsertWithoutAuditLogsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAuditLogsInput, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAuditLogsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAuditLogsInput, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
+}
+
+export type UserUpdateWithoutAuditLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUpdateManyWithoutResolvedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAuditLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  workerProfile?: Prisma.WorkerProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdWorkers?: Prisma.WorkerProfileUncheckedUpdateManyWithoutAgentNestedInput
+  verifiedWorkerReferences?: Prisma.WorkerProfileUncheckedUpdateManyWithoutReferenceVerifiedByNestedInput
+  reviewsGiven?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewsReceived?: Prisma.ReviewUncheckedUpdateManyWithoutRevieweeNestedInput
+  complaintsFiled?: Prisma.ComplaintUncheckedUpdateManyWithoutFiledByNestedInput
+  complaintsResolved?: Prisma.ComplaintUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 
@@ -737,11 +1364,21 @@ export type UserUncheckedUpdateWithoutVerifiedWorkerReferencesInput = {
 export type UserCountOutputType = {
   createdWorkers: number
   verifiedWorkerReferences: number
+  reviewsGiven: number
+  reviewsReceived: number
+  complaintsFiled: number
+  complaintsResolved: number
+  auditLogs: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdWorkers?: boolean | UserCountOutputTypeCountCreatedWorkersArgs
   verifiedWorkerReferences?: boolean | UserCountOutputTypeCountVerifiedWorkerReferencesArgs
+  reviewsGiven?: boolean | UserCountOutputTypeCountReviewsGivenArgs
+  reviewsReceived?: boolean | UserCountOutputTypeCountReviewsReceivedArgs
+  complaintsFiled?: boolean | UserCountOutputTypeCountComplaintsFiledArgs
+  complaintsResolved?: boolean | UserCountOutputTypeCountComplaintsResolvedArgs
+  auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
 }
 
 /**
@@ -768,6 +1405,41 @@ export type UserCountOutputTypeCountVerifiedWorkerReferencesArgs<ExtArgs extends
   where?: Prisma.WorkerProfileWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewsGivenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReviewWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReviewWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountComplaintsFiledArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ComplaintWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountComplaintsResolvedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ComplaintWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditLogWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -781,6 +1453,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   workerProfile?: boolean | Prisma.User$workerProfileArgs<ExtArgs>
   createdWorkers?: boolean | Prisma.User$createdWorkersArgs<ExtArgs>
   verifiedWorkerReferences?: boolean | Prisma.User$verifiedWorkerReferencesArgs<ExtArgs>
+  reviewsGiven?: boolean | Prisma.User$reviewsGivenArgs<ExtArgs>
+  reviewsReceived?: boolean | Prisma.User$reviewsReceivedArgs<ExtArgs>
+  complaintsFiled?: boolean | Prisma.User$complaintsFiledArgs<ExtArgs>
+  complaintsResolved?: boolean | Prisma.User$complaintsResolvedArgs<ExtArgs>
+  auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -820,6 +1497,11 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   workerProfile?: boolean | Prisma.User$workerProfileArgs<ExtArgs>
   createdWorkers?: boolean | Prisma.User$createdWorkersArgs<ExtArgs>
   verifiedWorkerReferences?: boolean | Prisma.User$verifiedWorkerReferencesArgs<ExtArgs>
+  reviewsGiven?: boolean | Prisma.User$reviewsGivenArgs<ExtArgs>
+  reviewsReceived?: boolean | Prisma.User$reviewsReceivedArgs<ExtArgs>
+  complaintsFiled?: boolean | Prisma.User$complaintsFiledArgs<ExtArgs>
+  complaintsResolved?: boolean | Prisma.User$complaintsResolvedArgs<ExtArgs>
+  auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -832,6 +1514,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     workerProfile: Prisma.$WorkerProfilePayload<ExtArgs> | null
     createdWorkers: Prisma.$WorkerProfilePayload<ExtArgs>[]
     verifiedWorkerReferences: Prisma.$WorkerProfilePayload<ExtArgs>[]
+    reviewsGiven: Prisma.$ReviewPayload<ExtArgs>[]
+    reviewsReceived: Prisma.$ReviewPayload<ExtArgs>[]
+    complaintsFiled: Prisma.$ComplaintPayload<ExtArgs>[]
+    complaintsResolved: Prisma.$ComplaintPayload<ExtArgs>[]
+    auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1242,6 +1929,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   workerProfile<T extends Prisma.User$workerProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workerProfileArgs<ExtArgs>>): Prisma.Prisma__WorkerProfileClient<runtime.Types.Result.GetResult<Prisma.$WorkerProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdWorkers<T extends Prisma.User$createdWorkersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdWorkersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   verifiedWorkerReferences<T extends Prisma.User$verifiedWorkerReferencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verifiedWorkerReferencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewsGiven<T extends Prisma.User$reviewsGivenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsGivenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewsReceived<T extends Prisma.User$reviewsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  complaintsFiled<T extends Prisma.User$complaintsFiledArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$complaintsFiledArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplaintPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  complaintsResolved<T extends Prisma.User$complaintsResolvedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$complaintsResolvedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplaintPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1754,6 +2446,126 @@ export type User$verifiedWorkerReferencesArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.WorkerProfileScalarFieldEnum | Prisma.WorkerProfileScalarFieldEnum[]
+}
+
+/**
+ * User.reviewsGiven
+ */
+export type User$reviewsGivenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Review
+   */
+  select?: Prisma.ReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Review
+   */
+  omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  where?: Prisma.ReviewWhereInput
+  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
+}
+
+/**
+ * User.reviewsReceived
+ */
+export type User$reviewsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Review
+   */
+  select?: Prisma.ReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Review
+   */
+  omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  where?: Prisma.ReviewWhereInput
+  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
+}
+
+/**
+ * User.complaintsFiled
+ */
+export type User$complaintsFiledArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Complaint
+   */
+  select?: Prisma.ComplaintSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Complaint
+   */
+  omit?: Prisma.ComplaintOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ComplaintInclude<ExtArgs> | null
+  where?: Prisma.ComplaintWhereInput
+  orderBy?: Prisma.ComplaintOrderByWithRelationInput | Prisma.ComplaintOrderByWithRelationInput[]
+  cursor?: Prisma.ComplaintWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ComplaintScalarFieldEnum | Prisma.ComplaintScalarFieldEnum[]
+}
+
+/**
+ * User.complaintsResolved
+ */
+export type User$complaintsResolvedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Complaint
+   */
+  select?: Prisma.ComplaintSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Complaint
+   */
+  omit?: Prisma.ComplaintOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ComplaintInclude<ExtArgs> | null
+  where?: Prisma.ComplaintWhereInput
+  orderBy?: Prisma.ComplaintOrderByWithRelationInput | Prisma.ComplaintOrderByWithRelationInput[]
+  cursor?: Prisma.ComplaintWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ComplaintScalarFieldEnum | Prisma.ComplaintScalarFieldEnum[]
+}
+
+/**
+ * User.auditLogs
+ */
+export type User$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditLog
+   */
+  select?: Prisma.AuditLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditLog
+   */
+  omit?: Prisma.AuditLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditLogInclude<ExtArgs> | null
+  where?: Prisma.AuditLogWhereInput
+  orderBy?: Prisma.AuditLogOrderByWithRelationInput | Prisma.AuditLogOrderByWithRelationInput[]
+  cursor?: Prisma.AuditLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
 }
 
 /**

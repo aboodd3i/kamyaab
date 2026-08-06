@@ -104,3 +104,33 @@ export const AvailabilityUpdateSource = {
 } as const
 
 export type AvailabilityUpdateSource = (typeof AvailabilityUpdateSource)[keyof typeof AvailabilityUpdateSource]
+
+
+export const ReviewDirection = {
+  CLIENT_TO_WORKER: 'CLIENT_TO_WORKER',
+  WORKER_TO_CLIENT: 'WORKER_TO_CLIENT'
+} as const
+
+export type ReviewDirection = (typeof ReviewDirection)[keyof typeof ReviewDirection]
+
+
+export const ComplaintStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type ComplaintStatus = (typeof ComplaintStatus)[keyof typeof ComplaintStatus]
+
+
+export const AuditAction = {
+  BOOKING_COMPLETED: 'BOOKING_COMPLETED',
+  REVIEW_CREATED: 'REVIEW_CREATED',
+  COMPLAINT_FILED: 'COMPLAINT_FILED',
+  COMPLAINT_RESOLVED: 'COMPLAINT_RESOLVED',
+  WORKER_STATUS_CHANGED: 'WORKER_STATUS_CHANGED',
+  INVITATION_RESPONDED: 'INVITATION_RESPONDED',
+  ADMIN_ASSIGNMENT: 'ADMIN_ASSIGNMENT'
+} as const
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]

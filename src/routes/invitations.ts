@@ -55,7 +55,7 @@ router.post('/:id/respond', requireRole('WORKER'), async (req, res, next) => {
       return next(errors.notFound(ErrorCode.WORKER_NOT_FOUND, 'Worker profile not found for this user'));
     }
 
-    const result = await invitationService.respondToInvitation(invitationId, worker.id, input);
+    const result = await invitationService.respondToInvitation(invitationId, worker.id, input, req.user?.userId);
     res.json({ success: true, data: result });
   } catch (err) {
     next(err);

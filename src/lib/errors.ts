@@ -41,6 +41,22 @@ export const ErrorCode = {
   
   // Job / Generic State
   INVALID_STATE_TRANSITION: 'INVALID_STATE_TRANSITION',
+
+  // Bookings
+  BOOKING_NOT_FOUND: 'BOOKING_NOT_FOUND',
+  BOOKING_INVALID_STATE: 'BOOKING_INVALID_STATE',
+
+  // Reviews (Week 6)
+  REVIEW_ALREADY_EXISTS: 'REVIEW_ALREADY_EXISTS',
+  INVALID_REVIEW_RATING: 'INVALID_REVIEW_RATING',
+  REVIEW_NOT_ALLOWED: 'REVIEW_NOT_ALLOWED',
+  REVIEW_NOT_FOUND: 'REVIEW_NOT_FOUND',
+  NOT_IMPLEMENTED: 'NOT_IMPLEMENTED',
+
+  // Complaints (Week 6)
+  COMPLAINT_NOT_FOUND: 'COMPLAINT_NOT_FOUND',
+  COMPLAINT_ALREADY_RESOLVED: 'COMPLAINT_ALREADY_RESOLVED',
+  COMPLAINT_INVALID_TRANSITION: 'COMPLAINT_INVALID_TRANSITION',
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
@@ -130,6 +146,19 @@ export function errorMiddleware(
   // Zod validation errors
   if (err.name === 'ZodError') {
     sendError(res, 400, ErrorCode.VALIDATION_ERROR, 'Invalid request body');
+    return;
+  }
+
+  // Multer file-upload errors (e.g. too many files, file too large)
+  if (err.name === 'MulterError' || (typeof (err as unknown as { code?: string }).code === 'string' && (err as unknown as { code: string }).code.startsWith('LIMIT_'))) {
+    const multerCode = (err as unknown as { code: string }).code;
+    let message = 'File upload error';
+    if (multerCode === 'LIMIT_FILE_SIZE') {
+      message = 'File size exceeds the maximum allowed limit';
+    } else if (multerCode === 'LIMIT_UNEXPECTED_FILE') {
+      message = 'Too many files uploaded';
+    }
+    sendError(res, 400, ErrorCode.VALIDATION_ERROR, message);
     return;
   }
 

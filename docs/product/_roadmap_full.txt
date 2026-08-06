@@ -1,0 +1,130 @@
+Kamyaab — Backend Development
+Roadmap (Updated)
+7-weekplan—updatedtoalignwiththeconfirmedfrontendroadmapandtheofficialpitchpresentation.Team:
+Momna,Abdullah,Wajid—sharedbackendownership.
+Changelog — What Changed From the Original Roadmap
+1.VoiceAIclassificationREMOVEDfromWeek6—confirmedPhase2perpitchdeck,notMVP. 2.Two-way
+ratingsADDEDtoWeek6—workerratesclienttoo,notjustclientratesworker. 3.ReferencecheckADDED
+toWeek3workerverification,alongsideCNIC. 4.Fullworker-categoryseedlistADDEDtoWeek1(was
+sample-only). 5.Prioritylisting(paidvisibility)ADDEDtoWeek5matching/ranking. 6.MyJobshistory/list
+endpointADDEDtoWeek4. 7.AuthconfirmedasSupabaseAuth(nochange—thiswasalreadycorrect). 8.
+Request→accept→then-contactflowCONFIRMEDcorrect(matchespitchdeck'scoretrustmodel)—no
+changeneededtoWeeks4–5bookinglogic.
+Tech Stack
+Layer Choice Notes
+Backendruntime Node.js(v20+)+TypeScript Typesafetyacrossthecodebase
+Webframework Express Minimal,transparent,easytodebug
+Database PostgreSQLviaSupabase HostedDB,noservermanagement
+ORM Prisma Type-safequeries,migrations
+Authentication SupabaseAuth Confirmed—phoneOTP(clients),
+email/password(agents/admin)
+Filestorage SupabaseStorage Privatebuckets,signedURLsforCNIC
+etc.
+Backgroundjobs DB-backedqueue Polling—noRedisneededyet
+SMS Mock(Weeks1–7) Logsactionsinsteadofarealprovider
+—nochange
+VoiceAI Phase2—removedfromMVP Confirmedviapitchdeck:voice+AI
+matchingisPhase2,notMVP
+Openitem(unchanged):CNICnumberfieldencryptionapproachstillawaitingateamdecision.Treatassensitiveuntil
+resolved.
+Week 1 — Project Skeleton & Database Schema
+Goal:ArunningExpressserverconnectedtothedatabase,withthefirstmigrationandfullseeddatainplace.
+• Setuptheproject:Express,TypeScript,Prisma,tsconfig.
+• MinimalExpressserverwithhealth-checkroute(GET/ping).
+• npxprismainit,connecttoSupabaseDBvia.env.
+• Definecoreschema:User,ClientProfile,WorkerProfile,Category,Area(Karachizones,parent/child).
+• Runfirstmigration:npxprismamigratedev--nameinit.
+• UPDATED:seedtheFULLcategorylist—electrician,plumber,carpenter,gardener,painter,driver,tailor,
+cook(wassample-onlybefore).
+• DraftAPIcontractstubsforPOST/auth/otp/requestandPOST/auth/otp/verify.
+Week 2 — Authentication & Worker Onboarding
+Goal:ClientsloginviaphoneOTP;agentscreateworkerprofilespendingapproval.(Nochangefromoriginal—
+alreadycorrect.)
+• PhoneOTPflowviaSupabaseAuth(signInWithOtp/verifyOtp)forclients.
+• authenticatemiddlewareverifiesJWT,attachesuserID+role.
+• Auto-createClientProfileonfirstlogin.
+• Agent/adminloginviaemail+password(signInWithPassword);seedfixedaccounts.
+• POST/api/v1/workers(agent-only):createsWorkerProfile,status=PENDING_APPROVAL.
+• PATCH/api/v1/workers/:id/verify(admin-only):approveorsuspend.
+Week 3 — Worker Profiles, Verification & Search
+Goal:Clientsbrowseapprovedworkersfilteredbycategoryandarea.
+• ExpandWorkerProfile:cnicNumber(sensitive),cnicFrontPath,cnicBackPath,rating,completedJobsCount.
+• UPDATED:addreferenceCheckfields(referenceName,referencePhone,referenceVerifiedBy,
+referenceVerifiedAt)—pitchdeckdefines"verified"asCNIC+referencecheck,notCNICalone.
+• AddverifiedBadgesJSONfield(identitychecked,phoneconfirmed,referencechecked).
+• CNICdocumentupload:POST/api/v1/workers/:id/documents—privateSupabaseStoragebucket.
+• Publicsearchendpoint:GET/api/v1/workers—filteredbycategory/area,APPROVEDonly,excludes
+phone/address/CNIC.
+• Basicranking:orderbyrating,thencompletedjobscount.
+Week 4 — Job Requests & Booking Flow (Specific Worker)
+Goal:Aclientrequestsaspecificworker;onacceptance,abookingiscreatedandcontactisreleased.Flowconfirmed
+correctagainstthepitchdeck'strustmodel—nochangetothecorelogic.
+• JobRequestmodel:client,category,area,description,urgency,budget,type(SPECIFIC_WORKER),target
+worker,status.
+• POST/api/v1/job-requests(draft)andPOST/api/v1/job-requests/:id/submit(validates,movesto
+WORKER_CONTACTED).
+• Invitationmodel+generateoneinvitationpersubmittedspecific-workerjob.
+• MockSMSoninvitationsent.
+• POST/api/v1/invitations/:id/accept:createsBooking,releasescontactinfotobothparties,mockSMS
+confirmation.
+• Expirylogic:backgroundjobexpiringinvitations(andparentjob)after24hours.
+• UPDATED:addGET/api/v1/job-requests/mine—liststhelogged-inclient'sownjobrequests/bookingswith
+status,forthefrontend'sMyJobsscreen(wasmissingentirelybefore).
+Week 5 — Open Jobs, Availability, Priority Listing & Admin Override
+Goal:Clientspostopenjobsmatchedtomultipleworkers;workerssetavailability;paidprioritylistingaffectsranking;
+adminsoverridemanually.
+• ExtendJobRequest:type=OPEN,movestoMATCHINGonsubmission.
+• Deterministicmatchingfunction:filterbycategory/area/availability,rankbyavailability,rating,completedjobs
+—NOTAI-based(pitchdeckconfirmsAImatchingisPhase2).
+• UPDATED:addisPriorityListedboolean(orsimilar)toWorkerProfile—priority-listedworkersrankabove
+equivalentnon-priorityworkersinmatchingandsearchresults.Thisisthepaid"Prioritylisting"revenuestream
+fromthepitchdeck—nopaymentprocessingneededyet,justthebooleanflagandrankingboost.
+• Batch-createinvitationsformatchedworkers,triggermockSMSforeach.
+• Simpleworker-facingwebpage:OTPlogin,listofpendinginvitations,accept/reject.
+• WorkerAvailabilitymodel(available/busy/unavailable/unknown),updateendpoint,auto-expiryafter24hours.
+• POST/api/v1/admin/assign-workerformanualadminassignment.
+Week 6 — Reviews, Complaints & Audit Trail
+Goal:Reviews,complaints,andauditloggingareadded.VoiceAIisNOTpartofthisweek—movedtoPhase2per
+pitchdeck.
+• REMOVED:realspeech-to-text/LLMvoiceclassificationintegration—thisisnowPhase2,notMVP.Donot
+buildPOST/api/v1/voice-jobs/classifythiscycle.
+• Buildreviews:POST/api/v1/bookings/:id/reviews,onlyforcompletedbookings;recalculatesworker'saverage
+rating.
+• UPDATED:two-wayreviews—addPOST/api/v1/bookings/:id/reviews/worker-to-client(orarolefieldon
+thesameendpoint)soworkerscanrateclientstoo,perpitchdeck's"accountabilityonbothsides."
+• Buildcomplaints:POST/api/v1/bookings/:id/complaintswithdescription+evidencefiles;admincan
+view/resolve.
+• AuditLogtable+middlewarerecordingeverystatus-changingaction(actor,action,before/after).
+Week 7 — Integration Testing, Security & Staging Deploy
+Goal:Confirmeverythingworkstogetherandshipaworkingstagingenvironment.(Nochangefromoriginal.)
+• Integrationtestscoveringcorejourneys(agentcreatesworker→adminapproves→clientsearches→books
+→completes→reviewsbothways).
+• Securitypass:CNICimagesonlyviasignedURLs,clientaddressesneverinpublicsearch,OTPendpointsrate-
+limited.
+• Deploytostaging(Render/Railway),connectedtoaseparate/testSupabaseproject.
+• Manuallyrunfullacceptancejourneysonstaging.
+• WriteREADME.md:localsetup,envvariables,seedinginstructions.
+Build Order — Summary
+# What
+1 Expressserver+Prismaconnection
+2 Databasetables+FULLcategory/areaseeddata
+3 PhoneOTPlogin(clients)viaSupabaseAuth
+4 Agent+adminlogin(email/password)
+5 WorkerCRUDincl.CNIC+referencecheck(agentcreates,adminapproves)
+6 Workersearch(public,filteredbycategory/area)
+7 Specific-workerrequest→invitation→accept→booking
+8 MyJobs/job-historyendpoint
+9 Open-jobrequest→deterministicmatching→batchinvitations→accept→booking
+10 Workeravailability+prioritylisting(paidrankingboost)
+11 Adminmanualassignment
+12 Two-wayreviews+complaints
+13 Auditlogging
+14 Testing+stagingdeployment
+Explicitly Out of Scope for This Cycle (Phase 2+)
+• Voice-basedjobposting&AI-assistedmatching—Phase2perpitchdeck.
+• Material/supplierbundling—Phase2perpitchdeck.
+• B2Bhousing-societypartnerships—Phase2perpitchdeck.
+• Multi-cityexpansion—Phase3perpitchdeck.
+• RealpaymentsandrealSMS—mockedforMVP,unchanged.
+Still Open
+• CNICencryptionapproach—awaitingteamdecision,unchangedfromoriginalroadmap.

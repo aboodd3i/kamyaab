@@ -16,7 +16,7 @@ router.use(authenticate);
  * Returns the authenticated worker's current availability status.
  * The worker profile is resolved through the authenticated user's userId.
  */
-router.get('/', requireRole('CLIENT'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', requireRole('WORKER'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const worker = await prisma.workerProfile.findUnique({
       where: { userId: req.user!.userId },
@@ -41,7 +41,7 @@ router.get('/', requireRole('CLIENT'), async (req: Request, res: Response, next:
  * Workers can set: AVAILABLE, BUSY, UNAVAILABLE.
  * The updateSource is always WORKER_PORTAL for self-service updates.
  */
-router.put('/', requireRole('CLIENT'), async (req: Request, res: Response, next: NextFunction) => {
+router.put('/', requireRole('WORKER'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const parsed = SetAvailabilitySchema.safeParse(req.body);
     if (!parsed.success) {

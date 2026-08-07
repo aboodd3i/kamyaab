@@ -1,0 +1,27 @@
+# Kamyaab Backend — Docker Compose for local development
+#
+# Provides a PostgreSQL database for local development and testing.
+# The API itself runs via `npm run dev` on the host (not in a container)
+# to enable hot reload and debugging.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kamyaab-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kamyaab
+      POSTGRES_PASSWORD: kamyaab_local
+      POSTGRES_DB: kamyaab
+    ports:
+      - "5433:5432"
+    volumes:
+      - kamyaab_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kamyaab -d kamyaab"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  kamyaab_pgdata:

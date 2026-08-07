@@ -57,6 +57,9 @@ export const ErrorCode = {
   COMPLAINT_NOT_FOUND: 'COMPLAINT_NOT_FOUND',
   COMPLAINT_ALREADY_RESOLVED: 'COMPLAINT_ALREADY_RESOLVED',
   COMPLAINT_INVALID_TRANSITION: 'COMPLAINT_INVALID_TRANSITION',
+
+  // Rate limiting (Week 7)
+  RATE_LIMITED: 'RATE_LIMITED',
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
@@ -165,7 +168,7 @@ export function errorMiddleware(
   // Log full error server-side, never send to client
   console.error('Unhandled error:', err);
 
-  const message = env.isProduction
+  const message = env.isProduction || env.isStaging
     ? 'Internal server error'
     : err.message || 'Internal server error';
 

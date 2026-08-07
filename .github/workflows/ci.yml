@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Lint, Type-Check, Test, Build
+    name: Lint, Type-Check, Unit Test, Build
     runs-on: ubuntu-latest
 
     env:
@@ -49,8 +49,8 @@ jobs:
       - name: TypeScript type checking
         run: npm run typecheck
 
-      - name: Run tests
-        run: npm test
+      - name: Run unit tests
+        run: npm run test:unit
 
       - name: Build
         run: npm run build
@@ -61,3 +61,52 @@ jobs:
             echo "::error::Whitespace or merge-conflict marker issues detected"
             exit 1
           fi
+
+  # ── Integration tests with real PostgreSQL ──────────────────────────────
+  integration:
+    name: Integration Tests (PostgreSQL)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: kamyaab
+          POSTGRES_PASSWORD: kamyaab_ci
+          POSTGRES_DB: kamyaab_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kamyaab -d kamyaab_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://kamyaab:kamyaab_ci@localhost:5432/kamyaab_test
+      DIRECT_URL: postgresql://kamyaab:kamyaab_ci@localhost:5432/kamyaab_test
+      SUPABASE_URL: https://dummy.supabase.co
+      SUPABASE_ANON_KEY: dummy-anon-key
+      RUN_DB_INTEGRATION_TESTS: 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      - name: Run integration tests
+        run: npx vitest run --no-file-parallelism src/__tests__/*.integration.test.ts

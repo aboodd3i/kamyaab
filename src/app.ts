@@ -14,6 +14,8 @@ import auditLogRoutes from './routes/auditLogs';
 import availabilityRoutes from './routes/availability';
 import adminRoutes from './routes/admin';
 import { errorMiddleware } from './lib/errors';
+import { createApiRateLimiter } from './middleware/rateLimiter';
+import prisma from './lib/prisma';
 
 /**
  * Express application factory.
@@ -26,7 +28,7 @@ export function createApp() {
 
   app.use(express.json());
 
-  // Health checks (no auth required)
+  // Health checks (no auth required, no rate limit)
   app.get('/', (_req: Request, res: Response) => {
     res.json({ message: 'Welcome to the Kamyaab Backend API!', version: '1.0' });
   });
@@ -35,12 +37,34 @@ export function createApp() {
     res.json({ message: 'pong', status: 'ok' });
   });
 
-  // Public catalog routes (no auth required)
+  // Full health check — verifies database connectivity
+  app.get('/health', async (_req: Request, res: Response) => {
+    try {
+      // Run a simple query to check DB connectivity
+      await prisma.$queryRaw`SELECT 1`;
+      res.json({
+        status: 'ok',
+        database: 'connected',
+        timestamp: new Date().toISOString(),
+      });
+    } catch {
+      res.status(503).json({
+        status: 'error',
+        database: 'disconnected',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  });
+
+  // Public catalog routes (no auth required, no rate limit)
   app.use('/api/v1/categories', categoryRoutes);
   app.use('/api/v1/areas', areaRoutes);
 
-  // Public worker discovery routes (no auth required)
+  // Public worker discovery routes (no auth required, no rate limit)
   app.use('/api/v1/workers', publicWorkerRoutes);
+
+  // API rate limiter — applied to all authenticated routes below
+  app.use('/api/v1', createApiRateLimiter());
 
   // API routes (auth required)
   app.use('/api/v1/auth', authRoutes);

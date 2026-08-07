@@ -1,67 +1,47 @@
 # Known Deferred Technical Risks
 
 This document tracks technical risks that have been intentionally deferred
-during the Kamyaab backend Weeks 1 and 2 implementation. Each item includes
-its status, deadline, risk description, and expected future work.
+during the Kamyaab backend implementation. Each item includes its status,
+deadline, risk description, and expected future work.
+
+**Summary:** Items 1–3 were resolved during Weeks 3–7. Item 4 remains deferred
+pending product decisions.
 
 ---
 
 ## 1. Authentication and API rate limiting
 
-**Status:** Deferred.
+**Status:** ✅ Resolved (Week 7).
 
-**Deadline:** Required before publicly accessible staging, external mobile
-testing, or pilot usage.
-
-**Risk:** Authentication and other sensitive endpoints may be vulnerable to
-brute-force attempts or request abuse without throttling.
-
-**Expected future work:**
-
-- Per-IP limits
-- Per-phone or per-identity limits where applicable
-- Appropriate handling for trusted internal traffic
-- Structured `429 Too Many Requests` responses
-- Monitoring of repeated authentication failures
+**Resolved in:** `src/middleware/rateLimiter.ts` — per-IP login rate limiter
+(10 requests / 15 min) applied to all `/api/v1/auth/*` routes, and per-IP API
+rate limiter (100 requests / 1 min) applied to all `/api/v1/*` authenticated
+routes. Structured `429 Too Many Requests` responses with `RATE_LIMITED` error
+code and `Retry-After` header. Public catalog routes (categories, areas,
+public workers) are exempt.
 
 ---
 
 ## 2. Automated PostgreSQL integration tests
 
-**Status:** Deferred.
+**Status:** ✅ Resolved (Weeks 3–7).
 
-**Deadline:** Required before the booking and invitation workflow becomes
-complex, preferably before Week 4.
-
-**Risk:** Mocked Prisma tests do not verify actual PostgreSQL constraints,
-transactions, SQL migrations, or database-specific behavior.
-
-**Expected future work:**
-
-- Disposable PostgreSQL test database
-- Migration execution during tests
-- Seed verification
-- Real constraint testing
-- Transaction and concurrency tests
+**Resolved in:** Integration tests using real PostgreSQL via `PrismaPg` adapter
+with `RUN_DB_INTEGRATION_TESTS=true` gate. Coverage spans Weeks 3–7 including
+schema, worker search, job flow, matching, reviews, complaints, audit logs,
+and end-to-end marketplace journeys. CI runs integration tests in a PostgreSQL
+16 service container.
 
 ---
 
 ## 3. CI migration testing with ephemeral PostgreSQL
 
-**Status:** Deferred.
+**Status:** ✅ Resolved (Week 7).
 
-**Deadline:** Recommended before Week 4 and required before pilot deployment.
-
-**Risk:** CI currently validates Prisma and compiles the application but does
-not prove that migrations apply successfully to an empty PostgreSQL database.
-
-**Expected future work:**
-
-- PostgreSQL service container in GitHub Actions
-- `prisma migrate deploy`
-- Seed smoke test
-- Migration status verification
-- Database integration test job
+**Resolved in:** `.github/workflows/ci.yml` — dedicated `integration` job with
+PostgreSQL 16 service container. Runs `prisma migrate deploy` against the
+ephemeral database, then executes all integration tests with
+`RUN_DB_INTEGRATION_TESTS=true`.
 
 ---
 

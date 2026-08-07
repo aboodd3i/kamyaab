@@ -57,6 +57,9 @@ export const ErrorCode = {
   COMPLAINT_NOT_FOUND: 'COMPLAINT_NOT_FOUND',
   COMPLAINT_ALREADY_RESOLVED: 'COMPLAINT_ALREADY_RESOLVED',
   COMPLAINT_INVALID_TRANSITION: 'COMPLAINT_INVALID_TRANSITION',
+
+  // Rate limiting (Week 7)
+  RATE_LIMITED: 'RATE_LIMITED',
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

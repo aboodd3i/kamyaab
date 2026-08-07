@@ -3,8 +3,12 @@ import { supabase } from '../lib/supabase';
 import prisma from '../lib/prisma';
 import { StaffLoginSchema } from '../types';
 import { errors, ErrorCode, sendSuccess, AppError } from '../lib/errors';
+import { createLoginRateLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
+
+// Apply login rate limiter to all auth routes
+router.use(createLoginRateLimiter());
 
 /**
  * POST /login/staff

@@ -15,6 +15,7 @@ import availabilityRoutes from './routes/availability';
 import adminRoutes from './routes/admin';
 import { errorMiddleware } from './lib/errors';
 import { createApiRateLimiter } from './middleware/rateLimiter';
+import prisma from './lib/prisma';
 
 /**
  * Express application factory.
@@ -34,6 +35,25 @@ export function createApp() {
 
   app.get('/ping', (_req: Request, res: Response) => {
     res.json({ message: 'pong', status: 'ok' });
+  });
+
+  // Full health check — verifies database connectivity
+  app.get('/health', async (_req: Request, res: Response) => {
+    try {
+      // Run a simple query to check DB connectivity
+      await prisma.$queryRaw`SELECT 1`;
+      res.json({
+        status: 'ok',
+        database: 'connected',
+        timestamp: new Date().toISOString(),
+      });
+    } catch {
+      res.status(503).json({
+        status: 'error',
+        database: 'disconnected',
+        timestamp: new Date().toISOString(),
+      });
+    }
   });
 
   // Public catalog routes (no auth required, no rate limit)

@@ -168,7 +168,7 @@ export function errorMiddleware(
   // Log full error server-side, never send to client
   console.error('Unhandled error:', err);
 
-  const message = env.isProduction
+  const message = env.isProduction || env.isStaging
     ? 'Internal server error'
     : err.message || 'Internal server error';
 
